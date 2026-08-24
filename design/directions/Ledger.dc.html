@@ -1,0 +1,128 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+  <style>
+    body { margin: 0; background: #FCFCFA; font-family: 'IBM Plex Sans', system-ui, sans-serif; }
+    a { color: #16181D; text-decoration: none; }
+    a:hover { color: #B03B2E; }
+  </style>
+</helmet>
+
+<div style="width: 1120px; height: 820px; background: #FCFCFA; color: #16181D; display: flex; flex-direction: column; overflow: hidden;">
+
+  <div style="display: flex; align-items: center; justify-content: space-between; padding: 13px 24px; border-bottom: 1px solid #E3E4E0;">
+    <div style="display: flex; align-items: center; gap: 9px;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{accent}}" stroke-width="1.8">
+        <circle cx="12" cy="12" r="8.5"></circle>
+        <circle cx="12" cy="12" r="1.8" fill="{{accent}}" stroke="none"></circle>
+      </svg>
+      <span style="font-size: 15px; font-weight: 600; letter-spacing: -0.01em;">Radius</span>
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #8A8D86; margin-left: 6px;">kreuzberg / 5km</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 22px; font-size: 13px;">
+      <a href="#" style="font-weight: 600; border-bottom: 1.5px solid {{accent}}; padding-bottom: 2px;">Feed</a>
+      <a href="#" style="color: #6C7079;">Search</a>
+      <a href="#" style="color: #6C7079;">Requests</a>
+      <a href="#" style="color: #6C7079;">Dashboard</a>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-grow: 1; overflow: hidden;">
+
+    <div style="width: 208px; flex-shrink: 0; border-right: 1px solid #E3E4E0; padding: 18px 20px; display: flex; flex-direction: column; gap: 20px;">
+      <div style="display: flex; flex-direction: column; gap: 9px;">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: #8A8D86;">Kind</span>
+        <sc-for list="{{facets}}" as="facet" hint-placeholder-count="5">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <div style="width: 12px; height: 12px; border: 1px solid {{facet.box}}; background: {{facet.fill}}; border-radius: 2px;"></div>
+              <span style="font-size: 13px; color: #2C2F36;">{{facet.label}}</span>
+            </div>
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #8A8D86;">{{facet.count}}</span>
+          </div>
+        </sc-for>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 9px;">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: #8A8D86;">Radius</span>
+        <div style="display: flex; align-items: center; gap: 9px;">
+          <div style="flex-grow: 1; height: 3px; background: #E3E4E0; display: flex;">
+            <div style="width: 40%; background: {{accent}};"></div>
+          </div>
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600;">5km</span>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 9px;">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: #8A8D86;">Sort</span>
+        <span style="font-size: 13px; color: #2C2F36;">Distance, ascending</span>
+      </div>
+    </div>
+
+    <div style="flex-grow: 1; display: flex; flex-direction: column; overflow: hidden;">
+      <div style="display: flex; align-items: baseline; justify-content: space-between; padding: 18px 24px 12px;">
+        <h1 style="margin: 0; font-size: 21px; font-weight: 600; letter-spacing: -0.02em;">Nearby</h1>
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #8A8D86;">12 rows</span>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 92px 1fr 150px 78px 104px; gap: 0; padding: 0 24px 7px; border-bottom: 1px solid #16181D;">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: #8A8D86;">Kind</span>
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: #8A8D86;">Listing</span>
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: #8A8D86;">Neighbour</span>
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: #8A8D86; text-align: right;">Dist</span>
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: #8A8D86; text-align: right;">Rate</span>
+      </div>
+
+      <div style="display: flex; flex-direction: column; flex-grow: 1;">
+        <sc-for list="{{rows}}" as="row" hint-placeholder-count="8">
+          <div style="display: grid; grid-template-columns: 92px 1fr 150px 78px 104px; gap: 0; padding: 11px 24px; border-bottom: 1px solid #EFEFEC; align-items: center;">
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 500; color: {{row.tint}};">{{row.kind}}</span>
+            <span style="font-size: 14px; font-weight: 500; letter-spacing: -0.005em;">{{row.title}}</span>
+            <span style="font-size: 13px; color: #6C7079;">{{row.owner}}</span>
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #6C7079; text-align: right;">{{row.distance}}</span>
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600; text-align: right;">{{row.price}}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+</div>
+
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":1120,"height":820},"accent":{"editor":"color","default":"#B03B2E","options":["#B03B2E","#2E6B5E","#3A4CA8","#16181D"]}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const accent = this.props.accent ?? '#B03B2E';
+    return {
+      accent: accent,
+      facets: [
+        { label: 'Everything', count: '12', box: accent, fill: accent },
+        { label: 'To rent',    count: '7',  box: '#C9CBC6', fill: 'transparent' },
+        { label: 'For hire',   count: '2',  box: '#C9CBC6', fill: 'transparent' },
+        { label: 'Teaching',   count: '1',  box: '#C9CBC6', fill: 'transparent' },
+        { label: 'For sale',   count: '1',  box: '#C9CBC6', fill: 'transparent' },
+        { label: 'Wanted',     count: '1',  box: '#C9CBC6', fill: 'transparent' }
+      ],
+      rows: [
+        { kind: 'RENT',  title: 'Aluminium ladder, 3 m',       owner: 'Amara Okafor',   distance: '100 m',  price: '€5.00',  tint: '#8A8D86' },
+        { kind: 'TEACH', title: 'Video editing, the basics',   owner: 'Priya Raman',    distance: '200 m',  price: '€30.00', tint: '#8A8D86' },
+        { kind: 'HIRE',  title: 'Electrician, small jobs',     owner: 'Amara Okafor',   distance: '300 m',  price: '€35.00', tint: '#8A8D86' },
+        { kind: 'SELL',  title: 'Laser printer, working',      owner: 'Erik Lindqvist', distance: '500 m',  price: '€40.00', tint: '#8A8D86' },
+        { kind: 'RENT',  title: 'Projector + 2 m screen',      owner: 'Erik Lindqvist', distance: '600 m',  price: '€15.00', tint: '#8A8D86' },
+        { kind: 'WANT',  title: 'Anyone got a sewing machine?', owner: 'Sofia Almeida', distance: '2.2 km', price: '—',      tint: '#8A8D86' },
+        { kind: 'RENT',  title: 'Cordless drill + bits',       owner: 'Jonas Meyer',    distance: '2.3 km', price: '€4.00',  tint: '#8A8D86' },
+        { kind: 'RENT',  title: 'Camping gear for two',        owner: 'Sofia Almeida',  distance: '2.5 km', price: '€12.00', tint: '#8A8D86' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

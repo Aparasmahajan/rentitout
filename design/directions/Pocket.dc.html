@@ -1,0 +1,102 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap">
+  <style>
+    body { margin: 0; background: #F6F3FF; font-family: 'Outfit', system-ui, sans-serif; }
+    a { color: #241C36; text-decoration: none; }
+    a:hover { color: #6B4EFF; }
+  </style>
+</helmet>
+
+<div style="width: 1120px; height: 820px; background: #F6F3FF; color: #241C36; display: flex; flex-direction: column; overflow: hidden;">
+
+  <div style="display: flex; align-items: center; justify-content: space-between; padding: 20px 36px;">
+    <div style="display: flex; align-items: center; gap: 11px;">
+      <div style="width: 34px; height: 34px; border-radius: 12px; background: {{accent}}; display: flex; align-items: center; justify-content: center;">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2">
+          <circle cx="12" cy="12" r="8.5" opacity="0.55"></circle>
+          <circle cx="12" cy="12" r="2.6" fill="#FFFFFF" stroke="none"></circle>
+        </svg>
+      </div>
+      <span style="font-size: 22px; font-weight: 700; letter-spacing: -0.02em;">Radius</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 6px;">
+      <a href="#" style="padding: 10px 18px; border-radius: 999px; background: #FFFFFF; font-size: 14px; font-weight: 600;">Nearby</a>
+      <a href="#" style="padding: 10px 18px; font-size: 14px; font-weight: 500; color: #6E6580;">Search</a>
+      <a href="#" style="padding: 10px 18px; font-size: 14px; font-weight: 500; color: #6E6580;">Requests</a>
+      <a href="#" style="padding: 12px 22px; border-radius: 999px; background: {{accent}}; color: #FFFFFF; font-size: 14px; font-weight: 600; margin-left: 10px; box-shadow: 0 6px 16px rgba(107,78,255,0.28);">List something</a>
+    </div>
+  </div>
+
+  <div style="display: flex; align-items: center; justify-content: space-between; padding: 16px 36px 20px;">
+    <div style="display: flex; flex-direction: column; gap: 6px;">
+      <h1 style="margin: 0; font-size: 44px; font-weight: 700; letter-spacing: -0.035em; line-height: 1;">What's nearby</h1>
+      <span style="font-size: 15px; color: #6E6580;">12 things and people within 5 km of Kreuzberg</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 14px; padding: 12px 20px; border-radius: 999px; background: #FFFFFF;">
+      <span style="font-size: 13px; color: #6E6580;">Radius</span>
+      <div style="width: 120px; height: 7px; border-radius: 999px; background: #EAE5FA; display: flex; align-items: center;">
+        <div style="width: 46px; height: 7px; border-radius: 999px; background: {{accent}};"></div>
+        <div style="width: 17px; height: 17px; border-radius: 50%; background: #FFFFFF; border: 3px solid {{accent}}; margin-left: -9px;"></div>
+      </div>
+      <span style="font-size: 15px; font-weight: 700;">5 km</span>
+    </div>
+  </div>
+
+  <div style="display: flex; gap: 9px; padding: 0 36px 22px;">
+    <span style="padding: 11px 20px; border-radius: 999px; background: {{accent}}; color: #FFFFFF; font-size: 14px; font-weight: 600;">Everything</span>
+    <span style="padding: 11px 20px; border-radius: 999px; background: #FFE3C7; font-size: 14px; font-weight: 600; color: #7A4A12;">To rent</span>
+    <span style="padding: 11px 20px; border-radius: 999px; background: #D6EAFF; font-size: 14px; font-weight: 600; color: #14507F;">For hire</span>
+    <span style="padding: 11px 20px; border-radius: 999px; background: #E8DBFF; font-size: 14px; font-weight: 600; color: #4B2C87;">Teaching</span>
+    <span style="padding: 11px 20px; border-radius: 999px; background: #D3F2DF; font-size: 14px; font-weight: 600; color: #14603A;">For sale</span>
+    <span style="padding: 11px 20px; border-radius: 999px; background: #FFDCE4; font-size: 14px; font-weight: 600; color: #8A2340;">Wanted</span>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; padding: 0 36px 28px; flex-grow: 1;">
+    <sc-for list="{{cards}}" as="card" hint-placeholder-count="6">
+      <div style="border-radius: 24px; background: #FFFFFF; padding: 16px; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 4px 18px rgba(36,28,54,0.07);">
+        <div style="height: 104px; border-radius: 18px; background: {{card.tint}}; display: flex; align-items: center; justify-content: center;">
+          <span style="font-size: 30px; font-weight: 700; color: {{card.ink}};">{{card.mark}}</span>
+        </div>
+        <span style="align-self: flex-start; padding: 5px 12px; border-radius: 999px; background: {{card.tint}}; color: {{card.ink}}; font-size: 11px; font-weight: 600;">{{card.kind}}</span>
+        <h3 style="margin: 0; font-size: 18px; font-weight: 600; line-height: 1.2; letter-spacing: -0.015em;">{{card.title}}</h3>
+        <div style="display: flex; align-items: baseline; gap: 5px;">
+          <span style="font-size: 23px; font-weight: 700; letter-spacing: -0.025em;">{{card.price}}</span>
+          <span style="font-size: 13px; color: #6E6580;">{{card.unit}}</span>
+        </div>
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-top: auto;">
+          <span style="font-size: 12px; color: #6E6580;">{{card.owner}}</span>
+          <span style="padding: 4px 10px; border-radius: 999px; background: #F2EFFB; font-size: 11px; font-weight: 600; color: #4B4360;">{{card.distance}}</span>
+        </div>
+      </div>
+    </sc-for>
+  </div>
+</div>
+
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":1120,"height":820},"accent":{"editor":"color","default":"#6B4EFF","options":["#6B4EFF","#FF6B9D","#1BA5A0","#FF8A3D"]}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      accent: this.props.accent ?? '#6B4EFF',
+      cards: [
+        { mark: 'AL', kind: 'To rent',  title: 'Aluminium ladder, 3 m',     price: '€5',  unit: 'a day',     distance: '100 m',  owner: 'Amara Okafor',   tint: '#FFE3C7', ink: '#7A4A12' },
+        { mark: 'VE', kind: 'Teaching', title: 'Video editing, the basics', price: '€30', unit: 'a session', distance: '200 m',  owner: 'Priya Raman',    tint: '#E8DBFF', ink: '#4B2C87' },
+        { mark: 'EL', kind: 'For hire', title: 'Electrician, small jobs',   price: '€35', unit: 'an hour',   distance: '300 m',  owner: 'Amara Okafor',   tint: '#D6EAFF', ink: '#14507F' },
+        { mark: 'PR', kind: 'To rent',  title: 'Projector + 2 m screen',    price: '€15', unit: 'a day',     distance: '600 m',  owner: 'Erik Lindqvist', tint: '#FFE3C7', ink: '#7A4A12' },
+        { mark: 'LP', kind: 'For sale', title: 'Laser printer, working',    price: '€40', unit: 'to buy',    distance: '500 m',  owner: 'Erik Lindqvist', tint: '#D3F2DF', ink: '#14603A' },
+        { mark: 'SM', kind: 'Wanted',   title: 'Anyone got a sewing machine?', price: '—', unit: 'asking',  distance: '2.2 km', owner: 'Sofia Almeida',  tint: '#FFDCE4', ink: '#8A2340' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

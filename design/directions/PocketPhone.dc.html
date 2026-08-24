@@ -1,0 +1,124 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap">
+  <style>
+    body { margin: 0; background: #F6F3FF; font-family: 'Outfit', system-ui, sans-serif; }
+    a { color: #241C36; text-decoration: none; }
+    a:hover { color: #6B4EFF; }
+  </style>
+</helmet>
+
+<div style="width: 390px; height: 844px; background: #F6F3FF; color: #241C36; display: flex; flex-direction: column; overflow: hidden;">
+
+  <div style="display: flex; align-items: center; justify-content: space-between; padding: 18px 20px 12px;">
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <div style="width: 30px; height: 30px; border-radius: 11px; background: {{accent}}; display: flex; align-items: center; justify-content: center;">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2">
+          <circle cx="12" cy="12" r="8.5" opacity="0.55"></circle>
+          <circle cx="12" cy="12" r="2.6" fill="#FFFFFF" stroke="none"></circle>
+        </svg>
+      </div>
+      <span style="font-size: 19px; font-weight: 700; letter-spacing: -0.02em;">Radius</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 7px; padding: 8px 14px; border-radius: 999px; background: #FFFFFF;">
+      <span style="font-size: 13px; font-weight: 600;">5 km</span>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6E6580" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M6 9l6 6 6-6"></path>
+      </svg>
+    </div>
+  </div>
+
+  <div style="padding: 6px 20px 16px;">
+    <h1 style="margin: 0 0 5px; font-size: 34px; font-weight: 700; letter-spacing: -0.035em; line-height: 1.05;">What's nearby</h1>
+    <span style="font-size: 14px; color: #6E6580;">12 things within 5 km</span>
+  </div>
+
+  <div style="display: flex; gap: 8px; padding: 0 20px 16px; overflow: hidden;">
+    <span style="padding: 10px 18px; border-radius: 999px; background: {{accent}}; color: #FFFFFF; font-size: 13px; font-weight: 600; white-space: nowrap;">Everything</span>
+    <span style="padding: 10px 18px; border-radius: 999px; background: #FFE3C7; font-size: 13px; font-weight: 600; color: #7A4A12; white-space: nowrap;">To rent</span>
+    <span style="padding: 10px 18px; border-radius: 999px; background: #D6EAFF; font-size: 13px; font-weight: 600; color: #14507F; white-space: nowrap;">For hire</span>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 13px; padding: 0 20px; flex-grow: 1;">
+    <sc-for list="{{cards}}" as="card" hint-placeholder-count="4">
+      <div style="border-radius: 22px; background: #FFFFFF; padding: 14px; display: flex; gap: 14px; align-items: center; box-shadow: 0 4px 16px rgba(36,28,54,0.07);">
+        <div style="width: 74px; height: 74px; flex-shrink: 0; border-radius: 18px; background: {{card.tint}}; display: flex; align-items: center; justify-content: center;">
+          <span style="font-size: 22px; font-weight: 700; color: {{card.ink}};">{{card.mark}}</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 5px; flex-grow: 1;">
+          <span style="align-self: flex-start; padding: 4px 10px; border-radius: 999px; background: {{card.tint}}; color: {{card.ink}}; font-size: 10px; font-weight: 600;">{{card.kind}}</span>
+          <h3 style="margin: 0; font-size: 16px; font-weight: 600; line-height: 1.2; letter-spacing: -0.015em;">{{card.title}}</h3>
+          <div style="display: flex; align-items: baseline; justify-content: space-between;">
+            <div style="display: flex; align-items: baseline; gap: 4px;">
+              <span style="font-size: 19px; font-weight: 700; letter-spacing: -0.025em;">{{card.price}}</span>
+              <span style="font-size: 12px; color: #6E6580;">{{card.unit}}</span>
+            </div>
+            <span style="padding: 3px 9px; border-radius: 999px; background: #F2EFFB; font-size: 10px; font-weight: 600; color: #4B4360;">{{card.distance}}</span>
+          </div>
+        </div>
+      </div>
+    </sc-for>
+  </div>
+
+  <div style="margin: 16px 20px 18px; padding: 8px; border-radius: 999px; background: #FFFFFF; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); box-shadow: 0 6px 20px rgba(36,28,54,0.10);">
+    <div style="height: 52px; border-radius: 999px; background: {{accent}}; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2">
+        <circle cx="12" cy="12" r="8.5" opacity="0.6"></circle>
+        <circle cx="12" cy="12" r="2.4" fill="#FFFFFF" stroke="none"></circle>
+      </svg>
+      <span style="font-size: 9px; font-weight: 700; color: #FFFFFF;">Nearby</span>
+    </div>
+    <div style="height: 52px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#8B84A0" stroke-width="2" stroke-linecap="round">
+        <circle cx="11" cy="11" r="7"></circle>
+        <path d="M20 20l-3.6-3.6"></path>
+      </svg>
+      <span style="font-size: 9px; font-weight: 600; color: #8B84A0;">Search</span>
+    </div>
+    <div style="height: 52px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#8B84A0" stroke-width="2.2" stroke-linecap="round">
+        <path d="M12 5v14M5 12h14"></path>
+      </svg>
+      <span style="font-size: 9px; font-weight: 600; color: #8B84A0;">List</span>
+    </div>
+    <div style="height: 52px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#8B84A0" stroke-width="2" stroke-linejoin="round">
+        <path d="M4 6h16v11H9l-5 4z"></path>
+      </svg>
+      <span style="font-size: 9px; font-weight: 600; color: #8B84A0;">Asks</span>
+    </div>
+    <div style="height: 52px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#8B84A0" stroke-width="2" stroke-linecap="round">
+        <circle cx="12" cy="8.5" r="3.6"></circle>
+        <path d="M5 20c1.4-3.6 4-5.4 7-5.4s5.6 1.8 7 5.4"></path>
+      </svg>
+      <span style="font-size: 9px; font-weight: 600; color: #8B84A0;">You</span>
+    </div>
+  </div>
+</div>
+
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":390,"height":844},"accent":{"editor":"color","default":"#6B4EFF","options":["#6B4EFF","#FF6B9D","#1BA5A0","#FF8A3D"]}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      accent: this.props.accent ?? '#6B4EFF',
+      cards: [
+        { mark: 'AL', kind: 'To rent',  title: 'Aluminium ladder, 3 m',     price: '€5',  unit: 'a day',     distance: '100 m', owner: 'Amara Okafor',   tint: '#FFE3C7', ink: '#7A4A12' },
+        { mark: 'VE', kind: 'Teaching', title: 'Video editing, the basics', price: '€30', unit: 'a session', distance: '200 m', owner: 'Priya Raman',    tint: '#E8DBFF', ink: '#4B2C87' },
+        { mark: 'EL', kind: 'For hire', title: 'Electrician, small jobs',   price: '€35', unit: 'an hour',   distance: '300 m', owner: 'Amara Okafor',   tint: '#D6EAFF', ink: '#14507F' },
+        { mark: 'PR', kind: 'To rent',  title: 'Projector + 2 m screen',    price: '€15', unit: 'a day',     distance: '600 m', owner: 'Erik Lindqvist', tint: '#FFE3C7', ink: '#7A4A12' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

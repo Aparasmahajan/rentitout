@@ -1,0 +1,101 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Karla:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300&display=swap">
+  <style>
+    body { margin: 0; background: #F5F2EB; font-family: 'Karla', system-ui, sans-serif; }
+    a { color: #232821; text-decoration: none; }
+    a:hover { color: #6B8F71; }
+  </style>
+</helmet>
+
+<div style="width: 1120px; height: 820px; background: #F5F2EB; color: #232821; display: flex; flex-direction: column; overflow: hidden; position: relative;">
+
+  <div style="position: absolute; inset: 0; background-image: radial-gradient(circle at 12% 8%, rgba(107,143,113,0.13), transparent 42%), radial-gradient(circle at 88% 78%, rgba(192,133,82,0.11), transparent 46%); pointer-events: none;"></div>
+
+  <div style="display: flex; align-items: center; justify-content: space-between; padding: 22px 40px; position: relative;">
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <svg width="27" height="27" viewBox="0 0 24 24" fill="none" stroke="{{accent}}" stroke-width="1.3">
+        <circle cx="12" cy="12" r="9.5"></circle>
+        <circle cx="12" cy="12" r="5.5" opacity="0.55"></circle>
+        <circle cx="12" cy="12" r="2.2" fill="{{accent}}" stroke="none"></circle>
+      </svg>
+      <span style="font-family: 'Newsreader', Georgia, serif; font-size: 26px; font-weight: 400;">Radius</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 28px; font-size: 14px;">
+      <a href="#" style="font-weight: 600;">Nearby</a>
+      <a href="#" style="color: #6C7268;">Search</a>
+      <a href="#" style="color: #6C7268;">Requests</a>
+      <span style="padding: 11px 22px; border-radius: 999px; background: {{accent}}; color: #FFFFFF; font-size: 13px; font-weight: 600;">List something</span>
+    </div>
+  </div>
+
+  <div style="display: flex; align-items: flex-end; justify-content: space-between; padding: 14px 40px 22px; position: relative;">
+    <div style="display: flex; flex-direction: column; gap: 8px;">
+      <h1 style="margin: 0; font-family: 'Newsreader', Georgia, serif; font-size: 50px; font-weight: 300; line-height: 1.02; letter-spacing: -0.02em;">Twelve things,<br><em style="font-style: italic; color: {{accent}};">five minutes away</em></h1>
+    </div>
+    <div style="display: flex; align-items: center; gap: 12px; padding: 12px 20px; border-radius: 999px; background: rgba(255,255,255,0.72); border: 1px solid #E2DFD5;">
+      <span style="font-size: 13px; color: #6C7268;">Radius</span>
+      <div style="width: 96px; height: 4px; border-radius: 999px; background: #E2DFD5; display: flex; align-items: center;">
+        <div style="width: 38px; height: 4px; border-radius: 999px; background: {{accent}};"></div>
+        <div style="width: 14px; height: 14px; border-radius: 50%; background: #FFFFFF; border: 2px solid {{accent}}; margin-left: -7px;"></div>
+      </div>
+      <span style="font-family: 'Newsreader', Georgia, serif; font-size: 19px;">5 km</span>
+    </div>
+  </div>
+
+  <div style="display: flex; gap: 9px; padding: 0 40px 22px; position: relative;">
+    <span style="padding: 9px 18px; border-radius: 999px; background: #232821; color: #F5F2EB; font-size: 13px;">Everything</span>
+    <span style="padding: 9px 18px; border-radius: 999px; background: rgba(255,255,255,0.7); border: 1px solid #E2DFD5; font-size: 13px; color: #4A5046;">To rent</span>
+    <span style="padding: 9px 18px; border-radius: 999px; background: rgba(255,255,255,0.7); border: 1px solid #E2DFD5; font-size: 13px; color: #4A5046;">For hire</span>
+    <span style="padding: 9px 18px; border-radius: 999px; background: rgba(255,255,255,0.7); border: 1px solid #E2DFD5; font-size: 13px; color: #4A5046;">Teaching</span>
+    <span style="padding: 9px 18px; border-radius: 999px; background: rgba(255,255,255,0.7); border: 1px solid #E2DFD5; font-size: 13px; color: #4A5046;">For sale</span>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; padding: 0 40px 30px; flex-grow: 1; position: relative;">
+    <sc-for list="{{cards}}" as="card" hint-placeholder-count="6">
+      <div style="border-radius: 20px; background: #FFFFFF; padding: 16px; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 10px 30px rgba(35,40,33,0.06);">
+        <div style="height: 112px; border-radius: 40% 40% 34% 34% / 22% 22% 18% 18%; background: {{card.wash}}; display: flex; align-items: center; justify-content: center;">
+          <span style="font-family: 'Newsreader', Georgia, serif; font-size: 30px; color: rgba(255,255,255,0.86);">{{card.mark}}</span>
+        </div>
+        <span style="font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: #8A9184;">{{card.kind}}</span>
+        <h3 style="margin: 0; font-family: 'Newsreader', Georgia, serif; font-size: 21px; font-weight: 400; line-height: 1.18;">{{card.title}}</h3>
+        <div style="display: flex; align-items: baseline; justify-content: space-between; margin-top: auto; padding-top: 12px; border-top: 1px solid #EFEDE6;">
+          <div style="display: flex; align-items: baseline; gap: 5px;">
+            <span style="font-family: 'Newsreader', Georgia, serif; font-size: 24px; color: {{accent}};">{{card.price}}</span>
+            <span style="font-size: 12px; color: #8A9184;">{{card.unit}}</span>
+          </div>
+          <span style="font-size: 12px; color: #8A9184;">{{card.distance}}</span>
+        </div>
+        <span style="font-size: 12px; color: #8A9184;">{{card.owner}}</span>
+      </div>
+    </sc-for>
+  </div>
+</div>
+
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":1120,"height":820},"accent":{"editor":"color","default":"#6B8F71","options":["#6B8F71","#C08552","#7A8BA6","#A2708A"]}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      accent: this.props.accent ?? '#6B8F71',
+      cards: [
+        { mark: 'AL', kind: 'To rent',  title: 'Aluminium ladder, 3 m',     price: '€5',  unit: 'a day',     distance: '100 m',  owner: 'Amara Okafor',   wash: 'linear-gradient(150deg, #9DBBA2 0%, #6B8F71 100%)' },
+        { mark: 'VE', kind: 'Teaching', title: 'Video editing, the basics', price: '€30', unit: 'a session', distance: '200 m',  owner: 'Priya Raman',    wash: 'linear-gradient(150deg, #A9B6C9 0%, #7A8BA6 100%)' },
+        { mark: 'EL', kind: 'For hire', title: 'Electrician, small jobs',   price: '€35', unit: 'an hour',   distance: '300 m',  owner: 'Amara Okafor',   wash: 'linear-gradient(150deg, #DBAF83 0%, #C08552 100%)' },
+        { mark: 'PR', kind: 'To rent',  title: 'Projector + 2 m screen',    price: '€15', unit: 'a day',     distance: '600 m',  owner: 'Erik Lindqvist', wash: 'linear-gradient(150deg, #9DBBA2 0%, #6B8F71 100%)' },
+        { mark: 'CD', kind: 'To rent',  title: 'Cordless drill + bits',     price: '€4',  unit: 'a day',     distance: '2.3 km', owner: 'Jonas Meyer',    wash: 'linear-gradient(150deg, #C4B2A0 0%, #9C8875 100%)' },
+        { mark: 'CG', kind: 'To rent',  title: 'Camping gear for two',      price: '€12', unit: 'a day',     distance: '2.5 km', owner: 'Sofia Almeida',  wash: 'linear-gradient(150deg, #B9C4A6 0%, #8B9A76 100%)' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

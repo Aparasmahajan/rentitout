@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/industry-e81e33a9-683c-4ebf-a5a4-a47e4fc446de/styles.css">
+<script src="_ds/industry-e81e33a9-683c-4ebf-a5a4-a47e4fc446de/_ds_bundle.js"></script>
+<script src="./doc-page.js"></script>
+<style>
+  body { margin: 0; }
+  a { color: var(--color-accent-700); }
+  a:hover { color: var(--color-accent); }
+</style>
+</helmet>
+
+<doc-page margin="0.85in">
+
+  <div slot="header" style="display: flex; justify-content: space-between; align-items: baseline; font-family: var(--font-heading); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 50%, transparent); padding-bottom: 6px; border-bottom: 1px solid var(--color-divider)">
+    <span>Radius — build plan</span>
+    <span>Spring Boot · Next.js · six phases</span>
+  </div>
+
+  <h1 style="font-size: 44px; letter-spacing: -0.02em; margin: 0 0 10px">Radius — end-to-end build plan</h1>
+  <p style="font-size: 15px; line-height: 1.65; margin: 0 0 6px; max-width: 46em">Radius is a neighbourhood index of people, skills and things. A member can rent a ladder, buy a printer, hire an electrician, book two hours of video editing, or post what they need — and the same member can be the one listing. Search runs against the opted-in community inside a chosen radius, not against the web.</p>
+  <p style="font-size: 15px; line-height: 1.65; margin: 0 0 24px; max-width: 46em">This document has three parts, all describing the same six phases: the roadmap (what ships when), the engineering spec (data model and endpoints), and paste-ready build prompts for an AI coding tool. Stack is fixed: Spring Boot on the server, Next.js on the client.</p>
+
+  <div class="blueprint" style="padding: 14px 16px; margin-bottom: 30px; break-inside: avoid">
+    <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+    <div style="display: grid; grid-template-columns: auto 1fr; gap: 7px 18px; font-size: 13px">
+      <span style="font-family: var(--font-heading); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 55%, transparent)">Server</span><span>Java 21, Spring Boot 3.3 — Web, Security (JWT), Data JPA, Validation, WebSocket/STOMP, Flyway</span>
+      <span style="font-family: var(--font-heading); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 55%, transparent)">Client</span><span>Next.js 15 App Router, TypeScript, TanStack Query, installable PWA, one responsive codebase for phone and desktop</span>
+      <span style="font-family: var(--font-heading); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 55%, transparent)">Data</span><span>PostgreSQL 16 with PostGIS for distance and <span style="font-family: ui-monospace, monospace; font-size: 12px">tsvector</span> for text; S3-compatible object store for photos; Redis for sessions and rate limits</span>
+      <span style="font-family: var(--font-heading); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 55%, transparent)">Money</span><span>No fee and no in-app payment until Phase 5. The surfaces exist from Phase 3; the ledger switches on later.</span>
+    </div>
+  </div>
+
+  <h2 style="font-size: 30px; letter-spacing: -0.015em; margin: 0 0 6px; padding-bottom: 8px; border-bottom: 1px solid var(--color-text)">Part one — roadmap</h2>
+  <p style="font-size: 14px; line-height: 1.6; margin: 12px 0 22px; color: color-mix(in srgb, var(--color-text) 72%, transparent)">Each phase ends with something a real neighbour can use. Nothing here depends on a phase that ships after it.</p>
+
+  <table class="table" style="margin-bottom: 30px">
+    <thead>
+      <tr><th style="width: 46px">#</th><th>Phase</th><th>Ships</th><th style="width: 78px">Weeks</th></tr>
+    </thead>
+    <tbody>
+      <tr><td style="font-family: var(--font-heading)">00</td><td>Foundations</td><td>Accounts, one profile per person, location, empty app shell deployed</td><td>2</td></tr>
+      <tr><td style="font-family: var(--font-heading)">01</td><td>Listings and the nearby feed</td><td>Anyone can list; everyone can browse what is close</td><td>4</td></tr>
+      <tr><td style="font-family: var(--font-heading)">02</td><td>Search — ask or filter</td><td>Plain-sentence search, structured filters, map view</td><td>3</td></tr>
+      <tr><td style="font-family: var(--font-heading)">03</td><td>Requests, booking, chat</td><td>The transaction: request, accept, meet, complete</td><td>3</td></tr>
+      <tr><td style="font-family: var(--font-heading)">04</td><td>Trust</td><td>ID verification, ratings, reviews, reporting</td><td>2</td></tr>
+      <tr><td style="font-family: var(--font-heading)">05</td><td>Money</td><td>In-app payment, held deposits, payouts, the fee switch</td><td>4</td></tr>
+    </tbody>
+  </table>
+
+  <h3 style="font-size: 22px; margin: 0 0 8px">Phase 00 — Foundations</h3>
+  <p style="font-size: 14px; line-height: 1.65; margin: 0 0 10px"><strong>Goal.</strong> A deployed shell with real accounts and real locations. No listings yet.</p>
+  <p style="font-size: 14px; line-height: 1.65; margin: 0 0 10px"><strong>In scope.</strong> Phone-number or email sign-up, JWT session, one <span style="font-family: ui-monospace, monospace; font-size: 12px">user</span> row per person carrying both sides of the market. Profile with name, photo, neighbourhood, and a coarse home point stored to about a hundred metres. Skills, teachables, needs and hobbies as free tags. Postgres with PostGIS and Flyway migrations. CI to a staging environment.</p>
+  <p style="font-size: 14px; line-height: 1.65; margin: 0 0 10px"><strong>Out of scope.</strong> Listings, search, any money. No separate owner account — the duality is a capability, not a role.</p>
+  <p style="font-size: 14px; line-height: 1.65; margin: 0 0 22px"><strong>Done when.</strong> A new member signs up on a phone, sets their area, adds four skills, and sees their own profile as others will see it.</p>
+
+  <h3 style="font-size: 22px; margin: 0 0 8px">Phase 01 — Listings and the nearby feed</h3>
+  <p style="font-size: 14px; line-height: 1.65; margin: 0 0 10px"><strong>Goal.</strong> Supply first. Give people a reason to open the app before search exists.</p>
+  <p style="font-size: 14px; line-height: 1.65; margin: 0 0 10px"><strong>In scope.</strong> One listing table covering seven kinds: tool or item to rent, thing to sell, trade service, skill for hire, something taught, space or vehicle, and an open need. Three-step create flow with photos, price and unit, deposit, and a weekly availability pattern. The dashboard where a member sees their own listings and pauses them. The nearby feed — everything within the member's radius, newest and closest first, with category chips over the top. Listing and profile detail pages.</p>
+  <p style="font-size: 14px; line-height: 1.65; margin: 0 0 10px"><strong>Out of scope.</strong> Text search, map, requests.</p>
+  <p style="font-size: 14px; line-height: 1.65; margin: 0 0 22px"><strong>Done when.</strong> A member lists a ladder in four minutes, and a second member two kilometres away sees it in their feed and on the ladder's own page.</p>
+
+  <h3 style="font-size: 22px; margin: 0 0 8px">Phase 02 — Search, both ways</h3>
+  <p style="font-size: 14px; line-height: 1.65; margin: 0 0 10px"><strong>Goal.</strong> Turn a sentence or a set of filters into a ranked list of neighbours and things.</p>
+  <p style="font-size: 14px; line-height: 1.65; margin: 0 0 10px"><strong>In scope.</strong> Two entry points onto one endpoint. <em>Ask</em> takes “I need someone who knows video editing and lives within 5 km”, extracts intent, radius and day, and shows what it understood as removable chips. <em>Filter</em> is category, keyword, distance slider and a free-today toggle. Ranking is text relevance, then distance, then rating. Sort by distance, price or rating. Map view: pins inside the radius ring, tapping a pin opens the listing. Saved searches with a daily digest.</p>
+  <p style="font-size: 14px; line-height: 1.65; margin: 0 0 10px"><strong>Parsing.</strong> Rules first — a synonym dictionary over the tag vocabulary, a distance regex, a date-word list. Cheap, instant, debuggable. Fall back to a language model only when the rules extract nothing, and cache the result by normalised query string.</p>
+  <p style="font-size: 14px; line-height: 1.65; margin: 0 0 22px"><strong>Done when.</strong> The sentence above returns editors within five kilometres, ordered sensibly, in under three hundred milliseconds at the ninety-fifth percentile.</p>
+
+  <h3 style="font-size: 22px; margin: 0 0 8px">Phase 03 — Requests, booking and chat</h3>
+  <p style="font-size: 14px; line-height: 1.65; margin: 0 0 10px"><strong>Goal.</strong> Close the loop. Everything before this is browsing.</p>
+  <p style="font-size: 14px; line-height: 1.65; margin: 0 0 10px"><strong>In scope.</strong> A request carries listing, day, quantity of units, message and a computed amount. Lifecycle: <span style="font-family: ui-monospace, monospace; font-size: 12px">SENT → ACCEPTED → IN_PROGRESS → COMPLETED</span>, with <span style="font-family: ui-monospace, monospace; font-size: 12px">DECLINED</span>, <span style="font-family: ui-monospace, monospace; font-size: 12px">CANCELLED</span> and <span style="font-family: ui-monospace, monospace; font-size: 12px">EXPIRED</span> as exits. Accepting blocks the days on the listing calendar. A chat thread per request over WebSocket, with push and SMS fallback. The price breakdown appears here — rate times units, refundable deposit, and a line reading “Radius fee: none for now”.</p>
+  <p style="font-size: 14px; line-height: 1.65; margin: 0 0 10px"><strong>Out of scope.</strong> Charging anyone. Money changes hands at the handover; the breakdown is a statement of what is owed, not a checkout.</p>
+  <p style="font-size: 14px; line-height: 1.65; margin: 0 0 22px"><strong>Done when.</strong> Two members complete a two-day ladder rental end to end, and the days show as booked to everyone else.</p>
+
+  <h3 style="font-size: 22px; margin: 0 0 8px">Phase 04 — Trust</h3>
+  <p style="font-size: 14px; line-height: 1.65; margin: 0 0 10px"><strong>Goal.</strong> Make a stranger with a drill feel like a neighbour with a drill.</p>
+  <p style="font-size: 14px; line-height: 1.65; margin: 0 0 10px"><strong>In scope.</strong> Government-ID verification through a provider, producing a single badge and no stored document. Two-sided reviews that unlock only after completion and publish together. Rating and completed-count on every card. Report and block, with a moderation queue. Rate limits on new accounts.</p>
+  <p style="font-size: 14px; line-height: 1.65; margin: 0 0 22px"><strong>Done when.</strong> Every card in the feed carries a verification badge and an honest rating, and a reported listing is out of the index within a minute.</p>
+
+  <h3 style="font-size: 22px; margin: 0 0 8px">Phase 05 — Money</h3>
+  <p style="font-size: 14px; line-height: 1.65; margin: 0 0 10px"><strong>Goal.</strong> Switch on the ledger under surfaces people already recognise.</p>
+  <p style="font-size: 14px; line-height: 1.65; margin: 0 0 10px"><strong>In scope.</strong> Payment on acceptance through a gateway. Deposits authorised and held, released on completion, disputed through a claim. Owner payouts to a bank account with a statement. A fee configuration — percentage, cap, and per-category override — that reads zero until the day it does not. Every amount already displayed in Phase 3 keeps its position; only the words under the total change.</p>
+  <p style="font-size: 14px; line-height: 1.65; margin: 0 0 30px"><strong>Done when.</strong> A rental is paid in app, the deposit is held and released, and the owner sees a real payout with the fee itemised.</p>
+
+  <h2 style="font-size: 30px; letter-spacing: -0.015em; margin: 0 0 6px; padding-bottom: 8px; border-bottom: 1px solid var(--color-text); break-before: page">Part two — engineering spec</h2>
+
+  <h3 style="font-size: 22px; margin: 22px 0 8px">Data model</h3>
+  <p style="font-size: 14px; line-height: 1.65; margin: 0 0 14px">One <span style="font-family: ui-monospace, monospace; font-size: 12px">user</span> is both customer and provider — there is no separate owner entity anywhere in the schema. Every table below arrives in the phase named in its last column.</p>
+
+  <table class="table" style="margin-bottom: 26px">
+    <thead>
+      <tr><th>Table</th><th>Key columns</th><th style="width: 60px">Phase</th></tr>
+    </thead>
+    <tbody>
+      <tr><td style="font-family: var(--font-heading)">user</td><td>id, phone, email, password_hash, display_name, photo_url, created_at, status</td><td>00</td></tr>
+      <tr><td style="font-family: var(--font-heading)">profile</td><td>user_id, area_label, home_point (geography Point), search_radius_km, open_to_requests, bio</td><td>00</td></tr>
+      <tr><td style="font-family: var(--font-heading)">tag</td><td>id, slug, label, kind (skill · teach · need · hobby · item)</td><td>00</td></tr>
+      <tr><td style="font-family: var(--font-heading)">profile_tag</td><td>profile_id, tag_id, relation (has · teaches · needs · enjoys)</td><td>00</td></tr>
+      <tr><td style="font-family: var(--font-heading)">listing</td><td>id, owner_id, kind, title, description, price_minor, unit, deposit_minor, buy_price_minor, point, status, search_vector</td><td>01</td></tr>
+      <tr><td style="font-family: var(--font-heading)">listing_photo</td><td>listing_id, object_key, sort_order</td><td>01</td></tr>
+      <tr><td style="font-family: var(--font-heading)">listing_tag</td><td>listing_id, tag_id</td><td>01</td></tr>
+      <tr><td style="font-family: var(--font-heading)">availability_rule</td><td>listing_id, weekday, from_time, to_time</td><td>01</td></tr>
+      <tr><td style="font-family: var(--font-heading)">availability_block</td><td>listing_id, date_from, date_to, reason (booked · manual)</td><td>03</td></tr>
+      <tr><td style="font-family: var(--font-heading)">saved_search</td><td>user_id, raw_query, parsed_json, radius_km, digest_frequency</td><td>02</td></tr>
+      <tr><td style="font-family: var(--font-heading)">request</td><td>id, listing_id, requester_id, owner_id, start_date, units, unit, amount_minor, deposit_minor, message, status, timestamps</td><td>03</td></tr>
+      <tr><td style="font-family: var(--font-heading)">message</td><td>id, request_id, sender_id, body, sent_at, read_at</td><td>03</td></tr>
+      <tr><td style="font-family: var(--font-heading)">review</td><td>id, request_id, author_id, subject_id, stars, body, published_at</td><td>04</td></tr>
+      <tr><td style="font-family: var(--font-heading)">verification</td><td>user_id, provider, provider_ref, level, verified_at</td><td>04</td></tr>
+      <tr><td style="font-family: var(--font-heading)">report</td><td>id, reporter_id, target_type, target_id, reason, state</td><td>04</td></tr>
+      <tr><td style="font-family: var(--font-heading)">payment</td><td>id, request_id, gateway_ref, amount_minor, fee_minor, state</td><td>05</td></tr>
+      <tr><td style="font-family: var(--font-heading)">deposit_hold</td><td>request_id, amount_minor, held_at, released_at, claim_state</td><td>05</td></tr>
+      <tr><td style="font-family: var(--font-heading)">payout</td><td>owner_id, amount_minor, period, state, statement_ref</td><td>05</td></tr>
+    </tbody>
+  </table>
+
+  <p style="font-size: 14px; line-height: 1.65; margin: 0 0 22px"><strong>Indexes that matter.</strong> A GiST index on <span style="font-family: ui-monospace, monospace; font-size: 12px">listing.point</span> and <span style="font-family: ui-monospace, monospace; font-size: 12px">profile.home_point</span>; a GIN index on <span style="font-family: ui-monospace, monospace; font-size: 12px">listing.search_vector</span>, refreshed by trigger from title, description and tag labels. Distance filters use <span style="font-family: ui-monospace, monospace; font-size: 12px">ST_DWithin</span> so the index is used; never compute distance in Java and filter afterwards. Store money as integer minor units, never as a floating-point number.</p>
+
+  <h3 style="font-size: 22px; margin: 0 0 10px">Endpoints, by phase</h3>
+  <table class="table" style="margin-bottom: 26px">
+    <thead>
+      <tr><th style="width: 62px">Phase</th><th>Method and path</th><th>Notes</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>00</td><td style="font-family: ui-monospace, monospace; font-size: 12px">POST /auth/otp · POST /auth/verify · GET /me · PATCH /me/profile</td><td>OTP over phone; JWT access plus rotating refresh</td></tr>
+      <tr><td>01</td><td style="font-family: ui-monospace, monospace; font-size: 12px">POST /listings · PATCH /listings/{id} · GET /listings/{id} · GET /me/listings</td><td>Photos by pre-signed upload, then attach</td></tr>
+      <tr><td>01</td><td style="font-family: ui-monospace, monospace; font-size: 12px">GET /feed?radiusKm&amp;category&amp;cursor</td><td>Keyset pagination, distance ascending</td></tr>
+      <tr><td>02</td><td style="font-family: ui-monospace, monospace; font-size: 12px">POST /search</td><td>Body takes either <span style="font-family: ui-monospace, monospace">q</span> (a sentence) or structured filters; response echoes the parse</td></tr>
+      <tr><td>02</td><td style="font-family: ui-monospace, monospace; font-size: 12px">GET /search/map?bbox · POST /saved-searches</td><td>Map returns clustered pins above a count threshold</td></tr>
+      <tr><td>03</td><td style="font-family: ui-monospace, monospace; font-size: 12px">POST /requests · POST /requests/{id}/accept · /decline · /complete</td><td>State machine enforced in a service, not in the controller</td></tr>
+      <tr><td>03</td><td style="font-family: ui-monospace, monospace; font-size: 12px">GET /requests?direction=in|out · WS /ws/threads/{requestId}</td><td>STOMP over WebSocket; REST fallback for history</td></tr>
+      <tr><td>04</td><td style="font-family: ui-monospace, monospace; font-size: 12px">POST /verification/session · POST /reviews · POST /reports</td><td>Reviews rejected unless the request is completed</td></tr>
+      <tr><td>05</td><td style="font-family: ui-monospace, monospace; font-size: 12px">POST /payments/intent · POST /webhooks/gateway · GET /me/payouts</td><td>Webhook is the source of truth; idempotency keys throughout</td></tr>
+    </tbody>
+  </table>
+
+  <h3 style="font-size: 22px; margin: 0 0 10px">Client structure</h3>
+  <p style="font-size: 14px; line-height: 1.65; margin: 0 0 10px">One Next.js app serves phone and desktop from the same routes — the phone layout is the prototype in this project, and the desktop layout is the same components at two or three columns. Server components render the feed, detail pages and dashboard; client components own search input, filters, the map, chat and the create flow. TanStack Query handles mutations and cache invalidation. Ship it as an installable PWA before considering native.</p>
+  <p style="font-size: 14px; line-height: 1.65; margin: 0 0 26px">Route sketch: <span style="font-family: ui-monospace, monospace; font-size: 12px">/</span> feed · <span style="font-family: ui-monospace, monospace; font-size: 12px">/search</span> · <span style="font-family: ui-monospace, monospace; font-size: 12px">/map</span> · <span style="font-family: ui-monospace, monospace; font-size: 12px">/l/[id]</span> listing · <span style="font-family: ui-monospace, monospace; font-size: 12px">/u/[id]</span> profile · <span style="font-family: ui-monospace, monospace; font-size: 12px">/new</span> create · <span style="font-family: ui-monospace, monospace; font-size: 12px">/requests</span> · <span style="font-family: ui-monospace, monospace; font-size: 12px">/requests/[id]</span> thread · <span style="font-family: ui-monospace, monospace; font-size: 12px">/dashboard</span> · <span style="font-family: ui-monospace, monospace; font-size: 12px">/me</span>.</p>
+
+  <h2 style="font-size: 30px; letter-spacing: -0.015em; margin: 0 0 6px; padding-bottom: 8px; border-bottom: 1px solid var(--color-text); break-before: page">Part three — build prompts</h2>
+  <p style="font-size: 14px; line-height: 1.6; margin: 12px 0 20px; color: color-mix(in srgb, var(--color-text) 72%, transparent)">One prompt per phase, to paste into an AI coding tool in order. Each assumes the previous phase is merged. Send the standing brief first, once.</p>
+
+  <h3 style="font-size: 20px; margin: 0 0 8px">Standing brief — send once, before Phase 00</h3>
+  <pre style="font-family: ui-monospace, monospace; font-size: 11.5px; line-height: 1.6; white-space: pre-wrap; border: 1px solid var(--color-divider); padding: 13px 14px; margin: 0 0 22px; break-inside: avoid">We are building Radius: a neighbourhood marketplace where members rent
+or buy things and hire each other's skills, inside a chosen radius.
+One user account is BOTH customer and provider — never model a separate
+owner role.
+
+Stack, fixed: Spring Boot 3.3 on Java 21 (Web, Security with JWT, Data
+JPA, Validation, Flyway, WebSocket/STOMP) and PostgreSQL 16 with
+PostGIS. Client is Next.js 15 App Router in TypeScript with TanStack
+Query, one responsive codebase for phone and desktop, shipped as a PWA.
+
+Rules for every phase: money as integer minor units; distance filters
+via ST_DWithin against a GiST index; Flyway migration per change, never
+ddl-auto; DTOs at the boundary, entities never leave the service layer;
+request state changes only through a service that owns the state
+machine; every endpoint gets a slice test.
+
+Work phase by phase. Do not build a later phase's feature early. Ask me
+before adding a dependency that is not in the list above.</pre>
+
+  <h3 style="font-size: 20px; margin: 0 0 8px">Phase 00 — Foundations</h3>
+  <pre style="font-family: ui-monospace, monospace; font-size: 11.5px; line-height: 1.6; white-space: pre-wrap; border: 1px solid var(--color-divider); padding: 13px 14px; margin: 0 0 22px; break-inside: avoid">Phase 00. Set up the monorepo (apps/api, apps/web), Docker Compose with
+Postgres and PostGIS, and Flyway.
+
+Server: user, profile, tag, profile_tag tables. Phone OTP sign-up and
+JWT sessions with rotating refresh tokens. GET /me, PATCH /me/profile,
+and tag add/remove endpoints for the four relations: has, teaches,
+needs, enjoys. Store home_point as geography(Point,4326), rounded to
+about 100 m before saving.
+
+Client: sign-up, then a profile screen where a member sets name, photo,
+area label and radius, and adds tags under those four headings. Mobile
+first at 390 px, working up to desktop.
+
+Deliver with slice tests on the auth and profile endpoints, and a
+seed script creating twelve members across one neighbourhood.</pre>
+
+  <h3 style="font-size: 20px; margin: 0 0 8px">Phase 01 — Listings and feed</h3>
+  <pre style="font-family: ui-monospace, monospace; font-size: 11.5px; line-height: 1.6; white-space: pre-wrap; border: 1px solid var(--color-divider); padding: 13px 14px; margin: 0 0 22px; break-inside: avoid">Phase 01. One listing table for seven kinds: RENT_ITEM, SELL_ITEM,
+TRADE_SERVICE, SKILL_FOR_HIRE, TEACHING, SPACE_OR_VEHICLE, OPEN_NEED.
+Columns per the spec, plus availability_rule for the weekly pattern and
+a search_vector maintained by trigger from title, description and tag
+labels (GIN index).
+
+Endpoints: create, update, get, my-listings, pause/resume, photo upload
+by pre-signed URL then attach. GET /feed?radiusKm&category&cursor —
+ST_DWithin against the caller's home_point, keyset pagination, distance
+ascending.
+
+Client: the three-step create flow (kind → details → review and
+publish), the dashboard listing mine with a live/paused switch, the
+nearby feed with category chips, and listing and profile detail pages.
+
+No text search and no requests in this phase.</pre>
+
+  <h3 style="font-size: 20px; margin: 0 0 8px">Phase 02 — Search</h3>
+  <pre style="font-family: ui-monospace, monospace; font-size: 11.5px; line-height: 1.6; white-space: pre-wrap; border: 1px solid var(--color-divider); padding: 13px 14px; margin: 0 0 22px; break-inside: avoid">Phase 02. POST /search accepting EITHER a raw sentence in q OR
+structured filters (category, keyword, radiusKm, availableOn, sort).
+
+Parse a sentence with rules first: a synonym dictionary over the tag
+vocabulary, a regex for "within N km", and a date-word list for today,
+tomorrow, this weekend. Return the extraction in the response as
+{ terms, radiusKm, day, kinds } so the client can show removable chips.
+Only if the rules extract nothing, call an LLM, and cache by normalised
+query. Rank by ts_rank, then distance, then rating.
+
+Also: GET /search/map?bbox returning pins, clustered server-side above
+200 results, and saved searches with a daily digest job.
+
+Client: one search screen with two modes on a segmented control — Ask
+(a sentence box, example prompts, parsed chips on the results) and
+Filter (category, keyword, distance slider, free-today toggle). Results
+sortable by distance, price, rating. A map view with a radius ring,
+pins, and a list beneath it.</pre>
+
+  <h3 style="font-size: 20px; margin: 0 0 8px">Phase 03 — Requests, booking, chat</h3>
+  <pre style="font-family: ui-monospace, monospace; font-size: 11.5px; line-height: 1.6; white-space: pre-wrap; border: 1px solid var(--color-divider); padding: 13px 14px; margin: 0 0 22px; break-inside: avoid">Phase 03. request and message tables. States: SENT, ACCEPTED,
+DECLINED, IN_PROGRESS, COMPLETED, CANCELLED, EXPIRED — transitions in a
+RequestService, rejected anywhere else, each one audited.
+
+Accepting writes an availability_block over the booked days so the
+listing shows those days as taken. SENT expires after 48 hours.
+
+Chat: STOMP over /ws/threads/{requestId}, one thread per request, with
+REST history and unread counts. Web push, with SMS as fallback.
+
+Compute the amount on the server: rate x units, plus deposit, plus a
+fee line that reads zero. Return it as a breakdown object — the client
+never does the arithmetic.
+
+Client: a booking sheet on the listing page (day picker honouring
+availability, unit stepper, message, breakdown, send), a confirmation
+state, a requests screen split into incoming and outgoing with accept
+and decline, and the chat thread.
+
+Still no charging. The breakdown states what is owed at handover.</pre>
+
+  <h3 style="font-size: 20px; margin: 0 0 8px">Phase 04 — Trust</h3>
+  <pre style="font-family: ui-monospace, monospace; font-size: 11.5px; line-height: 1.6; white-space: pre-wrap; border: 1px solid var(--color-divider); padding: 13px 14px; margin: 0 0 22px; break-inside: avoid">Phase 04. Integrate an ID-verification provider behind a
+VerificationProvider interface with a sandbox implementation for tests.
+Store only provider_ref, level and verified_at — never a document.
+
+Two-sided reviews: allowed only on a COMPLETED request, hidden until
+both sides submit or 14 days pass, then published together. Denormalise
+rating average and completed count onto profile for card rendering.
+
+Reports with reasons, a moderation queue, an admin action to unlist, and
+rate limits on accounts younger than seven days.
+
+Client: verification badge and rating on every card and profile, a
+review prompt after completion, and report and block in a listing menu.</pre>
+
+  <h3 style="font-size: 20px; margin: 0 0 8px">Phase 05 — Money</h3>
+  <pre style="font-family: ui-monospace, monospace; font-size: 11.5px; line-height: 1.6; white-space: pre-wrap; border: 1px solid var(--color-divider); padding: 13px 14px; margin: 0 0 26px; break-inside: avoid">Phase 05. payment, deposit_hold and payout tables. Charge on
+acceptance through the gateway; the webhook is the source of truth and
+every write is idempotent by gateway_ref.
+
+Deposits: authorise on acceptance, release on completion, or open a
+claim with evidence and an admin decision.
+
+Payouts to the owner's bank account on a schedule, with a statement
+itemising each request.
+
+Fees: a FeeConfig with percentage, cap and per-category override, read
+at request time and stored on the payment row. It reads zero until we
+change it — no code path assumes a non-zero fee.
+
+Client: reuse the Phase 03 breakdown component unchanged; only the words
+under the total change from "settled between you" to the paid state.
+Add a payouts and statements section to the dashboard.</pre>
+
+  <h2 style="font-size: 22px; margin: 0 0 10px; padding-bottom: 8px; border-bottom: 1px solid var(--color-divider)">Two decisions to make before Phase 00</h2>
+  <p style="font-size: 14px; line-height: 1.65; margin: 0 0 8px"><strong>Launch geography.</strong> Radius is worthless at low density and good at high density. Pick one or two neighbourhoods and saturate them before opening a second city. Everything in the schema is already scoped by point and radius, so this is a go-to-market choice, not a technical one.</p>
+  <p style="font-size: 14px; line-height: 1.65; margin: 0 0 8px"><strong>Liability on damage.</strong> Phase 05 holds a deposit, which covers a scratched grinder and not a stolen one. Decide before launch whether a rental above a threshold requires a signed handover checklist with photos — it is a small feature in Phase 03 and an expensive retrofit later.</p>
+
+  <div slot="footer" style="display: flex; justify-content: space-between; align-items: baseline; font-family: var(--font-heading); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 45%, transparent); padding-top: 6px; border-top: 1px solid var(--color-divider)">
+    <span>Radius</span>
+    <span>Draft — August 2026</span>
+  </div>
+
+</doc-page>
+
+</x-dc>
+</body>
+</html>

@@ -1,0 +1,96 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+  cloud:
+    gateway:
+      # Routes are static and resolved by DNS. In compose that is the service
+      # name; in k8s it is the Service. No discovery server needed.
+      default-filters:
+        - name: RequestRateLimiter
+          args:
+            key-resolver: "#{@principalKeyResolver}"
+            redis-rate-limiter.replenishRate: 20
+            redis-rate-limiter.burstCapacity: 60
+            redis-rate-limiter.requestedTokens: 1
+      httpclient:
+        connect-timeout: 2000
+        response-timeout: 10s
+      routes:
+        - id: auth
+          uri: ${USER_SERVICE_URL:http://user-service:8081}
+          predicates:
+            - Path=/api/auth/**
+          filters:
+            - name: RequestRateLimiter
+              args:
+                key-resolver: "#{@otpKeyResolver}"
+                redis-rate-limiter.replenishRate: 1
+                redis-rate-limiter.burstCapacity: 5
+
+        - id: users
+          uri: ${USER_SERVICE_URL:http://user-service:8081}
+          predicates:
+            - 'Path=/api/me/**,/api/users/**,/api/tags/**,/api/professionals/**,/api/admin/**'
+
+        - id: listings
+          uri: ${LISTING_SERVICE_URL:http://listing-service:8082}
+          predicates:
+            - 'Path=/api/listings/**,/api/feed/**,/api/photos/**'
+
+        - id: search
+          uri: ${SEARCH_SERVICE_URL:http://search-service:8083}
+          predicates:
+            - 'Path=/api/search/**,/api/saved-searches/**'
+
+        - id: booking
+          uri: ${BOOKING_SERVICE_URL:http://booking-service:8084}
+          predicates:
+            - 'Path=/api/requests/**,/api/threads/**'
+
+        - id: booking-ws
+          uri: ${BOOKING_SERVICE_WS_URL:ws://booking-service:8084}
+          predicates:
+            - Path=/ws/**
+
+        - id: payments
+          uri: ${PAYMENT_SERVICE_URL:http://payment-service:8085}
+          predicates:
+            - 'Path=/api/payments/**,/api/fees/**,/api/webhooks/**'
+
+        - id: notifications
+          uri: ${NOTIFICATION_SERVICE_URL:http://notification-service:8086}
+          predicates:
+            - Path=/api/notifications/**
+
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOriginPatterns:
+              - "http://localhost:*"
+              - "http://127.0.0.1:*"
+              - "exp://*"
+            allowedMethods: [GET, POST, PATCH, PUT, DELETE, OPTIONS]
+            allowedHeaders: ["*"]
+            allowCredentials: true
+            maxAge: 3600
+
+radius:
+  jwt:
+    secret: ${JWT_SECRET:dev-only-secret-change-me-at-least-32-bytes-long}
+
+management:
+  endpoints.web.exposure.include: health,info,prometheus,gateway
+  endpoint.health.probes.enabled: true
+  tracing.sampling.probability: 1.0
+  otlp.tracing.endpoint: ${OTEL_EXPORTER_OTLP_ENDPOINT:http://jaeger:4318/v1/traces}
+
+logging:
+  level:
+    org.springframework.cloud.gateway: INFO

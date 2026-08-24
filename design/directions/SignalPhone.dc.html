@@ -1,0 +1,122 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;800;900&family=JetBrains+Mono:wght@500;700&display=swap">
+  <style>
+    body { margin: 0; background: #FFFFFF; font-family: 'Archivo', system-ui, sans-serif; }
+    a { color: #0A0A0A; text-decoration: none; }
+    a:hover { color: #1F2BFF; }
+  </style>
+</helmet>
+
+<div style="width: 390px; height: 844px; background: #FFFFFF; color: #0A0A0A; display: flex; flex-direction: column; overflow: hidden;">
+
+  <div style="display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-bottom: 2px solid #0A0A0A;">
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <div style="width: 22px; height: 22px; background: {{accent}}; display: flex; align-items: center; justify-content: center;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.6">
+          <circle cx="12" cy="12" r="8"></circle>
+          <circle cx="12" cy="12" r="2" fill="#FFFFFF" stroke="none"></circle>
+        </svg>
+      </div>
+      <span style="font-weight: 900; font-size: 18px; letter-spacing: -0.03em; text-transform: uppercase;">Radius</span>
+    </div>
+    <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; background: #0A0A0A; color: #FFFFFF; padding: 5px 8px;">5 KM</span>
+  </div>
+
+  <div style="padding: 20px 18px 14px; border-bottom: 2px solid #0A0A0A;">
+    <h1 style="margin: 0 0 4px; font-weight: 900; font-size: 48px; line-height: 0.9; letter-spacing: -0.045em; text-transform: uppercase;">Nearby</h1>
+    <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 500; color: #5A5A5A;">12 RESULTS / KREUZBERG</span>
+  </div>
+
+  <div style="display: flex; border-bottom: 2px solid #0A0A0A;">
+    <span style="padding: 12px 16px; background: {{accent}}; color: #FFFFFF; font-size: 12px; font-weight: 700;">ALL</span>
+    <span style="padding: 12px 16px; border-right: 1px solid #DDDDDD; font-size: 12px; font-weight: 600; color: #3A3A3A;">RENT</span>
+    <span style="padding: 12px 16px; border-right: 1px solid #DDDDDD; font-size: 12px; font-weight: 600; color: #3A3A3A;">HIRE</span>
+    <span style="padding: 12px 16px; font-size: 12px; font-weight: 600; color: #3A3A3A;">TEACH</span>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 14px; padding: 16px 18px; flex-grow: 1;">
+    <sc-for list="{{cards}}" as="card" hint-placeholder-count="4">
+      <div style="border: 2px solid #0A0A0A; box-shadow: 4px 4px 0 #0A0A0A; background: #FFFFFF; display: flex; align-items: stretch;">
+        <div style="width: 84px; flex-shrink: 0; background: {{card.tint}}; border-right: 2px solid #0A0A0A; display: flex; align-items: center; justify-content: center;">
+          <span style="font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 24px;">{{card.mark}}</span>
+        </div>
+        <div style="padding: 11px 12px; display: flex; flex-direction: column; gap: 5px; flex-grow: 1;">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700; letter-spacing: 0.08em; color: #5A5A5A;">{{card.kind}}</span>
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700;">{{card.distance}}</span>
+          </div>
+          <h3 style="margin: 0; font-weight: 800; font-size: 16px; line-height: 1.15; letter-spacing: -0.02em;">{{card.title}}</h3>
+          <div style="display: flex; align-items: baseline; gap: 5px;">
+            <span style="font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 18px;">{{card.price}}</span>
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #5A5A5A;">{{card.unit}}</span>
+          </div>
+          <span style="font-size: 11px; font-weight: 500; color: #5A5A5A;">{{card.owner}}</span>
+        </div>
+      </div>
+    </sc-for>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); border-top: 2px solid #0A0A0A;">
+    <div style="height: 64px; background: {{accent}}; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.2">
+        <circle cx="12" cy="12" r="8"></circle>
+        <circle cx="12" cy="12" r="2" fill="#FFFFFF" stroke="none"></circle>
+      </svg>
+      <span style="font-family: 'JetBrains Mono', monospace; font-size: 9px; font-weight: 700; color: #FFFFFF;">NEAR</span>
+    </div>
+    <div style="height: 64px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; border-left: 1px solid #DDDDDD;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.2" stroke-linecap="round">
+        <circle cx="11" cy="11" r="7"></circle>
+        <path d="M20 20l-3.6-3.6"></path>
+      </svg>
+      <span style="font-family: 'JetBrains Mono', monospace; font-size: 9px; font-weight: 700;">FIND</span>
+    </div>
+    <div style="height: 64px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; border-left: 1px solid #DDDDDD;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.4" stroke-linecap="round">
+        <path d="M12 5v14M5 12h14"></path>
+      </svg>
+      <span style="font-family: 'JetBrains Mono', monospace; font-size: 9px; font-weight: 700;">LIST</span>
+    </div>
+    <div style="height: 64px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; border-left: 1px solid #DDDDDD;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.2" stroke-linejoin="round">
+        <path d="M4 6h16v11H9l-5 4z"></path>
+      </svg>
+      <span style="font-family: 'JetBrains Mono', monospace; font-size: 9px; font-weight: 700;">ASKS</span>
+    </div>
+    <div style="height: 64px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; border-left: 1px solid #DDDDDD;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.2" stroke-linecap="round">
+        <circle cx="12" cy="8.5" r="3.6"></circle>
+        <path d="M5 20c1.4-3.6 4-5.4 7-5.4s5.6 1.8 7 5.4"></path>
+      </svg>
+      <span style="font-family: 'JetBrains Mono', monospace; font-size: 9px; font-weight: 700;">YOU</span>
+    </div>
+  </div>
+</div>
+
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":390,"height":844},"accent":{"editor":"color","default":"#1F2BFF","options":["#1F2BFF","#FF3B1F","#00A63E","#0A0A0A"]}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      accent: this.props.accent ?? '#1F2BFF',
+      cards: [
+        { mark: 'AL', kind: 'RENT',  title: 'Aluminium ladder, 3 m',     price: '€5.00',  unit: '/DAY',     distance: '100 M', owner: 'Amara Okafor',   tint: '#F2F2F2' },
+        { mark: 'VE', kind: 'TEACH', title: 'Video editing, the basics', price: '€30.00', unit: '/SESSION', distance: '200 M', owner: 'Priya Raman',    tint: '#EDEDED' },
+        { mark: 'EL', kind: 'HIRE',  title: 'Electrician, small jobs',   price: '€35.00', unit: '/HOUR',    distance: '300 M', owner: 'Amara Okafor',   tint: '#F2F2F2' },
+        { mark: 'PR', kind: 'RENT',  title: 'Projector + 2 m screen',    price: '€15.00', unit: '/DAY',     distance: '600 M', owner: 'Erik Lindqvist', tint: '#EDEDED' },
+        { mark: 'CD', kind: 'RENT',  title: 'Cordless drill + bits',     price: '€4.00',  unit: '/DAY',     distance: '2.3 KM', owner: 'Jonas Meyer',   tint: '#F2F2F2' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

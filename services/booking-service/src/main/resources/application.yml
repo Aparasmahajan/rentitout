@@ -1,0 +1,80 @@
+server:
+  port: 8084
+  shutdown: graceful
+
+spring:
+  application:
+    name: booking-service
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:radius_booking}${DB_OPTIONS:}
+    username: ${DB_USER:radius}
+    password: ${DB_PASSWORD:radius}
+    hikari:
+      maximum-pool-size: 15
+      pool-name: booking-pool
+  jpa:
+    open-in-view: false
+    hibernate.ddl-auto: validate
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP:localhost:9094}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      acks: all
+      properties.enable.idempotence: true
+
+radius:
+  jwt:
+    secret: ${JWT_SECRET:dev-only-secret-change-me-at-least-32-bytes-long}
+  clients:
+    listing-url: ${LISTING_SERVICE_URL:http://localhost:8082}
+    payment-url: ${PAYMENT_SERVICE_URL:http://localhost:8085}
+  booking:
+    expiry-interval-ms: 60000
+  security:
+    public-paths:
+      - /actuator/health/**
+      - /actuator/prometheus
+      - /v3/api-docs/**
+      - /swagger-ui/**
+      - /ws/**            # the STOMP CONNECT frame carries the token instead
+
+# A slow dependency should fail fast and be retried, not queue up threads.
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        slidingWindowSize: 20
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+        permittedNumberOfCallsInHalfOpenState: 3
+    instances:
+      listing:
+        baseConfig: default
+      payment:
+        baseConfig: default
+  timelimiter:
+    configs:
+      default:
+        timeoutDuration: 3s
+
+management:
+  endpoints.web.exposure.include: health,info,prometheus,circuitbreakers
+  endpoint.health.probes.enabled: true
+  health.circuitbreakers.enabled: true
+  tracing.sampling.probability: 1.0
+  otlp.tracing.endpoint: ${OTEL_EXPORTER_OTLP_ENDPOINT:http://jaeger:4318/v1/traces}
+
+---
+spring:
+  config.activate.on-profile: dev
+logging:
+  level:
+    io.radius: DEBUG

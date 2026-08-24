@@ -1,0 +1,123 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+  <style>
+    body { margin: 0; background: #FCFCFA; font-family: 'IBM Plex Sans', system-ui, sans-serif; }
+    a { color: #16181D; text-decoration: none; }
+    a:hover { color: #B03B2E; }
+  </style>
+</helmet>
+
+<div style="width: 390px; height: 844px; background: #FCFCFA; color: #16181D; display: flex; flex-direction: column; overflow: hidden;">
+
+  <div style="display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid #E3E4E0;">
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="{{accent}}" stroke-width="1.8">
+        <circle cx="12" cy="12" r="8.5"></circle>
+        <circle cx="12" cy="12" r="1.8" fill="{{accent}}" stroke="none"></circle>
+      </svg>
+      <span style="font-size: 15px; font-weight: 600;">Radius</span>
+    </div>
+    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #8A8D86;">kreuzberg / 5km</span>
+  </div>
+
+  <div style="display: flex; align-items: baseline; justify-content: space-between; padding: 16px 18px 10px;">
+    <h1 style="margin: 0; font-size: 19px; font-weight: 600; letter-spacing: -0.02em;">Nearby</h1>
+    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #8A8D86;">12 rows / dist asc</span>
+  </div>
+
+  <div style="display: flex; gap: 6px; padding: 0 18px 12px;">
+    <span style="padding: 6px 11px; border: 1px solid {{accent}}; background: {{accent}}; color: #FFFFFF; font-family: 'IBM Plex Mono', monospace; font-size: 11px; border-radius: 3px;">all 12</span>
+    <span style="padding: 6px 11px; border: 1px solid #DCDDD9; font-family: 'IBM Plex Mono', monospace; font-size: 11px; border-radius: 3px; color: #4A4E56;">rent 7</span>
+    <span style="padding: 6px 11px; border: 1px solid #DCDDD9; font-family: 'IBM Plex Mono', monospace; font-size: 11px; border-radius: 3px; color: #4A4E56;">hire 2</span>
+    <span style="padding: 6px 11px; border: 1px solid #DCDDD9; font-family: 'IBM Plex Mono', monospace; font-size: 11px; border-radius: 3px; color: #4A4E56;">teach 1</span>
+  </div>
+
+  <div style="display: grid; grid-template-columns: 1fr 62px 76px; padding: 0 18px 6px; border-bottom: 1px solid #16181D;">
+    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: #8A8D86;">Listing</span>
+    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: #8A8D86; text-align: right;">Dist</span>
+    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: #8A8D86; text-align: right;">Rate</span>
+  </div>
+
+  <div style="display: flex; flex-direction: column; flex-grow: 1;">
+    <sc-for list="{{rows}}" as="row" hint-placeholder-count="8">
+      <div style="display: grid; grid-template-columns: 1fr 62px 76px; padding: 12px 18px; border-bottom: 1px solid #EFEFEC; align-items: center;">
+        <div style="display: flex; flex-direction: column; gap: 3px;">
+          <span style="font-size: 14px; font-weight: 500; letter-spacing: -0.005em;">{{row.title}}</span>
+          <div style="display: flex; align-items: center; gap: 7px;">
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: #8A8D86;">{{row.kind}}</span>
+            <span style="font-size: 12px; color: #6C7079;">{{row.owner}}</span>
+          </div>
+        </div>
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #6C7079; text-align: right;">{{row.distance}}</span>
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600; text-align: right;">{{row.price}}</span>
+      </div>
+    </sc-for>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); border-top: 1px solid #E3E4E0; background: #FCFCFA;">
+    <div style="height: 58px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="{{accent}}" stroke-width="1.8">
+        <circle cx="12" cy="12" r="8.5"></circle>
+        <circle cx="12" cy="12" r="1.8" fill="{{accent}}" stroke="none"></circle>
+      </svg>
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9px; color: {{accent}};">feed</span>
+    </div>
+    <div style="height: 58px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#8A8D86" stroke-width="1.8" stroke-linecap="round">
+        <circle cx="11" cy="11" r="7"></circle>
+        <path d="M20 20l-3.6-3.6"></path>
+      </svg>
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9px; color: #8A8D86;">search</span>
+    </div>
+    <div style="height: 58px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#8A8D86" stroke-width="2" stroke-linecap="round">
+        <path d="M12 5v14M5 12h14"></path>
+      </svg>
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9px; color: #8A8D86;">new</span>
+    </div>
+    <div style="height: 58px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#8A8D86" stroke-width="1.8" stroke-linejoin="round">
+        <path d="M4 6h16v11H9l-5 4z"></path>
+      </svg>
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9px; color: #8A8D86;">reqs</span>
+    </div>
+    <div style="height: 58px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#8A8D86" stroke-width="1.8" stroke-linecap="round">
+        <circle cx="12" cy="8.5" r="3.6"></circle>
+        <path d="M5 20c1.4-3.6 4-5.4 7-5.4s5.6 1.8 7 5.4"></path>
+      </svg>
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9px; color: #8A8D86;">me</span>
+    </div>
+  </div>
+</div>
+
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":390,"height":844},"accent":{"editor":"color","default":"#B03B2E","options":["#B03B2E","#2E6B5E","#3A4CA8","#16181D"]}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      accent: this.props.accent ?? '#B03B2E',
+      rows: [
+        { kind: 'RENT',  title: 'Aluminium ladder, 3 m',     owner: 'Amara Okafor',   distance: '100 m',  price: '€5.00' },
+        { kind: 'TEACH', title: 'Video editing, the basics', owner: 'Priya Raman',    distance: '200 m',  price: '€30.00' },
+        { kind: 'HIRE',  title: 'Electrician, small jobs',   owner: 'Amara Okafor',   distance: '300 m',  price: '€35.00' },
+        { kind: 'SELL',  title: 'Laser printer, working',    owner: 'Erik Lindqvist', distance: '500 m',  price: '€40.00' },
+        { kind: 'RENT',  title: 'Projector + 2 m screen',    owner: 'Erik Lindqvist', distance: '600 m',  price: '€15.00' },
+        { kind: 'WANT',  title: 'Sewing machine?',           owner: 'Sofia Almeida',  distance: '2.2 km', price: '—' },
+        { kind: 'RENT',  title: 'Cordless drill + bits',     owner: 'Jonas Meyer',    distance: '2.3 km', price: '€4.00' },
+        { kind: 'RENT',  title: 'Camping gear for two',      owner: 'Sofia Almeida',  distance: '2.5 km', price: '€12.00' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

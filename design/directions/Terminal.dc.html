@@ -1,0 +1,102 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+  <style>
+    body { margin: 0; background: #0C0A07; font-family: 'IBM Plex Mono', ui-monospace, monospace; }
+    a { color: #FFB000; text-decoration: none; }
+    a:hover { color: #FFD37A; }
+  </style>
+</helmet>
+
+<div style="width: 1120px; height: 820px; background: #0C0A07; color: #E8DCC4; font-size: 13px; line-height: 1.65; display: flex; flex-direction: column; overflow: hidden; position: relative;">
+
+  <div style="position: absolute; inset: 0; background-image: repeating-linear-gradient(0deg, rgba(255,176,0,0.045) 0 1px, transparent 1px 3px); pointer-events: none;"></div>
+
+  <div style="display: flex; align-items: center; justify-content: space-between; padding: 13px 26px; border-bottom: 1px solid #2A2318;">
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="{{accent}}" stroke-width="1.8">
+        <circle cx="12" cy="12" r="8.5"></circle>
+        <circle cx="12" cy="12" r="1.8" fill="{{accent}}" stroke="none"></circle>
+      </svg>
+      <span style="color: {{accent}}; font-weight: 600; letter-spacing: 0.16em;">RADIUS</span>
+      <span style="color: #6B6151;">v0.1 &mdash; neighbourhood index</span>
+    </div>
+    <span style="color: #6B6151;">amara@kreuzberg</span>
+  </div>
+
+  <div style="padding: 20px 26px 12px; display: flex; flex-direction: column; gap: 4px;">
+    <div style="display: flex; align-items: center; gap: 9px;">
+      <span style="color: {{accent}};">radius://kreuzberg</span>
+      <span style="color: #6B6151;">$</span>
+      <span style="color: #E8DCC4;">list --within 5km --sort dist</span>
+      <span style="width: 8px; height: 15px; background: {{accent}}; display: inline-block;"></span>
+    </div>
+    <span style="color: #6B6151;">&rarr; 12 results in 41ms</span>
+  </div>
+
+  <div style="padding: 6px 26px 10px; display: flex; gap: 8px;">
+    <span style="padding: 3px 10px; border: 1px solid {{accent}}; color: {{accent}};">[*] all</span>
+    <span style="padding: 3px 10px; border: 1px solid #2A2318; color: #8A7F6B;">[ ] rent</span>
+    <span style="padding: 3px 10px; border: 1px solid #2A2318; color: #8A7F6B;">[ ] hire</span>
+    <span style="padding: 3px 10px; border: 1px solid #2A2318; color: #8A7F6B;">[ ] teach</span>
+    <span style="padding: 3px 10px; border: 1px solid #2A2318; color: #8A7F6B;">[ ] sell</span>
+    <span style="padding: 3px 10px; border: 1px solid #2A2318; color: #8A7F6B;">[ ] want</span>
+  </div>
+
+  <div style="display: grid; grid-template-columns: 40px 92px 1fr 168px 88px 96px; padding: 10px 26px 6px; border-bottom: 1px solid #2A2318; color: #6B6151;">
+    <span>#</span>
+    <span>KIND</span>
+    <span>LISTING</span>
+    <span>NEIGHBOUR</span>
+    <span style="text-align: right;">DIST</span>
+    <span style="text-align: right;">RATE</span>
+  </div>
+
+  <div style="display: flex; flex-direction: column; flex-grow: 1;">
+    <sc-for list="{{rows}}" as="row" hint-placeholder-count="8">
+      <div style="display: grid; grid-template-columns: 40px 92px 1fr 168px 88px 96px; padding: 9px 26px; border-bottom: 1px solid #171309; align-items: center;">
+        <span style="color: #6B6151;">{{row.n}}</span>
+        <span style="color: {{accent}};">{{row.kind}}</span>
+        <span style="color: #E8DCC4;">{{row.title}}</span>
+        <span style="color: #8A7F6B;">{{row.owner}}</span>
+        <span style="color: #8A7F6B; text-align: right;">{{row.distance}}</span>
+        <span style="color: #E8DCC4; font-weight: 600; text-align: right;">{{row.price}}</span>
+      </div>
+    </sc-for>
+  </div>
+
+  <div style="padding: 11px 26px; border-top: 1px solid #2A2318; display: flex; align-items: center; justify-content: space-between; color: #6B6151;">
+    <span><span style="color: {{accent}};">enter</span> open &nbsp; <span style="color: {{accent}};">r</span> request &nbsp; <span style="color: {{accent}};">n</span> new listing &nbsp; <span style="color: {{accent}};">/</span> search</span>
+    <span>12/12</span>
+  </div>
+</div>
+
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":1120,"height":820},"accent":{"editor":"color","default":"#FFB000","options":["#FFB000","#5FE07A","#6FC3FF","#FF7A5A"]}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      accent: this.props.accent ?? '#FFB000',
+      rows: [
+        { n: '01', kind: 'rent',  title: 'Aluminium ladder, 3 m',       owner: 'Amara Okafor',   distance: '100m',  price: '€5.00' },
+        { n: '02', kind: 'teach', title: 'Video editing, the basics',   owner: 'Priya Raman',    distance: '200m',  price: '€30.00' },
+        { n: '03', kind: 'hire',  title: 'Electrician, small jobs',     owner: 'Amara Okafor',   distance: '300m',  price: '€35.00' },
+        { n: '04', kind: 'sell',  title: 'Laser printer, working',      owner: 'Erik Lindqvist', distance: '500m',  price: '€40.00' },
+        { n: '05', kind: 'rent',  title: 'Projector + 2 m screen',      owner: 'Erik Lindqvist', distance: '600m',  price: '€15.00' },
+        { n: '06', kind: 'want',  title: 'Anyone got a sewing machine?', owner: 'Sofia Almeida', distance: '2.2km', price: '—' },
+        { n: '07', kind: 'rent',  title: 'Cordless drill + bits',       owner: 'Jonas Meyer',    distance: '2.3km', price: '€4.00' },
+        { n: '08', kind: 'rent',  title: 'Camping gear for two',        owner: 'Sofia Almeida',  distance: '2.5km', price: '€12.00' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>
