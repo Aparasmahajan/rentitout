@@ -37,7 +37,10 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
      * the same path still need a token. The services check this again — this is
      * the fast path at the edge, not the only gate.
      */
-    private static final List<String> PUBLIC_GET = List.of("/api/feed", "/api/listings");
+    private static final List<String> PUBLIC_GET = List.of(
+            // /api/listings covers the comment thread and the ratings on a
+            // listing too — both hang off that prefix.
+            "/api/feed", "/api/listings", "/api/reports/reasons");
 
     static final String HEADER_USER_ID = "X-Radius-User-Id";
     static final String HEADER_USER_NAME = "X-Radius-User-Name";

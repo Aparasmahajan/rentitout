@@ -45,6 +45,12 @@ public class EventConsumer {
         if (eventId != null && !guard.firstTime("listing.user", eventId)) return;
 
         switch (type == null ? "" : type) {
+            // Only the date matters here: PostingLimiter gives a days-old
+            // account a tighter bucket than an established member.
+            case "UserRegistered" -> {
+                var e = mapper.readValue(payload, RadiusEvents.UserRegistered.class);
+                listings.registerMember(e.userId(), e.at());
+            }
             case "ProfileUpdated" -> {
                 var e = mapper.readValue(payload, RadiusEvents.ProfileUpdated.class);
                 listings.upsertMember(e.userId(), e.displayName(), e.photoUrl(), e.areaLabel(),
@@ -70,12 +76,22 @@ public class EventConsumer {
     public void onRequestEvent(@Payload String payload,
                                @Header(name = Topics.HEADER_EVENT_TYPE, required = false) String type,
                                @Header(name = KafkaHeaders.RECEIVED_KEY, required = false) String key) throws Exception {
-        if (!"RequestAccepted".equals(type)) return;
-
-        var e = mapper.readValue(payload, RadiusEvents.RequestAccepted.class);
-        LocalDate to = e.endDate() == null ? e.startDate() : e.endDate();
-        // Keyed on the request id inside blockDates, so a redelivery is a no-op.
-        listings.blockDates(e.listingId(), e.startDate(), to, e.requestId());
-        log.info("blocked {} to {} on listing {} for request {}", e.startDate(), to, e.listingId(), key);
+        switch (type == null ? "" : type) {
+            case "RequestAccepted" -> {
+                var e = mapper.readValue(payload, RadiusEvents.RequestAccepted.class);
+                LocalDate to = e.endDate() == null ? e.startDate() : e.endDate();
+                // Keyed on the request id inside blockDates, so a redelivery is a no-op.
+                listings.blockDates(e.listingId(), e.startDate(), to, e.requestId());
+                log.info("blocked {} to {} on listing {} for request {}", e.startDate(), to, e.listingId(), key);
+            }
+            // Who actually transacted. It is what earns a rating the "verified
+            // booking" badge without asking booking-service at write time.
+            case "RequestCompleted" -> {
+                var e = mapper.readValue(payload, RadiusEvents.RequestCompleted.class);
+                listings.recordCompletedBooking(e.requestId(), e.listingId(), e.requesterId(), e.at());
+                log.info("completed booking {} recorded for listing {}", e.requestId(), e.listingId());
+            }
+            default -> log.debug("ignoring request event of type {}", type);
+        }
     }
 }

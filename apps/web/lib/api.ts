@@ -2,9 +2,11 @@
 
 import type {
   AppNotification,
+  BanView,
   BookingRequest,
   Breakdown,
   ChatMessage,
+  CommentView,
   FeedPage,
   Listing,
   ListingCard,
@@ -13,6 +15,10 @@ import type {
   MyVerification,
   ProfessionalProfile,
   PublicProfile,
+  RatingSummary,
+  RatingView,
+  ReportTargetType,
+  ReportView,
   ReviewItem,
   SearchResponse,
   TagRef,
@@ -170,6 +176,52 @@ export const api = {
       ),
     attachPhoto: (id: string, objectKey: string) =>
       post<{ id: string; url: string }[]>(`/api/listings/${id}/photos`, { objectKey }),
+  },
+
+  /** The thread under a listing. Reading is open; posting is not. */
+  comments: {
+    thread: (listingId: string) => get<CommentView[]>(`/api/listings/${listingId}/comments`),
+    post: (listingId: string, body: string, parentId?: string) =>
+      post<CommentView>(`/api/listings/${listingId}/comments`, { body, parentId: parentId ?? null }),
+    edit: (commentId: string, body: string) => patch<CommentView>(`/api/comments/${commentId}`, { body }),
+    remove: (commentId: string) => del<void>(`/api/comments/${commentId}`),
+  },
+
+  ratings: {
+    summary: (listingId: string) => get<RatingSummary>(`/api/listings/${listingId}/ratings`),
+    rate: (listingId: string, body: { stars: number; title?: string; body?: string }) =>
+      post<RatingView>(`/api/listings/${listingId}/ratings`, body),
+    remove: (ratingId: string) => del<void>(`/api/ratings/${ratingId}`),
+  },
+
+  reports: {
+    reasons: () => get<string[]>('/api/reports/reasons'),
+    create: (body: { targetType: ReportTargetType; targetId: string; reason: string; detail?: string }) =>
+      post<ReportView>('/api/reports', body),
+  },
+
+  /**
+   * Moderation, not /api/admin — that prefix is routed to user-service for the
+   * verification queue, and gateway routes are matched in order.
+   */
+  moderation: {
+    reports: (state?: string) =>
+      get<ReportView[]>(`/api/moderation/reports${state ? `?state=${state}` : ''}`),
+    claim: (id: string) => post<ReportView>(`/api/moderation/reports/${id}/claim`),
+    action: (id: string, note?: string) =>
+      post<ReportView>(`/api/moderation/reports/${id}/action`, { note }),
+    dismiss: (id: string, note: string) =>
+      post<ReportView>(`/api/moderation/reports/${id}/dismiss`, { note }),
+    removeComment: (commentId: string, note?: string) =>
+      del<void>(`/api/moderation/comments/${commentId}${note ? `?note=${encodeURIComponent(note)}` : ''}`),
+    removeRating: (ratingId: string, note?: string) =>
+      del<void>(`/api/moderation/ratings/${ratingId}${note ? `?note=${encodeURIComponent(note)}` : ''}`),
+    unlist: (listingId: string, note?: string) =>
+      post<void>(`/api/moderation/listings/${listingId}/unlist`, { note }),
+    bans: () => get<BanView[]>('/api/moderation/bans'),
+    ban: (userId: string, days: number, reason: string) =>
+      post<BanView>(`/api/moderation/members/${userId}/comment-ban`, { days, reason }),
+    liftBan: (userId: string) => del<void>(`/api/moderation/members/${userId}/comment-ban`),
   },
 
   search: {

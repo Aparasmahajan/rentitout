@@ -61,12 +61,15 @@ public final class Dtos {
                                   String currency, double lat, double lon, String status,
                                   List<String> tags, List<PhotoDto> photos,
                                   List<AvailabilityRuleDto> availability, OwnerDto owner,
-                                  Double distanceKm, boolean mine, boolean homeVisit) {}
+                                  Double distanceKm, boolean mine, boolean homeVisit,
+                                  /** Null until somebody rates — not zero, which would read as a rating of zero. */
+                                  java.math.BigDecimal ratingAvg, int ratingCount) {}
 
     /** The card shape the feed, search results and dashboards all render. */
     public record ListingCard(UUID id, String kind, String title, Long priceMinor, String unit,
                               Long buyPriceMinor, String currency, String photoUrl, double lat, double lon,
-                              double distanceKm, OwnerDto owner, String status, boolean homeVisit) {}
+                              double distanceKm, OwnerDto owner, String status, boolean homeVisit,
+                              java.math.BigDecimal ratingAvg, int ratingCount) {}
 
     public record FeedPage(List<ListingCard> items, String nextCursor, int radiusKm) {}
 

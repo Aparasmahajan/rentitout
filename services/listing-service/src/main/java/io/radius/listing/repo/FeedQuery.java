@@ -24,12 +24,13 @@ public class FeedQuery {
                           String currency, double lat, double lon, double distanceMetres,
                           String ownerName, String ownerPhoto, String areaLabel,
                           boolean ownerIdChecked, boolean ownerProfessional, String ownerTrade,
-                          boolean homeVisit) {}
+                          boolean homeVisit, java.math.BigDecimal ratingAvg, int ratingCount) {}
 
     private static final String BASE = """
             SELECT x.* FROM (
               SELECT l.id, l.owner_id, l.kind, l.title, l.description, l.price_minor, l.unit,
                      l.deposit_minor, l.buy_price_minor, l.currency, l.lat, l.lon, l.home_visit,
+                     l.rating_avg, l.rating_count,
                      ST_Distance(l.point, :origin::geography) AS distance_m,
                      m.display_name AS owner_name, m.photo_url AS owner_photo, m.area_label,
                      COALESCE(m.id_checked, false) AS owner_id_checked,
@@ -93,6 +94,8 @@ public class FeedQuery {
                 rs.getBoolean("owner_id_checked"),
                 rs.getBoolean("owner_professional"),
                 rs.getString("owner_trade"),
-                rs.getBoolean("home_visit"))).list();
+                rs.getBoolean("home_visit"),
+                rs.getBigDecimal("rating_avg"),
+                rs.getInt("rating_count"))).list();
     }
 }

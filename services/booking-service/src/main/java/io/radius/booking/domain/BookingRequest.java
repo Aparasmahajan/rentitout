@@ -80,7 +80,7 @@ public class BookingRequest {
     private long totalMinor;
 
     @Column(nullable = false)
-    private String currency = "EUR";
+    private String currency = "INR";
 
     private String message;
 

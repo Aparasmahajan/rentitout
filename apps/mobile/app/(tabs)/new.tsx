@@ -105,7 +105,7 @@ export default function NewListingScreen() {
             value={price}
             onChangeText={setPrice}
             keyboardType="decimal-pad"
-            placeholder={isSale ? 'Sale price €' : 'Rate €'}
+            placeholder={isSale ? 'Sale price ₹' : 'Rate ₹'}
             placeholderTextColor={colors.muted}
           />
           {!isSale ? (
@@ -126,7 +126,7 @@ export default function NewListingScreen() {
           value={deposit}
           onChangeText={setDeposit}
           keyboardType="decimal-pad"
-          placeholder="Refundable deposit € (optional)"
+          placeholder="Refundable deposit ₹ (optional)"
           placeholderTextColor={colors.muted}
         />
       ) : null}

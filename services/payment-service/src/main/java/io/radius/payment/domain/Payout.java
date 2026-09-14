@@ -25,7 +25,7 @@ public class Payout {
     private long feeMinor;
 
     @Column(nullable = false)
-    private String currency = "EUR";
+    private String currency = "INR";
 
     @Column(nullable = false)
     private String period;

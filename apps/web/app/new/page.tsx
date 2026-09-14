@@ -111,8 +111,8 @@ export default function NewListingPage() {
           {!isNeed && !isSale && (
             <div className="row">
               <div className="field grow">
-                <label htmlFor="price">Rate (€)</label>
-                <input id="price" inputMode="decimal" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="5.00" />
+                <label htmlFor="price">Rate (₹)</label>
+                <input id="price" inputMode="decimal" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="150" />
               </div>
               <div className="field">
                 <label htmlFor="unit">Per</label>
@@ -129,15 +129,15 @@ export default function NewListingPage() {
 
           {isSale && (
             <div className="field">
-              <label htmlFor="buy">Sale price (€)</label>
-              <input id="buy" inputMode="decimal" value={buyPrice} onChange={(e) => setBuyPrice(e.target.value)} placeholder="40.00" />
+              <label htmlFor="buy">Sale price (₹)</label>
+              <input id="buy" inputMode="decimal" value={buyPrice} onChange={(e) => setBuyPrice(e.target.value)} placeholder="3000" />
             </div>
           )}
 
           {!isNeed && (
             <div className="field">
-              <label htmlFor="deposit">Refundable deposit (€, optional)</label>
-              <input id="deposit" inputMode="decimal" value={deposit} onChange={(e) => setDeposit(e.target.value)} placeholder="20.00" />
+              <label htmlFor="deposit">Refundable deposit (₹, optional)</label>
+              <input id="deposit" inputMode="decimal" value={deposit} onChange={(e) => setDeposit(e.target.value)} placeholder="1000" />
             </div>
           )}
 

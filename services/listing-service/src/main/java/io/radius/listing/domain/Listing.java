@@ -6,6 +6,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -53,7 +54,7 @@ public class Listing {
     private Long buyPriceMinor;
 
     @Column(nullable = false)
-    private String currency = "EUR";
+    private String currency = "INR";
 
     @Column(nullable = false)
     private double lat;
@@ -67,6 +68,17 @@ public class Listing {
 
     @Column(nullable = false)
     private String status = Status.LIVE.name();
+
+    /**
+     * Denormalised from listing_rating so a feed card renders without a join.
+     * Null average until somebody rates — zero would claim a rating of zero,
+     * which is not the same thing as "not yet rated".
+     */
+    @Column(name = "rating_avg")
+    private BigDecimal ratingAvg;
+
+    @Column(name = "rating_count", nullable = false)
+    private int ratingCount;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt = Instant.now();
@@ -103,6 +115,8 @@ public class Listing {
     public String getStatus() { return status; }
     public boolean isHomeVisit() { return homeVisit; }
     public Instant getCreatedAt() { return createdAt; }
+    public BigDecimal getRatingAvg() { return ratingAvg; }
+    public int getRatingCount() { return ratingCount; }
 
     public boolean isLive() { return Status.LIVE.name().equals(status); }
     public boolean isOwnedBy(UUID userId) { return ownerId.equals(userId); }
@@ -116,4 +130,10 @@ public class Listing {
     public void setPoint(double lat, double lon) { this.lat = lat; this.lon = lon; }
     public void setStatus(Status status) { this.status = status.name(); }
     public void setHomeVisit(boolean homeVisit) { this.homeVisit = homeVisit; }
+
+    /** Written only by RatingService, from a recomputed aggregate — never incremented in place. */
+    public void setRating(BigDecimal average, int count) {
+        this.ratingAvg = count == 0 ? null : average;
+        this.ratingCount = count;
+    }
 }

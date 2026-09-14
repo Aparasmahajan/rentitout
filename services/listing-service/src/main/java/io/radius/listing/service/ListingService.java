@@ -10,9 +10,11 @@ import io.radius.listing.api.Dtos;
 import io.radius.listing.domain.Listing;
 import io.radius.listing.domain.AvailabilityBlock;
 import io.radius.listing.domain.AvailabilityRule;
+import io.radius.listing.domain.CompletedBooking;
 import io.radius.listing.domain.ListingPhoto;
 import io.radius.listing.domain.ListingTag;
 import io.radius.listing.domain.MemberLocation;
+import io.radius.listing.repo.CompletedBookingRepository;
 import io.radius.listing.repo.FeedQuery;
 import io.radius.listing.repo.AvailabilityBlockRepository;
 import io.radius.listing.repo.AvailabilityRuleRepository;
@@ -46,12 +48,14 @@ public class ListingService {
     private final AvailabilityRuleRepository rules;
     private final AvailabilityBlockRepository blocks;
     private final MemberLocationRepository members;
+    private final CompletedBookingRepository completedBookings;
     private final FeedQuery feedQuery;
     private final OutboxService outbox;
 
     public ListingService(ListingRepository listings, ListingPhotoRepository photos,
                           ListingTagRepository tags, AvailabilityRuleRepository rules,
                           AvailabilityBlockRepository blocks, MemberLocationRepository members,
+                          CompletedBookingRepository completedBookings,
                           FeedQuery feedQuery, OutboxService outbox) {
         this.listings = listings;
         this.photos = photos;
@@ -59,6 +63,7 @@ public class ListingService {
         this.rules = rules;
         this.blocks = blocks;
         this.members = members;
+        this.completedBookings = completedBookings;
         this.feedQuery = feedQuery;
         this.outbox = outbox;
     }
@@ -139,6 +144,23 @@ public class ListingService {
         return detail(listingId, callerId);
     }
 
+    /**
+     * A moderator taking a listing down. Deliberately not {@code setStatus} with
+     * the ownership check waived — the reason travels on the event, so a
+     * consumer can tell "the owner withdrew it" from "we removed it".
+     */
+    @Transactional
+    public void unlistByModerator(UUID listingId, String note) {
+        Listing listing = listings.findById(listingId)
+                .orElseThrow(() -> ApiException.notFound("Listing"));
+        listing.setStatus(Listing.Status.UNLISTED);
+        listings.save(listing);
+        outbox.publish(Topics.LISTING, listing.getId(), new RadiusEvents.ListingUnlisted(
+                listing.getId(), listing.getOwnerId(),
+                note == null || note.isBlank() ? "moderated" : "moderated: " + note.trim(),
+                Instant.now()));
+    }
+
     @Transactional
     public List<Dtos.PhotoDto> attachPhoto(UUID listingId, UUID callerId, String objectKey, String publicUrl) {
         owned(listingId, callerId);
@@ -207,7 +229,8 @@ public class ListingService {
                 ownerDto(listing.getOwnerId(), owner),
                 distanceKm,
                 listing.isOwnedBy(viewerId),
-                listing.isHomeVisit());
+                listing.isHomeVisit(),
+                listing.getRatingAvg(), listing.getRatingCount());
     }
 
     @Transactional(readOnly = true)
@@ -218,7 +241,8 @@ public class ListingService {
         return mine.stream()
                 .map(l -> new Dtos.ListingCard(l.getId(), l.getKind(), l.getTitle(), l.getPriceMinor(),
                         l.getUnit(), l.getBuyPriceMinor(), l.getCurrency(), firstPhoto.get(l.getId()),
-                        l.getLat(), l.getLon(), 0d, ownerDto(ownerId, me), l.getStatus(), l.isHomeVisit()))
+                        l.getLat(), l.getLon(), 0d, ownerDto(ownerId, me), l.getStatus(), l.isHomeVisit(),
+                        l.getRatingAvg(), l.getRatingCount()))
                 .toList();
     }
 
@@ -256,7 +280,7 @@ public class ListingService {
                         round1(r.distanceMetres() / 1000d),
                         new Dtos.OwnerDto(r.ownerId(), r.ownerName(), r.ownerPhoto(), r.areaLabel(),
                                 r.ownerIdChecked(), r.ownerProfessional(), r.ownerTrade()),
-                        "LIVE", r.homeVisit()))
+                        "LIVE", r.homeVisit(), r.ratingAvg(), r.ratingCount()))
                 .toList();
 
         String next = null;
@@ -297,6 +321,28 @@ public class ListingService {
         MemberLocation location = members.findById(userId).orElseGet(() -> new MemberLocation(userId));
         location.updateChecks(location.isIdChecked(), professional, trade);
         members.save(location);
+    }
+
+    /**
+     * Stamped from UserRegistered. It is what lets PostingLimiter give a
+     * days-old account a tighter bucket than a member who has been here a year.
+     */
+    @Transactional
+    public void registerMember(UUID userId, Instant at) {
+        MemberLocation location = members.findById(userId).orElseGet(() -> new MemberLocation(userId));
+        location.registeredAt(at == null ? Instant.now() : at);
+        members.save(location);
+    }
+
+    /**
+     * A completed booking, projected from radius.request.v1. The request id is
+     * the primary key, so a redelivery writes the same row rather than a second
+     * one — no Redis guard needed for this consumer.
+     */
+    @Transactional
+    public void recordCompletedBooking(UUID requestId, UUID listingId, UUID userId, Instant at) {
+        if (completedBookings.existsById(requestId)) return;
+        completedBookings.save(new CompletedBooking(requestId, listingId, userId, at));
     }
 
     /** Kept for the member_location projection fed by radius.user.v1. */

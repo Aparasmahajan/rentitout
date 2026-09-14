@@ -93,6 +93,9 @@ export interface ListingCard {
   owner: Owner;
   status: string;
   homeVisit: boolean;
+  /** Null until somebody rates. Zero would read as a rating of zero. */
+  ratingAvg: number | null;
+  ratingCount: number;
 }
 
 export interface Photo {
@@ -127,6 +130,81 @@ export interface Listing {
   distanceKm: number | null;
   mine: boolean;
   homeVisit: boolean;
+  ratingAvg: number | null;
+  ratingCount: number;
+}
+
+/* ---- the conversation around a listing --------------------------------- */
+
+export interface CommentView {
+  id: string;
+  listingId: string;
+  authorId: string;
+  /** Null once removed — the tombstone keeps its place in the thread. */
+  authorName: string | null;
+  parentId: string | null;
+  body: string | null;
+  deleted: boolean;
+  createdAt: string;
+  editedAt: string | null;
+  /** Resolved server-side. The client renders these, it does not re-derive them. */
+  canEdit: boolean;
+  canDelete: boolean;
+  replies: CommentView[];
+}
+
+export interface RatingView {
+  id: string;
+  listingId: string;
+  authorId: string;
+  authorName: string | null;
+  stars: number;
+  title: string | null;
+  body: string | null;
+  /** Left by someone who actually completed a booking. */
+  verifiedBooking: boolean;
+  createdAt: string;
+  editedAt: string | null;
+  canEdit: boolean;
+  canDelete: boolean;
+}
+
+export interface RatingSummary {
+  average: number | null;
+  count: number;
+  /** Star → how many. Stars nobody gave are absent, not zero. */
+  histogram: Record<string, number>;
+  mine: RatingView | null;
+  ratings: RatingView[];
+}
+
+export type ReportTargetType = 'LISTING' | 'COMMENT' | 'RATING';
+
+export type ReportState = 'OPEN' | 'REVIEWING' | 'ACTIONED' | 'DISMISSED';
+
+export interface ReportView {
+  id: string;
+  reporterId: string;
+  targetType: ReportTargetType;
+  targetId: string;
+  reason: string;
+  detail: string | null;
+  state: ReportState;
+  createdAt: string;
+  decidedBy: string | null;
+  decidedAt: string | null;
+  note: string | null;
+  /** The reported content itself, so a decision needs no second request. */
+  targetSummary: string | null;
+  targetAuthorId: string | null;
+}
+
+export interface BanView {
+  userId: string;
+  bannedUntil: string;
+  reason: string;
+  setBy: string;
+  setAt: string;
 }
 
 export interface FeedPage {

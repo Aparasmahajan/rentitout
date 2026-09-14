@@ -2,6 +2,8 @@
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
+import { CommentBans } from '@/components/admin/CommentBans';
+import { ReportsQueue } from '@/components/admin/ReportsQueue';
 import { ApiError, api } from '@/lib/api';
 import { useRequireAuth } from '@/lib/auth';
 import { when } from '@/lib/format';
@@ -13,11 +15,21 @@ const FILTERS = [
   { key: 'REJECTED', label: 'Rejected' },
 ];
 
+/** Three surfaces, one console. Each answers to its own service. */
+const SECTIONS = [
+  { key: 'checks', label: 'Checks' },
+  { key: 'reports', label: 'Reports' },
+  { key: 'bans', label: 'Restrictions' },
+] as const;
+
+type Section = (typeof SECTIONS)[number]['key'];
+
 /** The review queue. Only reachable with an ADMIN token; the API checks again. */
 export default function AdminPage() {
   const { loading, isAdmin } = useRequireAuth();
   const queryClient = useQueryClient();
 
+  const [section, setSection] = useState<Section>('checks');
   const [filter, setFilter] = useState('');
   const [openId, setOpenId] = useState<string | null>(null);
   const [note, setNote] = useState('');
@@ -25,7 +37,7 @@ export default function AdminPage() {
   const queue = useQuery({
     queryKey: ['admin-queue', filter],
     queryFn: () => api.admin.queue(filter || undefined),
-    enabled: isAdmin,
+    enabled: isAdmin && section === 'checks',
   });
 
   const refresh = () => {
@@ -65,45 +77,79 @@ export default function AdminPage() {
       <div className="stack" style={{ gap: 6 }}>
         <span className="eyebrow">Administration</span>
         <h1>
-          Checks <em>waiting on you</em>
+          {section === 'checks' ? (
+            <>
+              Checks <em>waiting on you</em>
+            </>
+          ) : section === 'reports' ? (
+            <>
+              What neighbours <em>have flagged</em>
+            </>
+          ) : (
+            <>
+              Members <em>who cannot comment</em>
+            </>
+          )}
         </h1>
       </div>
 
       <div className="wrap">
-        {FILTERS.map((f) => (
-          <button key={f.key} className="chip" data-active={filter === f.key} onClick={() => setFilter(f.key)}>
-            {f.label}
+        {SECTIONS.map((s) => (
+          <button
+            key={s.key}
+            className="chip"
+            data-active={section === s.key}
+            onClick={() => setSection(s.key)}
+          >
+            {s.label}
           </button>
         ))}
       </div>
 
-      {queue.isPending && <div className="skeleton" />}
-      {queue.isError && <div className="error">{(queue.error as ApiError).message}</div>}
+      {section === 'reports' && <ReportsQueue />}
+      {section === 'bans' && <CommentBans />}
 
-      {!queue.isPending && items.length === 0 && (
-        <p className="muted">Nothing here. Everything is dealt with.</p>
+      {section === 'checks' && (
+        <div className="wrap">
+          {FILTERS.map((f) => (
+            <button key={f.key} className="chip" data-active={filter === f.key} onClick={() => setFilter(f.key)}>
+              {f.label}
+            </button>
+          ))}
+        </div>
       )}
 
-      <div className="stack" style={{ gap: 'var(--s4)' }}>
-        {items.map((item) => (
-          <ReviewCard
-            key={item.id}
-            item={item}
-            open={openId === item.id}
-            note={note}
-            onNote={setNote}
-            onOpen={() => {
-              setOpenId(openId === item.id ? null : item.id);
-              setNote('');
-              if (item.state === 'SUBMITTED') claim.mutate(item.id);
-            }}
-            onApprove={() => approve.mutate(item.id)}
-            onReject={() => reject.mutate(item.id)}
-            busy={approve.isPending || reject.isPending}
-            error={(approve.error ?? reject.error) as ApiError | null}
-          />
-        ))}
-      </div>
+      {section === 'checks' && (
+        <>
+          {queue.isPending && <div className="skeleton" />}
+          {queue.isError && <div className="error">{(queue.error as ApiError).message}</div>}
+
+          {!queue.isPending && items.length === 0 && (
+            <p className="muted">Nothing here. Everything is dealt with.</p>
+          )}
+
+          <div className="stack" style={{ gap: 'var(--s4)' }}>
+            {items.map((item) => (
+              <ReviewCard
+                key={item.id}
+                item={item}
+                open={openId === item.id}
+                note={note}
+                onNote={setNote}
+                onOpen={() => {
+                  setOpenId(openId === item.id ? null : item.id);
+                  setNote('');
+                  if (item.state === 'SUBMITTED') claim.mutate(item.id);
+                }}
+                onApprove={() => approve.mutate(item.id)}
+                onReject={() => reject.mutate(item.id)}
+                busy={approve.isPending || reject.isPending}
+                error={(approve.error ?? reject.error) as ApiError | null}
+              />
+            ))}
+          </div>
+        </>
+      )}
     </section>
   );
 }

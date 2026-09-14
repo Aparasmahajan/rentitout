@@ -21,7 +21,7 @@ class BookingRequestStateMachineTest {
     private BookingRequest newRequest() {
         return new BookingRequest(UUID.randomUUID(), "Ladder", UUID.randomUUID(), UUID.randomUUID(),
                 LocalDate.now().plusDays(1), LocalDate.now().plusDays(2), 2, "DAY",
-                500, 1000, 2000, 0, "EUR", "Need it Saturday", Instant.now().plusSeconds(3600));
+                500, 1000, 2000, 0, "INR", "Need it Saturday", Instant.now().plusSeconds(3600));
     }
 
     @Test

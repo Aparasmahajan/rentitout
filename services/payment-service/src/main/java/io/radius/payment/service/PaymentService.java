@@ -157,7 +157,7 @@ public class PaymentService {
             List<Payment> settled = payments.findByPayeeIdAndState(ownerId, Payment.State.SETTLED.name());
             long gross = settled.stream().mapToLong(Payment::getAmountMinor).sum();
             long fees = settled.stream().mapToLong(Payment::getFeeMinor).sum();
-            String currency = settled.isEmpty() ? "EUR" : settled.get(0).getCurrency();
+            String currency = settled.isEmpty() ? "INR" : settled.get(0).getCurrency();
             return payouts.save(new Payout(ownerId, gross - fees, fees, currency, key));
         });
     }

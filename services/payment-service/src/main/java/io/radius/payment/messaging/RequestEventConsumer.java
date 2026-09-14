@@ -37,7 +37,7 @@ public class RequestEventConsumer {
             case "RequestAccepted" -> {
                 var e = mapper.readValue(payload, RadiusEvents.RequestAccepted.class);
                 payments.openPayment(e.requestId(), e.requesterId(), e.ownerId(), e.amountMinor(),
-                        e.depositMinor(), "EUR", null);
+                        e.depositMinor(), "INR", null);
                 log.info("payment opened for accepted request {}", e.requestId());
             }
             case "RequestCompleted" -> {

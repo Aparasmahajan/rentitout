@@ -43,6 +43,14 @@ public class MemberLocation {
 
     private String trade;
 
+    /**
+     * When the account was created, mirrored from UserRegistered. Null for
+     * anyone who joined before this column existed — see {@code PostingLimiter},
+     * which reads an unknown as established rather than as new.
+     */
+    @Column(name = "registered_at")
+    private Instant registeredAt;
+
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt = Instant.now();
 
@@ -62,6 +70,13 @@ public class MemberLocation {
     public boolean isIdChecked() { return idChecked; }
     public boolean isProfessional() { return professional; }
     public String getTrade() { return trade; }
+    public Instant getRegisteredAt() { return registeredAt; }
+
+    /** Set once, from UserRegistered. A later replay must not move the date. */
+    public void registeredAt(Instant at) {
+        if (registeredAt == null) registeredAt = at;
+        this.updatedAt = Instant.now();
+    }
 
     /** Fed by radius.user.v1 - never written from a request handler. */
     public void updateChecks(boolean idChecked, boolean professional, String trade) {

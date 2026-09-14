@@ -9,6 +9,9 @@ This is the POC implementation of [Radius Build Plan.dc.html](design/Radius%20Bu
 Phases 00–03 built end to end, Phase 05 present as a working skeleton with the fee reading
 zero.
 
+**[poc.md](poc.md) is the single build record** — every feature that exists, everything still to
+build, and the reasoning behind both. This README covers only how to run it.
+
 ```
 services/     Java 21 · Spring Boot 3.3 · seven Maven modules
 apps/web/     Next.js 15 · App Router · TypeScript · PWA ("Postcard", light + dark)
@@ -279,9 +282,10 @@ log the member out.
 .\scripts\services.ps1 test      # or: cd services; mvn -s settings-central.xml test
 ```
 
-25 tests, all green. They cover the parts where a bug costs someone money or a wasted trip:
-the request state machine, the fee arithmetic, the query parser, the geo rounding, and the
-auth endpoints. Integration tests over Testcontainers are the obvious next layer.
+35 tests across seven classes, all green on a clean build. They cover the parts where a bug
+costs someone money or a wasted trip: the request state machine, the fee arithmetic, the query
+parser, the geo rounding, and the auth endpoints. Integration tests over Testcontainers are the
+obvious next layer.
 
 Two of them earned their keep immediately. The auth slice test caught the API answering an
 unauthenticated call with **403 instead of 401** — which would have broken token refresh in

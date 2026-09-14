@@ -39,10 +39,13 @@ spring:
           predicates:
             - 'Path=/api/me/**,/api/users/**,/api/tags/**,/api/professionals/**,/api/admin/**'
 
+        # /api/moderation rather than /api/admin: the users route above already
+        # claims every /api/admin path for the verification queue, and route
+        # order decides.
         - id: listings
           uri: ${LISTING_SERVICE_URL:http://listing-service:8082}
           predicates:
-            - 'Path=/api/listings/**,/api/feed/**,/api/photos/**'
+            - 'Path=/api/listings/**,/api/feed/**,/api/photos/**,/api/comments/**,/api/ratings/**,/api/reports/**,/api/moderation/**'
 
         - id: search
           uri: ${SEARCH_SERVICE_URL:http://search-service:8083}

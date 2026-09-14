@@ -1,12 +1,17 @@
 import type { ListingKind, RequestStatus, Unit } from './types';
 
-/** Money arrives as integer minor units and is only ever divided for display. */
-export function money(minor: number | null | undefined, currency = 'EUR'): string {
+/**
+ * Money arrives as integer minor units (paise) and is only ever divided for display.
+ *
+ * `en-IN` rather than a Western locale because Indian digit grouping is different:
+ * one lakh is ₹1,00,000, which `en-IE` would render as ₹100,000.
+ */
+export function money(minor: number | null | undefined, currency = 'INR'): string {
   if (minor === null || minor === undefined) return '—';
-  return new Intl.NumberFormat('en-IE', { style: 'currency', currency }).format(minor / 100);
+  return new Intl.NumberFormat('en-IN', { style: 'currency', currency }).format(minor / 100);
 }
 
-export function rate(minor: number | null, unit: Unit | string | null, currency = 'EUR'): string {
+export function rate(minor: number | null, unit: Unit | string | null, currency = 'INR'): string {
   if (minor === null) return '—';
   const per: Record<string, string> = {
     HOUR: '/hour',

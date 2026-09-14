@@ -5,6 +5,9 @@ import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
 import { BookingSheet } from '@/components/BookingSheet';
+import { CommentThread } from '@/components/CommentThread';
+import { Ratings, Stars } from '@/components/Ratings';
+import { ReportControl } from '@/components/ReportControl';
 import { api } from '@/lib/api';
 import { useAuth } from '@/lib/auth';
 import { KIND_LABEL, distance, money, rate } from '@/lib/format';
@@ -93,6 +96,14 @@ export default function ListingPage() {
           {isSale ? money(l.buyPriceMinor, l.currency) : rate(l.priceMinor, l.unit, l.currency)}
         </span>
         <div className="wrap">
+          {l.ratingCount > 0 && l.ratingAvg !== null && (
+            <span className="row" style={{ gap: 6 }}>
+              <Stars value={l.ratingAvg} />
+              <span className="muted">
+                {l.ratingAvg.toFixed(1)} · {l.ratingCount}
+              </span>
+            </span>
+          )}
           {l.homeVisit && <span className="badge" data-tone="pro">Comes to you</span>}
           {l.owner.idChecked && <span className="badge" data-tone="checked">ID checked</span>}
           {l.owner.professional && l.owner.trade && (
@@ -171,6 +182,22 @@ export default function ListingPage() {
             ? 'This is a request from a neighbour — message them if you can help.'
             : 'Not available right now.'}
         </p>
+      )}
+
+      <hr className="rule" />
+
+      <Ratings listingId={l.id} mine={l.mine} />
+
+      <hr className="rule" />
+
+      <CommentThread listingId={l.id} />
+
+      {/* Last on the page on purpose: reporting is the rare action, and putting
+          it beside the request button invites it as a way to disagree. */}
+      {!l.mine && (
+        <div className="row" style={{ justifyContent: 'center', paddingTop: 'var(--s4)' }}>
+          <ReportControl targetType="LISTING" targetId={l.id} label="Report this listing" />
+        </div>
       )}
 
       {booking && <BookingSheet listing={l} onClose={() => setBooking(false)} />}

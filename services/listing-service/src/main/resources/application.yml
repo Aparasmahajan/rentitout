@@ -63,6 +63,11 @@ radius:
       - /api/feed
       - /api/listings/*
       - /api/listings/*/availability
+      # The conversation around a listing reads as openly as the listing does.
+      # Posting into it still needs a token — these are GET-only.
+      - /api/listings/*/comments
+      - /api/listings/*/ratings
+      - /api/reports/reasons
 
 management:
   endpoints.web.exposure.include: health,info,prometheus
