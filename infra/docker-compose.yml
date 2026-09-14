@@ -1,0 +1,237 @@
+name: radius
+
+# Local development stack for Radius.
+#   docker compose --profile infra up -d      # just the backing services
+#   docker compose --profile all  up -d       # infra + every microservice
+#
+# Only the gateway is published on the host (8080). Services talk to each other
+# over the compose network by DNS name, which is what they will do in k8s too —
+# that is why there is no Eureka in this stack.
+
+x-service-base: &service-base
+  restart: unless-stopped
+  networks: [radius]
+  environment: &service-env
+    SPRING_PROFILES_ACTIVE: dev
+    DB_HOST: postgres
+    DB_PORT: 5432
+    DB_USER: radius
+    DB_PASSWORD: radius
+    REDIS_HOST: redis
+    REDIS_PORT: 6379
+    KAFKA_BOOTSTRAP: kafka:9092
+    JWT_SECRET: ${JWT_SECRET:-dev-only-secret-change-me-at-least-32-bytes-long}
+    OTEL_SERVICE_NAME: ${OTEL_SERVICE_NAME:-radius}
+  depends_on:
+    postgres: {condition: service_healthy}
+    redis: {condition: service_healthy}
+    kafka: {condition: service_healthy}
+
+services:
+  # ---------------------------------------------------------------- infra ---
+  postgres:
+    image: postgis/postgis:16-3.4
+    profiles: [infra, all]
+    environment:
+      POSTGRES_USER: radius
+      POSTGRES_PASSWORD: radius
+      POSTGRES_DB: radius
+    ports: ["5432:5432"]
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./db/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U radius"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    networks: [radius]
+
+  redis:
+    image: redis:7-alpine
+    profiles: [infra, all]
+    command: ["redis-server", "--appendonly", "yes"]
+    ports: ["6379:6379"]
+    volumes: [redisdata:/data]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    networks: [radius]
+
+  kafka:
+    image: apache/kafka:3.8.1
+    profiles: [infra, all]
+    ports: ["9094:9094"]
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093,EXTERNAL://:9094
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,EXTERNAL://localhost:9094
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      CLUSTER_ID: radius-local-cluster-0001
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --list || exit 1"]
+      interval: 10s
+      timeout: 10s
+      retries: 20
+    networks: [radius]
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    profiles: [infra, all]
+    ports: ["8090:8080"]
+    environment:
+      KAFKA_CLUSTERS_0_NAME: radius-local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
+      DYNAMIC_CONFIG_ENABLED: "true"
+    depends_on:
+      kafka: {condition: service_healthy}
+    networks: [radius]
+
+  minio:
+    image: minio/minio:latest
+    profiles: [infra, all]
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: radius
+      MINIO_ROOT_PASSWORD: radius-secret
+    ports: ["9000:9000", "9001:9001"]
+    volumes: [miniodata:/data]
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+    networks: [radius]
+
+  minio-setup:
+    image: minio/mc:latest
+    profiles: [infra, all]
+    depends_on:
+      minio: {condition: service_healthy}
+    entrypoint: >
+      /bin/sh -c "
+      mc alias set local http://minio:9000 radius radius-secret &&
+      mc mb --ignore-existing local/radius-photos &&
+      mc anonymous set download local/radius-photos &&
+      echo 'minio ready'"
+    networks: [radius]
+
+  jaeger:
+    image: jaegertracing/all-in-one:1.62.0
+    profiles: [infra, all]
+    environment:
+      COLLECTOR_OTLP_ENABLED: "true"
+    ports: ["16686:16686", "4318:4318"]
+    networks: [radius]
+
+  # ------------------------------------------------------------- services ---
+  api-gateway:
+    <<: *service-base
+    profiles: [all]
+    build:
+      context: ..
+      dockerfile: services/Dockerfile
+      args: {MODULE: api-gateway}
+    ports: ["8080:8080"]
+    environment:
+      <<: *service-env
+      OTEL_SERVICE_NAME: api-gateway
+
+  user-service:
+    <<: *service-base
+    profiles: [all]
+    build:
+      context: ..
+      dockerfile: services/Dockerfile
+      args: {MODULE: user-service}
+    environment:
+      <<: *service-env
+      OTEL_SERVICE_NAME: user-service
+      DB_NAME: radius_user
+
+  listing-service:
+    <<: *service-base
+    profiles: [all]
+    build:
+      context: ..
+      dockerfile: services/Dockerfile
+      args: {MODULE: listing-service}
+    environment:
+      <<: *service-env
+      OTEL_SERVICE_NAME: listing-service
+      DB_NAME: radius_listing
+      S3_ENDPOINT: http://minio:9000
+      S3_PUBLIC_ENDPOINT: http://localhost:9000
+      S3_BUCKET: radius-photos
+      S3_ACCESS_KEY: radius
+      S3_SECRET_KEY: radius-secret
+
+  search-service:
+    <<: *service-base
+    profiles: [all]
+    build:
+      context: ..
+      dockerfile: services/Dockerfile
+      args: {MODULE: search-service}
+    environment:
+      <<: *service-env
+      OTEL_SERVICE_NAME: search-service
+      DB_NAME: radius_search
+
+  booking-service:
+    <<: *service-base
+    profiles: [all]
+    build:
+      context: ..
+      dockerfile: services/Dockerfile
+      args: {MODULE: booking-service}
+    environment:
+      <<: *service-env
+      OTEL_SERVICE_NAME: booking-service
+      DB_NAME: radius_booking
+      PAYMENT_SERVICE_URL: http://payment-service:8085
+      LISTING_SERVICE_URL: http://listing-service:8082
+
+  payment-service:
+    <<: *service-base
+    profiles: [all]
+    build:
+      context: ..
+      dockerfile: services/Dockerfile
+      args: {MODULE: payment-service}
+    environment:
+      <<: *service-env
+      OTEL_SERVICE_NAME: payment-service
+      DB_NAME: radius_payment
+
+  notification-service:
+    <<: *service-base
+    profiles: [all]
+    build:
+      context: ..
+      dockerfile: services/Dockerfile
+      args: {MODULE: notification-service}
+    environment:
+      <<: *service-env
+      OTEL_SERVICE_NAME: notification-service
+      DB_NAME: radius_notification
+
+volumes:
+  pgdata:
+  redisdata:
+  miniodata:
+
+networks:
+  radius:
+    driver: bridge

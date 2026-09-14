@@ -1,0 +1,17 @@
+{
+  "name": "Radius",
+  "short_name": "Radius",
+  "description": "A neighbourhood index of people, skills and things.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f2f2f3",
+  "theme_color": "#5980a6",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

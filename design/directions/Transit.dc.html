@@ -1,0 +1,110 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400;500;600;700&display=swap">
+  <style>
+    body { margin: 0; background: #FFFFFF; font-family: 'Familjen Grotesk', system-ui, sans-serif; }
+    a { color: #101216; text-decoration: none; }
+    a:hover { color: #E8442B; }
+  </style>
+</helmet>
+
+<div style="width: 1120px; height: 820px; background: #FFFFFF; color: #101216; display: flex; flex-direction: column; overflow: hidden;">
+
+  <div style="display: flex; align-items: center; justify-content: space-between; padding: 0 30px; height: 62px; background: #101216; color: #FFFFFF;">
+    <div style="display: flex; align-items: center; gap: 13px;">
+      <div style="width: 30px; height: 30px; border-radius: 50%; background: {{accent}}; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 15px; color: #FFFFFF;">R</div>
+      <span style="font-size: 19px; font-weight: 700; letter-spacing: -0.01em;">Radius</span>
+      <span style="padding: 4px 10px; border-radius: 4px; background: rgba(255,255,255,0.14); font-size: 12px; font-weight: 500;">Kreuzberg line</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 26px; font-size: 14px; font-weight: 500;">
+      <a href="#" style="color: #FFFFFF;">Nearby</a>
+      <a href="#" style="color: rgba(255,255,255,0.62);">Search</a>
+      <a href="#" style="color: rgba(255,255,255,0.62);">Requests</a>
+      <span style="padding: 9px 18px; border-radius: 4px; background: {{accent}}; font-size: 13px; font-weight: 600;">List something</span>
+    </div>
+  </div>
+
+  <div style="display: flex; align-items: flex-end; justify-content: space-between; padding: 26px 30px 18px;">
+    <div style="display: flex; flex-direction: column; gap: 6px;">
+      <span style="font-size: 12px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: #6B7078;">All stops within 5 km</span>
+      <h1 style="margin: 0; font-size: 42px; font-weight: 700; letter-spacing: -0.03em; line-height: 1;">Nearby</h1>
+    </div>
+    <div style="display: flex; gap: 8px;">
+      <sc-for list="{{lines}}" as="line" hint-placeholder-count="5">
+        <div style="display: flex; align-items: center; gap: 7px; padding: 8px 13px; border-radius: 4px; background: #F4F4F6;">
+          <div style="width: 13px; height: 13px; border-radius: 50%; background: {{line.color}};"></div>
+          <span style="font-size: 12px; font-weight: 600;">{{line.label}}</span>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <div style="display: flex; padding: 0 30px 26px; gap: 0; flex-grow: 1;">
+    <div style="width: 76px; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; padding-top: 12px;">
+      <div style="width: 6px; flex-grow: 1; background: linear-gradient(#D8DADF 0%, #D8DADF 100%); border-radius: 999px;"></div>
+    </div>
+
+    <div style="flex-grow: 1; display: flex; flex-direction: column; margin-left: -46px;">
+      <sc-for list="{{stops}}" as="stop" hint-placeholder-count="6">
+        <div style="display: flex; align-items: center; gap: 22px; padding: 13px 0; flex-grow: 1;">
+          <div style="width: 46px; flex-shrink: 0; display: flex; align-items: center; justify-content: center;">
+            <div style="width: 26px; height: 26px; border-radius: 50%; background: #FFFFFF; border: 5px solid {{stop.color}};"></div>
+          </div>
+          <div style="width: 84px; flex-shrink: 0; text-align: right;">
+            <span style="font-size: 20px; font-weight: 700; letter-spacing: -0.02em;">{{stop.distance}}</span>
+          </div>
+          <div style="flex-grow: 1; display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-radius: 6px; background: #F4F4F6; border-left: 5px solid {{stop.color}};">
+            <div style="display: flex; flex-direction: column; gap: 3px;">
+              <div style="display: flex; align-items: center; gap: 9px;">
+                <span style="padding: 2px 8px; border-radius: 3px; background: {{stop.color}}; color: #FFFFFF; font-size: 10px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;">{{stop.kind}}</span>
+                <span style="font-size: 17px; font-weight: 600; letter-spacing: -0.015em;">{{stop.title}}</span>
+              </div>
+              <span style="font-size: 13px; color: #6B7078;">{{stop.owner}}</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 16px;">
+              <span style="font-size: 20px; font-weight: 700; letter-spacing: -0.02em;">{{stop.price}}</span>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#101216" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 6l6 6-6 6"></path>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</div>
+
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":1120,"height":820},"accent":{"editor":"color","default":"#E8442B","options":["#E8442B","#1B6FD4","#0F9463","#7A3FC4"]}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      accent: this.props.accent ?? '#E8442B',
+      lines: [
+        { label: 'Rent',  color: '#1B6FD4' },
+        { label: 'Hire',  color: '#0F9463' },
+        { label: 'Teach', color: '#7A3FC4' },
+        { label: 'Sell',  color: '#E8A020' },
+        { label: 'Want',  color: '#D6386B' }
+      ],
+      stops: [
+        { distance: '100 m',  kind: 'Rent',  title: 'Aluminium ladder, 3 m',     owner: 'Amara Okafor',   price: '€5',  color: '#1B6FD4' },
+        { distance: '200 m',  kind: 'Teach', title: 'Video editing, the basics', owner: 'Priya Raman',    price: '€30', color: '#7A3FC4' },
+        { distance: '300 m',  kind: 'Hire',  title: 'Electrician, small jobs',   owner: 'Amara Okafor',   price: '€35', color: '#0F9463' },
+        { distance: '500 m',  kind: 'Sell',  title: 'Laser printer, working',    owner: 'Erik Lindqvist', price: '€40', color: '#E8A020' },
+        { distance: '600 m',  kind: 'Rent',  title: 'Projector + 2 m screen',    owner: 'Erik Lindqvist', price: '€15', color: '#1B6FD4' },
+        { distance: '2.3 km', kind: 'Rent',  title: 'Cordless drill + bits',     owner: 'Jonas Meyer',    price: '€4',  color: '#1B6FD4' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

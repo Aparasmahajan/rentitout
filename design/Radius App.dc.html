@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/industry-e81e33a9-683c-4ebf-a5a4-a47e4fc446de/styles.css">
+<script src="_ds/industry-e81e33a9-683c-4ebf-a5a4-a47e4fc446de/_ds_bundle.js"></script>
+<style>
+  body { margin: 0; }
+  a { color: var(--color-accent-700); }
+  a:hover { color: var(--color-accent); }
+  .scroller { overflow-y: auto; scrollbar-width: none; }
+  .scroller::-webkit-scrollbar { display: none; }
+  .hatch { background-image: repeating-linear-gradient(45deg, color-mix(in srgb, var(--color-accent) 16%, transparent) 0 1px, transparent 1px 8px); }
+</style>
+</helmet>
+
+<div style="min-height: 100vh; background: var(--color-bg); color: var(--color-text); font-family: var(--font-body); padding: 40px 32px 56px; display: flex; gap: 44px; align-items: flex-start; justify-content: center; flex-wrap: wrap">
+
+  <div style="width: 290px; flex: none; padding-top: 6px">
+    <div style="font-family: var(--font-heading); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-accent-700)">Phase 1 — working prototype</div>
+    <h1 style="font-size: 50px; margin: 6px 0 12px; letter-spacing: -0.02em">RADIUS</h1>
+    <p style="font-size: 14px; line-height: 1.6; color: color-mix(in srgb, var(--color-text) 72%, transparent); text-wrap: pretty">Everything and everyone useful within walking distance. Renters get things cheap; owners earn from what already sits idle.</p>
+
+    <div class="blueprint" style="margin-top: 26px; padding: 13px 15px">
+      <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+      <div style="display: grid; grid-template-columns: 1fr auto; gap: 7px 12px; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; font-family: var(--font-heading)">
+        <span style="color: color-mix(in srgb, var(--color-text) 55%, transparent)">Fig. 01 — handheld</span><span>390 × 844</span>
+        <span style="color: color-mix(in srgb, var(--color-text) 55%, transparent)">Live screens</span><span>11</span>
+        <span style="color: color-mix(in srgb, var(--color-text) 55%, transparent)">Opted in nearby</span><span>{{ memberCount }}</span>
+      </div>
+    </div>
+
+    <div style="margin-top: 24px">
+      <div style="font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; font-family: var(--font-heading); color: color-mix(in srgb, var(--color-text) 55%, transparent); margin-bottom: 8px">Jump to a flow</div>
+      <sc-for list="{{ flows }}" as="f" hint-placeholder-count="6">
+        <button onClick="{{ f.go }}" style="width: 100%; display: grid; grid-template-columns: 26px 1fr; gap: 10px; align-items: baseline; text-align: left; background: transparent; border: 0; border-top: 1px solid var(--color-divider); padding: 10px 2px; cursor: pointer; font-family: var(--font-body); font-size: 13px; color: var(--color-text)" style-hover="background: color-mix(in srgb, var(--color-accent) 9%, transparent)">
+          <span style="font-family: var(--font-heading); font-size: 12px; color: var(--color-accent-700)">{{ f.num }}</span>
+          <span>{{ f.label }}</span>
+        </button>
+      </sc-for>
+    </div>
+
+    <div style="margin-top: 24px">
+      <div style="font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; font-family: var(--font-heading); color: color-mix(in srgb, var(--color-text) 55%, transparent); margin-bottom: 8px">Search — two takes</div>
+      <p style="font-size: 13px; line-height: 1.55; margin: 0 0 10px; color: color-mix(in srgb, var(--color-text) 70%, transparent)">A reads a plain sentence and pulls out skill, distance and day. B is structured filters. Switch inside the search screen.</p>
+      <div style="display: flex; gap: 6px">
+        <button class="btn btn-secondary" onClick="{{ useAsk }}" style="min-height: 40px; flex: 1; background: {{ askBg }}; color: {{ askFg }}">A — Ask</button>
+        <button class="btn btn-secondary" onClick="{{ useFilter }}" style="min-height: 40px; flex: 1; background: {{ filterBg }}; color: {{ filterFg }}">B — Filter</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="blueprint" style="width: 390px; height: 844px; flex: none; background: var(--color-bg); position: relative; box-shadow: var(--shadow-lg)">
+    <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+
+    <div style="position: absolute; inset: 0; display: flex; flex-direction: column; overflow: hidden">
+
+      <div style="flex: none; display: flex; align-items: center; justify-content: space-between; padding: 11px 18px 4px; font-family: var(--font-heading); font-size: 12px; letter-spacing: 0.06em; color: color-mix(in srgb, var(--color-text) 60%, transparent)">
+        <span>9:41</span>
+        <span style="display: inline-flex; align-items: center; gap: 4px">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+          {{ cityLabel }}
+        </span>
+      </div>
+
+      <div class="scroller" style="flex: 1">
+
+        <sc-if value="{{ isFeed }}" hint-placeholder-val="{{ true }}">
+          <div style="padding: 10px 0 24px">
+            <div style="padding: 0 18px">
+              <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px">
+                <span style="font-family: var(--font-heading); font-size: 21px; letter-spacing: 0.04em">RADIUS</span>
+                <div style="display: flex; align-items: center; gap: 8px">
+                  <span style="font-family: var(--font-heading); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-accent-700)">Within {{ radiusLabel }}</span>
+                  <button class="btn btn-secondary btn-icon" onClick="{{ goMap }}" style="width: 44px; height: 44px" title="Map view">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                  </button>
+                </div>
+              </div>
+              <button onClick="{{ goSearch }}" class="blueprint" style="width: 100%; margin-top: 12px; display: flex; align-items: center; gap: 9px; padding: 12px; min-height: 48px; background: var(--color-surface); cursor: pointer; text-align: left; font-family: var(--font-body); font-size: 14px; color: color-mix(in srgb, var(--color-text) 58%, transparent)" style-hover="border-color: var(--color-accent)">
+                <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="flex: none; color: var(--color-accent)"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path></svg>
+                Search a skill, a tool, or just ask
+              </button>
+            </div>
+
+            <div class="scroller" style="display: flex; gap: 6px; padding: 14px 18px 2px; overflow-x: auto">
+              <sc-for list="{{ cats }}" as="c" hint-placeholder-count="6">
+                <button onClick="{{ c.go }}" class="tag" style="flex: none; cursor: pointer; min-height: 34px; font-family: var(--font-heading); letter-spacing: 0.08em; text-transform: uppercase; font-size: 11px; border: 1px solid {{ c.bd }}; background: {{ c.bg }}; color: {{ c.fg }}">{{ c.label }}</button>
+              </sc-for>
+            </div>
+
+            <div style="padding: 14px 18px 0; display: flex; flex-direction: column; gap: 10px">
+              <sc-for list="{{ feed }}" as="r" hint-placeholder-count="4">
+                <button class="blueprint" onClick="{{ r.open }}" style="text-align: left; background: transparent; padding: 12px; cursor: pointer; font-family: var(--font-body); color: var(--color-text); display: flex; flex-direction: column; gap: 9px" style-hover="border-color: var(--color-accent)">
+                  <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+                  <span style="display: grid; grid-template-columns: 46px 1fr auto; gap: 11px; align-items: start">
+                    <span class="hatch" style="width: 46px; height: 46px; border: 1px solid var(--color-divider); display: grid; place-items: center; font-family: var(--font-heading); font-size: 14px; color: var(--color-accent-800)">{{ r.initials }}</span>
+                    <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0">
+                      <span style="font-family: var(--font-heading); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-accent-700)">{{ r.kicker }}</span>
+                      <span style="font-family: var(--font-heading); font-size: 18px; line-height: 1.14">{{ r.name }}</span>
+                      <span style="font-size: 12px; color: color-mix(in srgb, var(--color-text) 62%, transparent)">{{ r.sub }}</span>
+                    </span>
+                    <span style="text-align: right; display: flex; flex-direction: column; gap: 2px">
+                      <span style="font-family: var(--font-heading); font-size: 16px">{{ r.price }}</span>
+                      <span style="font-size: 11px; color: color-mix(in srgb, var(--color-text) 55%, transparent)">{{ r.dist }}</span>
+                    </span>
+                  </span>
+                  <span style="display: flex; align-items: center; gap: 9px; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; font-family: var(--font-heading); color: color-mix(in srgb, var(--color-text) 55%, transparent); border-top: 1px solid var(--color-divider); padding-top: 8px">
+                    <span>{{ r.trust }}</span>
+                    <span style="margin-left: auto; color: var(--color-accent-700)">{{ r.availText }}</span>
+                  </span>
+                </button>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isSearch }}">
+          <div style="padding: 10px 18px 24px">
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px">
+              <button class="btn btn-ghost" onClick="{{ goFeed }}" style="min-height: 40px; padding-left: 0">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>
+                Feed
+              </button>
+              <div class="seg" style="flex: none">
+                <button class="seg-opt" onClick="{{ useAsk }}" style="border: 0; cursor: pointer; font-family: var(--font-body); min-height: 38px; background: {{ askBg }}; color: {{ askFg }}">A — Ask</button>
+                <button class="seg-opt" onClick="{{ useFilter }}" style="border: 0; border-left: 1px solid var(--color-divider); cursor: pointer; font-family: var(--font-body); min-height: 38px; background: {{ filterBg }}; color: {{ filterFg }}">B — Filter</button>
+              </div>
+            </div>
+
+            <sc-if value="{{ modeAsk }}">
+              <div style="margin-top: 12px">
+                <h2 style="font-size: 26px; margin: 0 0 4px; letter-spacing: -0.02em">Say what you need</h2>
+                <p style="font-size: 13px; margin: 0 0 12px; color: color-mix(in srgb, var(--color-text) 60%, transparent)">Plain words. Radius pulls out the skill, the distance and the day.</p>
+                <div class="blueprint" style="padding: 12px; background: var(--color-surface)">
+                  <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+                  <textarea class="input" value="{{ draft }}" onChange="{{ onDraft }}" onKeyDown="{{ onDraftKey }}" placeholder="I need someone who knows video editing and lives within 5 km." style="min-height: 74px; border: 0; background: transparent; padding: 0; font-size: 15px; line-height: 1.5; resize: none"></textarea>
+                  <button class="btn btn-primary blueprint" onClick="{{ runSearch }}" style="min-height: 46px; width: 100%; margin-top: 10px">
+                    <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path></svg>
+                    Search the community
+                  </button>
+                </div>
+                <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px">
+                  <sc-for list="{{ examples }}" as="ex" hint-placeholder-count="3">
+                    <button class="tag tag-outline" onClick="{{ ex.go }}" style="cursor: pointer; background: transparent; font-family: var(--font-body); min-height: 34px; text-align: left; font-size: 12px">{{ ex.short }}</button>
+                  </sc-for>
+                </div>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ modeFilter }}">
+              <div style="margin-top: 12px">
+                <h2 style="font-size: 26px; margin: 0 0 12px; letter-spacing: -0.02em">Narrow it down</h2>
+                <div class="field" style="margin-bottom: 14px">
+                  <label>Looking for</label>
+                  <div style="display: flex; flex-wrap: wrap; gap: 6px">
+                    <sc-for list="{{ cats }}" as="c" hint-placeholder-count="6">
+                      <button onClick="{{ c.go }}" class="tag" style="cursor: pointer; min-height: 34px; font-family: var(--font-heading); letter-spacing: 0.08em; text-transform: uppercase; font-size: 11px; border: 1px solid {{ c.bd }}; background: {{ c.bg }}; color: {{ c.fg }}">{{ c.label }}</button>
+                    </sc-for>
+                  </div>
+                </div>
+                <div class="field" style="margin-bottom: 14px">
+                  <label>Skill or item</label>
+                  <input class="input" value="{{ term }}" onChange="{{ onTerm }}" onKeyDown="{{ onDraftKey }}" placeholder="video editing, ladder, geyser…" style="min-height: 44px">
+                </div>
+                <div class="field" style="margin-bottom: 14px">
+                  <label>Distance — within {{ radiusLabel }}</label>
+                  <input type="range" min="1" max="15" step="1" value="{{ radius }}" onChange="{{ onRadius }}" style="width: 100%; accent-color: var(--color-accent)">
+                </div>
+                <label class="radio" style="min-height: 44px; margin-bottom: 4px">
+                  <input type="checkbox" checked="{{ onlyAvailable }}" onChange="{{ toggleAvailable }}">
+                  <span class="dot"></span>
+                  <span>Free today only</span>
+                </label>
+                <button class="btn btn-primary blueprint" onClick="{{ runFilter }}" style="min-height: 46px; width: 100%; margin-top: 8px">
+                  <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+                  Show {{ filterCount }} matches
+                </button>
+              </div>
+            </sc-if>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isResults }}">
+          <div style="padding: 10px 18px 24px">
+            <button class="btn btn-ghost" onClick="{{ goSearch }}" style="min-height: 40px; padding-left: 0; margin-bottom: 8px">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>
+              Change search
+            </button>
+
+            <div class="blueprint" style="padding: 11px 12px">
+              <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+              <div style="font-size: 13px; line-height: 1.45; font-style: italic; color: color-mix(in srgb, var(--color-text) 78%, transparent)">{{ queryEcho }}</div>
+              <div style="display: flex; flex-wrap: wrap; gap: 5px; margin-top: 9px">
+                <sc-for list="{{ chips }}" as="c" hint-placeholder-count="3">
+                  <span class="tag tag-accent" style="font-family: var(--font-heading); letter-spacing: 0.08em; text-transform: uppercase; font-size: 10px">{{ c.t }}</span>
+                </sc-for>
+              </div>
+            </div>
+
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 16px 0 4px">
+              <span style="font-family: var(--font-heading); font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase">{{ resultCount }} matches</span>
+              <div class="seg">
+                <sc-for list="{{ sorts }}" as="s" hint-placeholder-count="3">
+                  <button class="seg-opt" onClick="{{ s.go }}" style="border: 0; border-left: 1px solid var(--color-divider); cursor: pointer; font-family: var(--font-body); min-height: 36px; font-size: 12px; background: {{ s.bg }}; color: {{ s.fg }}">{{ s.label }}</button>
+                </sc-for>
+              </div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 10px">
+              <sc-for list="{{ results }}" as="r" hint-placeholder-count="4">
+                <button class="blueprint" onClick="{{ r.open }}" style="text-align: left; background: transparent; padding: 12px; cursor: pointer; font-family: var(--font-body); color: var(--color-text); display: flex; flex-direction: column; gap: 9px" style-hover="border-color: var(--color-accent)">
+                  <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+                  <span style="display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: start">
+                    <span style="display: flex; flex-direction: column; gap: 3px">
+                      <span style="font-family: var(--font-heading); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-accent-700)">{{ r.kicker }}</span>
+                      <span style="font-family: var(--font-heading); font-size: 19px; line-height: 1.12">{{ r.name }}</span>
+                      <span style="font-size: 12px; color: color-mix(in srgb, var(--color-text) 62%, transparent)">{{ r.sub }}</span>
+                    </span>
+                    <span style="text-align: right; display: flex; flex-direction: column; gap: 2px">
+                      <span style="font-family: var(--font-heading); font-size: 17px">{{ r.price }}</span>
+                      <span style="font-size: 11px; color: color-mix(in srgb, var(--color-text) 55%, transparent)">{{ r.dist }}</span>
+                    </span>
+                  </span>
+                  <span style="display: flex; flex-wrap: wrap; gap: 5px">
+                    <sc-for list="{{ r.tags }}" as="t" hint-placeholder-count="2">
+                      <span class="tag tag-neutral" style="font-size: 10px">{{ t.t }}</span>
+                    </sc-for>
+                  </span>
+                  <span style="display: flex; align-items: center; gap: 9px; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; font-family: var(--font-heading); color: color-mix(in srgb, var(--color-text) 55%, transparent); border-top: 1px solid var(--color-divider); padding-top: 8px">
+                    <span>{{ r.trust }}</span>
+                    <span style="margin-left: auto; color: var(--color-accent-700)">{{ r.availText }}</span>
+                  </span>
+                </button>
+              </sc-for>
+            </div>
+
+            <sc-if value="{{ noResults }}">
+              <div class="blueprint hatch" style="padding: 26px 18px; text-align: center; margin-top: 12px">
+                <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+                <div style="font-family: var(--font-heading); font-size: 18px; margin-bottom: 6px">Nothing within {{ radiusLabel }}</div>
+                <p style="font-size: 13px; margin: 0 0 14px; color: color-mix(in srgb, var(--color-text) 62%, transparent)">Widen the radius, or post it as a need — members see open needs in their feed.</p>
+                <button class="btn btn-secondary" onClick="{{ widen }}" style="min-height: 44px">Widen to 15 km</button>
+              </div>
+            </sc-if>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isMap }}">
+          <div style="padding: 10px 18px 24px">
+            <div style="display: flex; align-items: center; justify-content: space-between">
+              <button class="btn btn-ghost" onClick="{{ goFeed }}" style="min-height: 40px; padding-left: 0">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>
+                Feed
+              </button>
+              <span style="font-family: var(--font-heading); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-accent-700)">{{ mapCount }} within {{ radiusLabel }}</span>
+            </div>
+            <h2 style="font-size: 26px; margin: 8px 0 12px; letter-spacing: -0.02em">Around you</h2>
+            <div class="blueprint" style="position: relative; aspect-ratio: 1 / 1; background-image: linear-gradient(color-mix(in srgb, var(--color-text) 7%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in srgb, var(--color-text) 7%, transparent) 1px, transparent 1px); background-size: 13% 13%">
+              <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+              <div style="position: absolute; left: 50%; top: 50%; width: 62%; height: 62%; transform: translate(-50%, -50%); border: 1px dashed var(--color-accent-400); border-radius: 50%"></div>
+              <div style="position: absolute; left: 50%; top: 50%; width: 10px; height: 10px; transform: translate(-50%, -50%); background: var(--color-accent-900)"></div>
+              <div style="position: absolute; left: 50%; top: 50%; margin: 10px 0 0 10px; font-family: var(--font-heading); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-accent-800)">You</div>
+              <sc-for list="{{ pins }}" as="p" hint-placeholder-count="6">
+                <button onClick="{{ p.open }}" title="{{ p.name }}" style="position: absolute; left: {{ p.x }}; top: {{ p.y }}; transform: translate(-50%, -50%); min-width: 44px; min-height: 44px; display: grid; place-items: center; background: transparent; border: 0; cursor: pointer; padding: 0">
+                  <span style="display: grid; place-items: center; width: 26px; height: 26px; border: 1px solid var(--color-accent); background: {{ p.bg }}; color: {{ p.fg }}; font-family: var(--font-heading); font-size: 11px">{{ p.mark }}</span>
+                </button>
+              </sc-for>
+            </div>
+            <div style="display: flex; gap: 14px; margin-top: 10px; font-size: 11px; color: color-mix(in srgb, var(--color-text) 58%, transparent)">
+              <span>■ Person</span><span>□ Thing</span><span>Dashed ring — {{ radiusLabel }}</span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 14px">
+              <sc-for list="{{ pins }}" as="p" hint-placeholder-count="4">
+                <button onClick="{{ p.open }}" style="display: grid; grid-template-columns: 26px 1fr auto; gap: 10px; align-items: center; text-align: left; background: transparent; border: 0; border-top: 1px solid var(--color-divider); padding: 10px 2px; cursor: pointer; font-family: var(--font-body); font-size: 13px; color: var(--color-text); min-height: 44px" style-hover="background: color-mix(in srgb, var(--color-accent) 8%, transparent)">
+                  <span style="font-family: var(--font-heading); font-size: 11px; color: var(--color-accent-700)">{{ p.mark }}</span>
+                  <span>{{ p.name }}</span>
+                  <span style="font-family: var(--font-heading); font-size: 12px; color: color-mix(in srgb, var(--color-text) 55%, transparent)">{{ p.dist }}</span>
+                </button>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isDetail }}">
+          <div style="padding: 10px 0 20px">
+            <div style="padding: 0 18px">
+              <button class="btn btn-ghost" onClick="{{ goBack }}" style="min-height: 40px; padding-left: 0">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>
+                Back
+              </button>
+            </div>
+
+            <sc-if value="{{ d.isThing }}">
+              <div style="padding: 6px 18px 0">
+                <figure class="blueprint hatch" style="aspect-ratio: 4 / 3; display: grid; place-items: center">
+                  <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+                  <figcaption style="font-family: var(--font-heading); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-accent-800); margin: 0">Owner photo — 4:3</figcaption>
+                </figure>
+              </div>
+            </sc-if>
+
+            <div style="padding: 16px 18px 0">
+              <div style="font-family: var(--font-heading); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-accent-700)">{{ d.kicker }}</div>
+              <h2 style="font-size: 29px; margin: 5px 0 6px; letter-spacing: -0.02em">{{ d.name }}</h2>
+              <div style="font-size: 14px; color: color-mix(in srgb, var(--color-text) 70%, transparent)">{{ d.sub }}</div>
+
+              <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px">
+                <sc-if value="{{ d.verified }}">
+                  <span class="tag tag-accent" style="min-height: 26px">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 5px"><path d="M20 6 9 17l-5-5"></path></svg>
+                    ID verified
+                  </span>
+                </sc-if>
+                <span class="tag tag-neutral" style="min-height: 26px">{{ d.rating }} rating · {{ d.jobs }} completed</span>
+              </div>
+
+              <div class="blueprint" style="display: grid; grid-template-columns: 1fr 1fr 1fr; margin-top: 18px">
+                <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+                <sc-for list="{{ d.specs }}" as="s" hint-placeholder-count="3">
+                  <div style="padding: 11px 12px; border-right: 1px solid var(--color-divider)">
+                    <div style="font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; font-family: var(--font-heading); color: color-mix(in srgb, var(--color-text) 55%, transparent)">{{ s.k }}</div>
+                    <div style="font-family: var(--font-heading); font-size: 18px; margin-top: 3px">{{ s.v }}</div>
+                  </div>
+                </sc-for>
+              </div>
+
+              <p style="font-size: 14px; line-height: 1.6; margin: 18px 0 0; text-wrap: pretty">{{ d.blurb }}</p>
+
+              <div style="margin-top: 22px; display: flex; flex-direction: column; gap: 18px">
+                <sc-for list="{{ d.sections }}" as="sec" hint-placeholder-count="3">
+                  <div>
+                    <div style="font-family: var(--font-heading); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 58%, transparent); border-bottom: 1px solid var(--color-divider); padding-bottom: 6px; margin-bottom: 9px">{{ sec.title }}</div>
+                    <div style="display: flex; flex-wrap: wrap; gap: 6px">
+                      <sc-for list="{{ sec.items }}" as="t" hint-placeholder-count="3">
+                        <span class="tag tag-accent-2" style="font-size: 12px">{{ t.t }}</span>
+                      </sc-for>
+                    </div>
+                  </div>
+                </sc-for>
+
+                <div>
+                  <div style="font-family: var(--font-heading); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 58%, transparent); border-bottom: 1px solid var(--color-divider); padding-bottom: 6px; margin-bottom: 10px">Availability — next 7 days</div>
+                  <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px">
+                    <sc-for list="{{ d.week }}" as="w" hint-placeholder-count="7">
+                      <div style="text-align: center">
+                        <div style="font-family: var(--font-heading); font-size: 11px; color: color-mix(in srgb, var(--color-text) 55%, transparent)">{{ w.d }}</div>
+                        <div style="height: 28px; margin-top: 4px; border: 1px solid var(--color-divider); background: {{ w.bg }}"></div>
+                      </div>
+                    </sc-for>
+                  </div>
+                  <div style="display: flex; gap: 14px; margin-top: 8px; font-size: 11px; color: color-mix(in srgb, var(--color-text) 55%, transparent)">
+                    <span style="display: inline-flex; align-items: center; gap: 5px"><span style="width: 10px; height: 10px; background: var(--color-accent); display: inline-block"></span>Free</span>
+                    <span style="display: inline-flex; align-items: center; gap: 5px"><span style="width: 10px; height: 10px; border: 1px solid var(--color-divider); display: inline-block"></span>Booked</span>
+                  </div>
+                </div>
+
+                <div>
+                  <div style="font-family: var(--font-heading); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 58%, transparent); border-bottom: 1px solid var(--color-divider); padding-bottom: 6px; margin-bottom: 10px">What neighbours said</div>
+                  <div style="display: flex; flex-direction: column; gap: 12px">
+                    <sc-for list="{{ d.reviews }}" as="rv" hint-placeholder-count="2">
+                      <div style="display: grid; grid-template-columns: 32px 1fr; gap: 10px">
+                        <span class="hatch" style="width: 32px; height: 32px; border: 1px solid var(--color-divider); display: grid; place-items: center; font-family: var(--font-heading); font-size: 12px; color: var(--color-accent-800)">{{ rv.initials }}</span>
+                        <div>
+                          <div style="font-size: 11px; font-family: var(--font-heading); letter-spacing: 0.08em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 55%, transparent)">{{ rv.who }}</div>
+                          <div style="font-size: 13px; line-height: 1.5; color: color-mix(in srgb, var(--color-text) 78%, transparent)">{{ rv.text }}</div>
+                        </div>
+                      </div>
+                    </sc-for>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isReqs }}">
+          <div style="padding: 12px 18px 24px">
+            <h2 style="font-size: 28px; margin: 0 0 16px; letter-spacing: -0.02em">Requests</h2>
+
+            <div style="font-family: var(--font-heading); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 58%, transparent); border-bottom: 1px solid var(--color-divider); padding-bottom: 6px; margin-bottom: 10px">Coming to you</div>
+            <div style="display: flex; flex-direction: column; gap: 10px">
+              <sc-for list="{{ incoming }}" as="q" hint-placeholder-count="2">
+                <div class="blueprint" style="padding: 12px">
+                  <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+                  <div style="display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: start">
+                    <div>
+                      <div style="font-family: var(--font-heading); font-size: 17px; line-height: 1.15">{{ q.who }}</div>
+                      <div style="font-size: 12px; color: color-mix(in srgb, var(--color-text) 62%, transparent)">{{ q.what }}</div>
+                    </div>
+                    <span class="tag" style="background: {{ q.statusBg }}; color: var(--color-accent-800); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; font-family: var(--font-heading)">{{ q.status }}</span>
+                  </div>
+                  <div style="display: flex; gap: 14px; margin-top: 10px; padding-top: 9px; border-top: 1px solid var(--color-divider); font-family: var(--font-heading); font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 58%, transparent)">
+                    <span>{{ q.when }}</span>
+                    <span style="margin-left: auto; color: var(--color-text)">{{ q.amount }}</span>
+                  </div>
+                  <sc-if value="{{ q.pending }}">
+                    <div style="display: flex; gap: 8px; margin-top: 11px">
+                      <button class="btn btn-primary" onClick="{{ q.accept }}" style="min-height: 44px; flex: 1">Accept</button>
+                      <button class="btn btn-secondary" onClick="{{ q.decline }}" style="min-height: 44px">Decline</button>
+                      <button class="btn btn-secondary" onClick="{{ q.chat }}" style="min-height: 44px; width: 44px; padding: 0">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                      </button>
+                    </div>
+                  </sc-if>
+                </div>
+              </sc-for>
+            </div>
+
+            <div style="font-family: var(--font-heading); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 58%, transparent); border-bottom: 1px solid var(--color-divider); padding-bottom: 6px; margin: 24px 0 10px">Sent by you</div>
+            <div style="display: flex; flex-direction: column; gap: 10px">
+              <sc-for list="{{ outgoing }}" as="q" hint-placeholder-count="1">
+                <button onClick="{{ q.chat }}" class="blueprint" style="padding: 12px; text-align: left; background: transparent; cursor: pointer; font-family: var(--font-body); color: var(--color-text); display: block; width: 100%" style-hover="border-color: var(--color-accent)">
+                  <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+                  <span style="display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: start">
+                    <span>
+                      <span style="display: block; font-family: var(--font-heading); font-size: 17px; line-height: 1.15">{{ q.who }}</span>
+                      <span style="display: block; font-size: 12px; color: color-mix(in srgb, var(--color-text) 62%, transparent)">{{ q.what }}</span>
+                    </span>
+                    <span class="tag tag-accent" style="font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; font-family: var(--font-heading)">{{ q.status }}</span>
+                  </span>
+                  <span style="display: flex; gap: 14px; margin-top: 10px; padding-top: 9px; border-top: 1px solid var(--color-divider); font-family: var(--font-heading); font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 58%, transparent)">
+                    <span>{{ q.when }}</span>
+                    <span style="margin-left: auto; color: var(--color-text)">{{ q.amount }}</span>
+                  </span>
+                </button>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isChat }}">
+          <div style="padding: 10px 18px 16px; display: flex; flex-direction: column; min-height: 100%">
+            <div style="display: flex; align-items: center; gap: 10px">
+              <button class="btn btn-ghost" onClick="{{ goBack }}" style="min-height: 40px; padding-left: 0">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>
+              </button>
+              <div>
+                <div style="font-family: var(--font-heading); font-size: 18px; line-height: 1.1">{{ chatWho }}</div>
+                <div style="font-size: 11px; color: color-mix(in srgb, var(--color-text) 58%, transparent)">{{ chatSub }}</div>
+              </div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 8px; margin: 18px 0 auto">
+              <sc-for list="{{ msgs }}" as="m" hint-placeholder-count="3">
+                <div style="display: flex; justify-content: {{ m.align }}">
+                  <div style="max-width: 78%; padding: 9px 12px; font-size: 14px; line-height: 1.45; border: 1px solid {{ m.bd }}; background: {{ m.bg }}; color: {{ m.fg }}">{{ m.t }}</div>
+                </div>
+              </sc-for>
+            </div>
+
+            <div style="display: flex; gap: 8px; margin-top: 18px">
+              <input class="input" value="{{ mdraft }}" onChange="{{ onMsg }}" onKeyDown="{{ onMsgKey }}" placeholder="Write a message…" style="min-height: 46px">
+              <button class="btn btn-primary" onClick="{{ sendMsg }}" style="min-height: 46px; width: 52px; flex: none; padding: 0">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 2 11 13"></path><path d="M22 2l-7 20-4-9-9-4z"></path></svg>
+              </button>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isDash }}">
+          <div style="padding: 12px 18px 24px">
+            <h2 style="font-size: 28px; margin: 0 0 14px; letter-spacing: -0.02em">Your listings</h2>
+
+            <sc-if value="{{ showEarnings }}">
+              <div class="blueprint" style="display: grid; grid-template-columns: 1fr 1fr">
+                <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+                <div style="padding: 13px 14px; border-right: 1px solid var(--color-divider)">
+                  <div style="font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; font-family: var(--font-heading); color: color-mix(in srgb, var(--color-text) 55%, transparent)">Earned this month</div>
+                  <div style="font-family: var(--font-heading); font-size: 27px; margin-top: 3px">{{ earned }}</div>
+                </div>
+                <div style="padding: 13px 14px">
+                  <div style="font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; font-family: var(--font-heading); color: color-mix(in srgb, var(--color-text) 55%, transparent)">Saved by renting</div>
+                  <div style="font-family: var(--font-heading); font-size: 27px; margin-top: 3px">{{ saved }}</div>
+                </div>
+              </div>
+              <div style="font-size: 11px; margin-top: 7px; color: color-mix(in srgb, var(--color-text) 55%, transparent)">Radius takes no cut while we are growing. Payouts settle directly between neighbours.</div>
+            </sc-if>
+
+            <button class="btn btn-primary blueprint" onClick="{{ goCreate }}" style="min-height: 48px; width: 100%; margin-top: 16px">
+              <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>
+              List an item or a skill
+            </button>
+
+            <div style="font-family: var(--font-heading); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 58%, transparent); border-bottom: 1px solid var(--color-divider); padding-bottom: 6px; margin: 24px 0 10px">Live and paused</div>
+            <div style="display: flex; flex-direction: column; gap: 10px">
+              <sc-for list="{{ mine }}" as="m" hint-placeholder-count="3">
+                <div class="blueprint" style="padding: 12px">
+                  <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+                  <div style="display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: start">
+                    <div>
+                      <div style="font-family: var(--font-heading); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-accent-700)">{{ m.kind }}</div>
+                      <div style="font-family: var(--font-heading); font-size: 17px; line-height: 1.18; margin-top: 2px">{{ m.name }}</div>
+                    </div>
+                    <span class="tag" style="background: {{ m.statusBg }}; color: var(--color-accent-800); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; font-family: var(--font-heading)">{{ m.statusLabel }}</span>
+                  </div>
+                  <div style="display: flex; align-items: center; gap: 14px; margin-top: 10px; padding-top: 9px; border-top: 1px solid var(--color-divider); font-family: var(--font-heading); font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 58%, transparent)">
+                    <span style="color: var(--color-text)">{{ m.price }}</span>
+                    <span>{{ m.views }} views</span>
+                    <button class="btn btn-secondary" onClick="{{ m.toggle }}" style="margin-left: auto; min-height: 40px; font-size: 12px">{{ m.statusLabel }} — switch</button>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isCreate }}">
+          <div style="padding: 10px 18px 24px">
+            <div style="display: flex; align-items: center; justify-content: space-between">
+              <button class="btn btn-ghost" onClick="{{ prev }}" style="min-height: 40px; padding-left: 0">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>
+                Back
+              </button>
+              <span style="font-family: var(--font-heading); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-accent-700)">Step {{ cstep }} of 3</span>
+            </div>
+
+            <sc-if value="{{ step1 }}">
+              <div style="margin-top: 12px">
+                <h2 style="font-size: 26px; margin: 0 0 4px; letter-spacing: -0.02em">What are you listing?</h2>
+                <p style="font-size: 13px; margin: 0 0 14px; color: color-mix(in srgb, var(--color-text) 60%, transparent)">You can list as many things as you like, and switch any of them off later.</p>
+                <div style="display: flex; flex-direction: column; gap: 8px">
+                  <sc-for list="{{ ckinds }}" as="k" hint-placeholder-count="6">
+                    <button onClick="{{ k.go }}" class="blueprint" style="display: flex; align-items: center; gap: 10px; min-height: 48px; padding: 10px 12px; background: transparent; cursor: pointer; text-align: left; font-family: var(--font-body); font-size: 14px; color: var(--color-text)" style-hover="border-color: var(--color-accent)">
+                      <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+                      <span style="width: 16px; height: 16px; flex: none; border-radius: 50%; border: 1.5px solid var(--color-divider); background: {{ k.dot }}; box-shadow: {{ k.ring }}"></span>
+                      {{ k.label }}
+                    </button>
+                  </sc-for>
+                </div>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ step2 }}">
+              <div style="margin-top: 12px">
+                <h2 style="font-size: 26px; margin: 0 0 14px; letter-spacing: -0.02em">Details</h2>
+                <div class="field" style="margin-bottom: 14px">
+                  <label>Title</label>
+                  <input class="input" value="{{ ctitle }}" onChange="{{ onCTitle }}" placeholder="Aluminium ladder, 12 ft" style="min-height: 44px">
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: end; margin-bottom: 14px">
+                  <div class="field">
+                    <label>Price — leave blank if free</label>
+                    <input class="input" value="{{ cprice }}" onChange="{{ onCPrice }}" placeholder="150" style="min-height: 44px">
+                  </div>
+                  <div class="seg">
+                    <sc-for list="{{ cunits }}" as="u" hint-placeholder-count="4">
+                      <button class="seg-opt" onClick="{{ u.go }}" style="border: 0; border-left: 1px solid var(--color-divider); cursor: pointer; font-family: var(--font-body); min-height: 44px; font-size: 12px; background: {{ u.bg }}; color: {{ u.fg }}">{{ u.label }}</button>
+                    </sc-for>
+                  </div>
+                </div>
+                <div class="field">
+                  <label>Condition, quirks, pickup — anything a neighbour should know</label>
+                  <textarea class="input" value="{{ cdesc }}" onChange="{{ onCDesc }}" placeholder="Some paint marks on the rails, rungs are solid. Pick up any evening after seven." style="min-height: 92px"></textarea>
+                </div>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ step3 }}">
+              <div style="margin-top: 12px">
+                <h2 style="font-size: 26px; margin: 0 0 14px; letter-spacing: -0.02em">Check and publish</h2>
+                <div class="blueprint" style="padding: 14px">
+                  <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+                  <div style="font-family: var(--font-heading); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-accent-700)">{{ ckind }}</div>
+                  <div style="font-family: var(--font-heading); font-size: 22px; line-height: 1.15; margin: 4px 0 8px">{{ cTitleOut }}</div>
+                  <div style="font-family: var(--font-heading); font-size: 17px">{{ cPriceOut }}</div>
+                  <p style="font-size: 13px; line-height: 1.55; margin: 10px 0 0; color: color-mix(in srgb, var(--color-text) 75%, transparent)">{{ cDescOut }}</p>
+                </div>
+                <div style="font-size: 12px; line-height: 1.55; margin-top: 12px; color: color-mix(in srgb, var(--color-text) 58%, transparent)">Visible to members within their own radius. No listing fee and no commission for now — money changes hands between the two of you.</div>
+              </div>
+            </sc-if>
+
+            <div style="display: flex; gap: 8px; margin-top: 18px">
+              <sc-if value="{{ step3 }}">
+                <button class="btn btn-primary blueprint" onClick="{{ publish }}" style="min-height: 48px; flex: 1">
+                  <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+                  Publish listing
+                </button>
+              </sc-if>
+              <sc-if value="{{ notLast }}">
+                <button class="btn btn-primary blueprint" onClick="{{ next }}" disabled="{{ cantNext }}" style="min-height: 48px; flex: 1">
+                  <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+                  Continue
+                </button>
+              </sc-if>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isProfile }}">
+          <div style="padding: 12px 18px 24px">
+            <div style="display: grid; grid-template-columns: 56px 1fr; gap: 12px; align-items: center">
+              <span class="hatch" style="width: 56px; height: 56px; border: 1px solid var(--color-divider); display: grid; place-items: center; font-family: var(--font-heading); font-size: 17px; color: var(--color-accent-800)">RM</span>
+              <div>
+                <h2 style="font-size: 26px; margin: 0; letter-spacing: -0.02em">Rohit Mane</h2>
+                <div style="font-size: 12px; color: color-mix(in srgb, var(--color-text) 60%, transparent)">{{ cityLabel }} · member since 2024</div>
+              </div>
+            </div>
+
+            <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px">
+              <span class="tag tag-accent" style="min-height: 26px">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 5px"><path d="M20 6 9 17l-5-5"></path></svg>
+                ID verified
+              </span>
+              <span class="tag tag-neutral" style="min-height: 26px">4.8 rating · 23 completed</span>
+            </div>
+
+            <button onClick="{{ toggleOpen }}" class="blueprint" style="width: 100%; display: flex; align-items: center; gap: 10px; margin-top: 16px; padding: 12px; min-height: 52px; background: transparent; cursor: pointer; text-align: left; font-family: var(--font-body); font-size: 14px; color: var(--color-text)" style-hover="border-color: var(--color-accent)">
+              <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+              <span style="width: 34px; height: 20px; flex: none; border: 1px solid var(--color-accent); position: relative; display: block">
+                <span style="position: absolute; top: 2px; bottom: 2px; width: 14px; background: var(--color-accent); left: {{ knobLeft }}"></span>
+              </span>
+              {{ openLabel }}
+            </button>
+
+            <div style="margin-top: 22px; display: flex; flex-direction: column; gap: 18px">
+              <div>
+                <div style="font-family: var(--font-heading); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 58%, transparent); border-bottom: 1px solid var(--color-divider); padding-bottom: 6px; margin-bottom: 9px">Skills</div>
+                <div style="display: flex; flex-wrap: wrap; gap: 6px">
+                  <sc-for list="{{ profSkills }}" as="t" hint-placeholder-count="2">
+                    <button class="tag tag-accent" onClick="{{ t.drop }}" style="cursor: pointer; min-height: 30px; font-family: var(--font-body); font-size: 12px; border: 0">{{ t.t }} ×</button>
+                  </sc-for>
+                </div>
+              </div>
+              <div>
+                <div style="font-family: var(--font-heading); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 58%, transparent); border-bottom: 1px solid var(--color-divider); padding-bottom: 6px; margin-bottom: 9px">Things I can teach</div>
+                <div style="display: flex; flex-wrap: wrap; gap: 6px">
+                  <sc-for list="{{ profTeach }}" as="t" hint-placeholder-count="1">
+                    <button class="tag tag-accent-2" onClick="{{ t.drop }}" style="cursor: pointer; min-height: 30px; font-family: var(--font-body); font-size: 12px; border: 0">{{ t.t }} ×</button>
+                  </sc-for>
+                </div>
+              </div>
+              <div>
+                <div style="font-family: var(--font-heading); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 58%, transparent); border-bottom: 1px solid var(--color-divider); padding-bottom: 6px; margin-bottom: 9px">Things I need</div>
+                <div style="display: flex; flex-wrap: wrap; gap: 6px">
+                  <sc-for list="{{ profNeeds }}" as="t" hint-placeholder-count="1">
+                    <button class="tag tag-neutral" onClick="{{ t.drop }}" style="cursor: pointer; min-height: 30px; font-family: var(--font-body); font-size: 12px; border: 0">{{ t.t }} ×</button>
+                  </sc-for>
+                </div>
+              </div>
+              <div>
+                <div style="font-family: var(--font-heading); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 58%, transparent); border-bottom: 1px solid var(--color-divider); padding-bottom: 6px; margin-bottom: 9px">Hobbies</div>
+                <div style="display: flex; flex-wrap: wrap; gap: 6px">
+                  <sc-for list="{{ profHobbies }}" as="t" hint-placeholder-count="2">
+                    <button class="tag tag-outline" onClick="{{ t.drop }}" style="cursor: pointer; min-height: 30px; font-family: var(--font-body); font-size: 12px">{{ t.t }} ×</button>
+                  </sc-for>
+                </div>
+              </div>
+            </div>
+
+            <div class="blueprint" style="margin-top: 20px; padding: 12px; background: var(--color-surface)">
+              <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+              <div style="font-family: var(--font-heading); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 62%, transparent); margin-bottom: 9px">Add to your profile</div>
+              <div class="seg" style="margin-bottom: 10px">
+                <sc-for list="{{ chipTargets }}" as="c" hint-placeholder-count="4">
+                  <button class="seg-opt" onClick="{{ c.go }}" style="border: 0; border-left: 1px solid var(--color-divider); cursor: pointer; font-family: var(--font-body); min-height: 40px; font-size: 12px; background: {{ c.bg }}; color: {{ c.fg }}">{{ c.label }}</button>
+                </sc-for>
+              </div>
+              <div style="display: flex; gap: 8px">
+                <input class="input" value="{{ chip }}" onChange="{{ onChip }}" onKeyDown="{{ onChipKey }}" placeholder="Type and press enter" style="min-height: 44px">
+                <button class="btn btn-primary" onClick="{{ addChip }}" style="min-height: 44px; width: 52px; flex: none; padding: 0">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+
+      </div>
+
+      <sc-if value="{{ showCta }}">
+        <div style="flex: none; display: flex; gap: 8px; padding: 10px 18px 12px; border-top: 1px solid var(--color-divider); background: var(--color-bg)">
+          <button class="btn btn-secondary" onClick="{{ openChat }}" style="min-height: 48px; flex: none; width: 48px; padding: 0" title="Message">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+          </button>
+          <button class="btn btn-primary blueprint" onClick="{{ openBook }}" style="min-height: 48px; flex: 1">
+            <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+            {{ ctaLabel }}
+          </button>
+        </div>
+      </sc-if>
+
+      <div style="flex: none; display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--color-divider)">
+        <button onClick="{{ tabDiscover }}" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; min-height: 60px; background: transparent; border: 0; border-right: 1px solid var(--color-divider); cursor: pointer; font-family: var(--font-heading); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: {{ fgDiscover }}" style-hover="background: color-mix(in srgb, var(--color-accent) 8%, transparent)">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path></svg>
+          Discover
+        </button>
+        <button onClick="{{ tabReqs }}" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; min-height: 60px; background: transparent; border: 0; border-right: 1px solid var(--color-divider); cursor: pointer; font-family: var(--font-heading); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: {{ fgReqs }}" style-hover="background: color-mix(in srgb, var(--color-accent) 8%, transparent)">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+          Requests
+        </button>
+        <button onClick="{{ tabDash }}" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; min-height: 60px; background: transparent; border: 0; border-right: 1px solid var(--color-divider); cursor: pointer; font-family: var(--font-heading); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: {{ fgDash }}" style-hover="background: color-mix(in srgb, var(--color-accent) 8%, transparent)">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z"></path></svg>
+          Listings
+        </button>
+        <button onClick="{{ tabProfile }}" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; min-height: 60px; background: transparent; border: 0; cursor: pointer; font-family: var(--font-heading); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: {{ fgProfile }}" style-hover="background: color-mix(in srgb, var(--color-accent) 8%, transparent)">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+          Profile
+        </button>
+      </div>
+
+      <sc-if value="{{ sheetBook }}">
+        <div style="position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: flex-end; background: color-mix(in srgb, var(--color-neutral-900) 46%, transparent)">
+          <button onClick="{{ closeSheet }}" style="flex: 1; background: transparent; border: 0; cursor: pointer" aria-label="Close"></button>
+          <div class="blueprint" style="background: var(--color-bg); padding: 16px 18px 18px; max-height: 92%; overflow-y: auto">
+            <i class="corner tl"></i><i class="corner tr"></i>
+            <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 10px">
+              <h3 style="font-size: 22px; margin: 0; letter-spacing: -0.02em">{{ bookName }}</h3>
+              <button class="btn btn-ghost" onClick="{{ closeSheet }}" style="min-height: 40px">Close</button>
+            </div>
+
+            <div style="font-family: var(--font-heading); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 58%, transparent); border-bottom: 1px solid var(--color-divider); padding-bottom: 6px; margin: 16px 0 9px">Pick a day</div>
+            <div class="scroller" style="display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px">
+              <sc-for list="{{ bookDays }}" as="b" hint-placeholder-count="7">
+                <button onClick="{{ b.go }}" disabled="{{ b.dis }}" class="tag" style="flex: none; cursor: pointer; min-height: 40px; font-family: var(--font-heading); letter-spacing: 0.06em; text-transform: uppercase; font-size: 11px; border: 1px solid var(--color-divider); background: {{ b.bg }}; color: {{ b.fg }}">{{ b.label }}</button>
+              </sc-for>
+            </div>
+
+            <div style="font-family: var(--font-heading); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 58%, transparent); border-bottom: 1px solid var(--color-divider); padding-bottom: 6px; margin: 18px 0 9px">How many {{ unitLabel }}</div>
+            <div style="display: flex; align-items: center; gap: 12px">
+              <button class="btn btn-secondary" onClick="{{ qtyDown }}" style="min-height: 44px; width: 44px; padding: 0">−</button>
+              <span style="font-family: var(--font-heading); font-size: 24px; min-width: 28px; text-align: center">{{ bookQty }}</span>
+              <button class="btn btn-secondary" onClick="{{ qtyUp }}" style="min-height: 44px; width: 44px; padding: 0">+</button>
+            </div>
+
+            <div class="field" style="margin-top: 18px">
+              <label>Message — say what it is for</label>
+              <textarea class="input" value="{{ bookMsg }}" onChange="{{ onBookMsg }}" placeholder="Painting the stairwell this weekend. Can collect after seven." style="min-height: 72px"></textarea>
+            </div>
+
+            <div class="blueprint" style="margin-top: 16px; padding: 12px; background: var(--color-surface)">
+              <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+              <div style="display: grid; grid-template-columns: 1fr auto; gap: 6px 10px; font-size: 13px">
+                <span style="color: color-mix(in srgb, var(--color-text) 70%, transparent)">{{ lineRate }}</span><span>{{ lineSub }}</span>
+                <sc-if value="{{ hasDep }}">
+                  <span style="color: color-mix(in srgb, var(--color-text) 70%, transparent)">Refundable deposit</span>
+                </sc-if>
+                <sc-if value="{{ hasDep }}">
+                  <span>{{ lineDep }}</span>
+                </sc-if>
+                <span style="color: color-mix(in srgb, var(--color-text) 70%, transparent)">Radius fee</span><span>None for now</span>
+              </div>
+              <div style="display: grid; grid-template-columns: 1fr auto; margin-top: 10px; padding-top: 9px; border-top: 1px solid var(--color-divider); font-family: var(--font-heading); font-size: 18px">
+                <span>Payable to owner</span><span>{{ lineTotal }}</span>
+              </div>
+              <div style="font-size: 11px; margin-top: 8px; color: color-mix(in srgb, var(--color-text) 55%, transparent)">Settled between the two of you on handover. In-app payment and held deposits arrive in a later phase.</div>
+            </div>
+
+            <button class="btn btn-primary blueprint" onClick="{{ sendRequest }}" style="min-height: 50px; width: 100%; margin-top: 16px">
+              <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+              Send request
+            </button>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ sheetDone }}">
+        <div style="position: absolute; inset: 0; display: grid; place-items: center; padding: 24px; background: color-mix(in srgb, var(--color-neutral-900) 52%, transparent)">
+          <div class="blueprint" style="background: var(--color-bg); padding: 22px 20px; width: 100%; text-align: center">
+            <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+            <div style="width: 46px; height: 46px; margin: 0 auto 14px; border: 1px solid var(--color-accent); display: grid; place-items: center; color: var(--color-accent)">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 6 9 17l-5-5"></path></svg>
+            </div>
+            <h3 style="font-size: 24px; margin: 0 0 6px; letter-spacing: -0.02em">Request sent</h3>
+            <p style="font-size: 14px; line-height: 1.55; margin: 0 0 4px; color: color-mix(in srgb, var(--color-text) 72%, transparent)">{{ doneWho }} has it now. Most neighbours reply within an hour.</p>
+            <div style="font-family: var(--font-heading); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-accent-700); margin-bottom: 16px">{{ doneWhen }}</div>
+            <button class="btn btn-primary blueprint" onClick="{{ afterDone }}" style="min-height: 46px; width: 100%">
+              <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+              See my requests
+            </button>
+            <button class="btn btn-secondary" onClick="{{ closeSheet }}" style="min-height: 44px; width: 100%; margin-top: 8px">Keep browsing</button>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ hasToast }}">
+        <div style="position: absolute; left: 18px; right: 18px; bottom: 76px; padding: 11px 13px; background: var(--color-accent-900); color: var(--color-bg); font-size: 13px; line-height: 1.4; box-shadow: var(--shadow-md)">{{ toast }}</div>
+      </sc-if>
+
+    </div>
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:800,&quot;height&quot;:980},&quot;city&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Kothrud, Pune&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Content&quot;},&quot;currency&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;₹&quot;,&quot;$&quot;,&quot;€&quot;,&quot;£&quot;],&quot;default&quot;:&quot;₹&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Content&quot;},&quot;defaultRadiusKm&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;min&quot;:1,&quot;max&quot;:15,&quot;step&quot;:1,&quot;unit&quot;:&quot;km&quot;,&quot;default&quot;:5,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Behaviour&quot;},&quot;showTrust&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Behaviour&quot;},&quot;showEarnings&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Behaviour&quot;}}">
+class Component extends DCLogic {
+  DAYS = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+
+  L = [
+    { id: 'p1', kind: 'person', cat: 'Skills', name: 'Rohit Mane', role: 'Video editor · 6 yrs', km: 1.2, price: 600, unit: 'hr', rating: 4.8, jobs: 23, verified: true, area: 'Kothrud',
+      tags: ['video editing', 'premiere', 'davinci', 'colour grading', 'reels'], teaches: ['Colour grading', 'Premiere basics'], needs: ['A 12 ft ladder', 'Tripod'], hobbies: ['Cycling', 'Chess'],
+      avail: [1, 1, 0, 1, 1, 1, 0], blurb: 'Cuts wedding films and brand reels. Happy to work at your place if the footage is heavy — carrying drives beats uploading them.' },
+    { id: 'p2', kind: 'person', cat: 'Trades', name: 'Fatima Sheikh', role: 'Licensed electrician', km: 2.4, price: 450, unit: 'visit', rating: 4.9, jobs: 61, verified: true, area: 'Erandwane',
+      tags: ['electrician', 'wiring', 'fan', 'inverter', 'switchboard'], teaches: ['Home wiring safety'], needs: ['Sewing machine'], hobbies: ['Gardening'],
+      avail: [1, 0, 1, 1, 0, 1, 1], blurb: 'Twelve years on residential wiring. Inverter and switchboard work quoted before starting, never after.' },
+    { id: 'p3', kind: 'person', cat: 'Trades', name: 'Devraj Kale', role: 'Carpenter', km: 3.8, price: 800, unit: 'day', rating: 4.7, jobs: 38, verified: true, area: 'Bavdhan',
+      tags: ['carpenter', 'furniture', 'door', 'polish', 'repair'], teaches: ['Basic joinery'], needs: ['Angle grinder'], hobbies: ['Cricket'],
+      avail: [0, 1, 1, 0, 1, 1, 1], blurb: 'Furniture repair and fitted wardrobes. Brings his own tools; charges by the day, not by the piece.' },
+    { id: 'p4', kind: 'person', cat: 'Trades', name: 'Anita Pawar', role: 'Plumber', km: 0.9, price: 400, unit: 'visit', rating: 4.6, jobs: 44, verified: true, area: 'Kothrud',
+      tags: ['plumber', 'geyser', 'leak', 'tap', 'drainage'], teaches: ['Fixing a leaking tap'], needs: ['Ladder'], hobbies: ['Baking'],
+      avail: [1, 1, 1, 0, 0, 1, 0], blurb: 'Same-day visits for leaks and geysers within two kilometres. Quotes the part cost separately.' },
+    { id: 'p5', kind: 'person', cat: 'Skills', name: 'Karan Vaidya', role: 'Maths & physics tutor', km: 2.1, price: 500, unit: 'hr', rating: 4.9, jobs: 17, verified: false, area: 'Warje',
+      tags: ['tutor', 'maths', 'physics', 'class 10', 'teaching'], teaches: ['Class 10 maths', 'Chess openings'], needs: ['Printer'], hobbies: ['Chess', 'Trekking'],
+      avail: [1, 1, 1, 1, 1, 0, 0], blurb: 'Teaches Class 8 to 10 at home or at yours. Two students per slot maximum.' },
+    { id: 't1', kind: 'thing', cat: 'Tools', name: 'Aluminium ladder, 12 ft', role: 'Meera Joshi', km: 0.4, price: 150, unit: 'day', deposit: 500, rating: 4.9, jobs: 11, verified: true, area: 'Kothrud',
+      tags: ['ladder', 'aluminium', 'painting', 'height'], teaches: [], needs: [], hobbies: [],
+      avail: [1, 1, 1, 1, 0, 1, 1], blurb: 'Folding aluminium ladder, opens to twelve feet. Some paint marks on the rails, rungs are solid. Pick up any evening after seven.' },
+    { id: 't2', kind: 'thing', cat: 'Tools', name: 'HP LaserJet printer', role: 'Sameer Rao', km: 1.1, price: 200, unit: 'day', buy: 4500, deposit: 1000, rating: 4.7, jobs: 8, verified: true, area: 'Erandwane',
+      tags: ['printer', 'laser', 'printing', 'scanner', 'documents'], teaches: [], needs: [], hobbies: [],
+      avail: [1, 0, 1, 1, 1, 0, 1], blurb: 'Mono laser, prints about eighteen pages a minute. Toner is half full — bring your own for long jobs, or buy the unit outright.' },
+    { id: 't3', kind: 'thing', cat: 'Tools', name: 'Pressure washer', role: 'Nikhil Bhosale', km: 2.8, price: 300, unit: 'day', deposit: 1500, rating: 4.8, jobs: 14, verified: true, area: 'Bavdhan',
+      tags: ['pressure washer', 'cleaning', 'car wash', 'terrace'], teaches: [], needs: [], hobbies: [],
+      avail: [0, 0, 1, 1, 1, 1, 1], blurb: 'Bosch 1700W with two nozzles. Needs a tap within ten metres and a fifteen-amp point.' },
+    { id: 't4', kind: 'thing', cat: 'Tools', name: 'Angle grinder', role: 'Devraj Kale', km: 3.8, price: 120, unit: 'day', deposit: 800, rating: 4.7, jobs: 6, verified: true, area: 'Bavdhan',
+      tags: ['angle grinder', 'cutting', 'metal', 'tiles'], teaches: [], needs: [], hobbies: [],
+      avail: [1, 1, 0, 1, 1, 1, 0], blurb: 'Comes with one cutting and one grinding disc. Goggles included — please use them.' },
+    { id: 't5', kind: 'thing', cat: 'Tools', name: 'Usha sewing machine', role: 'Latika Gokhale', km: 1.6, price: 100, unit: 'day', deposit: 600, rating: 5.0, jobs: 21, verified: true, area: 'Karve Nagar',
+      tags: ['sewing machine', 'tailoring', 'stitching', 'alteration'], teaches: ['Blouse stitching', 'Alterations'], needs: [], hobbies: ['Embroidery'],
+      avail: [1, 1, 1, 1, 1, 1, 1], blurb: 'Straight and zigzag stitch, pedal driven. She will also sit with you for the first hour if you have never used one.' },
+    { id: 't6', kind: 'thing', cat: 'Spaces', name: 'Bolero pickup + driver', role: 'Imran Qureshi', km: 4.2, price: 900, unit: 'trip', deposit: 0, rating: 4.8, jobs: 52, verified: true, area: 'Kothrud',
+      tags: ['pickup', 'vehicle', 'shifting', 'transport', 'loading'], teaches: [], needs: [], hobbies: [],
+      avail: [1, 1, 1, 1, 1, 1, 0], blurb: 'Single trip within city limits, up to eight hundred kilos. Loading help costs extra and is worth it.' },
+    { id: 't7', kind: 'thing', cat: 'Spaces', name: 'Terrace for shoots', role: 'Priya Nair', km: 2.2, price: 700, unit: 'day', deposit: 0, rating: 4.9, jobs: 9, verified: true, area: 'Karve Nagar',
+      tags: ['terrace', 'space', 'shoot', 'studio', 'photography'], teaches: [], needs: [], hobbies: ['Photography'],
+      avail: [0, 1, 1, 0, 1, 1, 1], blurb: 'Open terrace, four hundred square feet, west light from four onwards. Power point and a washroom on the landing below.' },
+    { id: 'n1', kind: 'need', cat: 'Needs', name: 'Wobbly ceiling fan, needs a look', role: 'Aarti Deshpande wants help', km: 0.7, price: 300, unit: 'budget', rating: 4.9, jobs: 3, verified: true, area: 'Kothrud',
+      tags: ['fan', 'electrician', 'repair', 'need'], teaches: [], needs: [], hobbies: [],
+      avail: [1, 1, 1, 1, 1, 1, 1], blurb: 'Wobbles badly on speed three. Probably the down-rod. Free most evenings this week.' },
+    { id: 'n2', kind: 'need', cat: 'Needs', name: 'Projector for Sunday evening', role: 'Vikram Iyer wants to borrow', km: 1.9, price: 250, unit: 'budget', rating: 4.7, jobs: 5, verified: false, area: 'Warje',
+      tags: ['projector', 'borrow', 'need', 'screening'], teaches: [], needs: [], hobbies: [],
+      avail: [0, 0, 0, 0, 0, 1, 1], blurb: 'Building screening on the terrace. Need it from five to ten, will collect and return myself.' }
+  ];
+
+  REVIEWS = [
+    ['Sunil G.', 'Turned up when he said he would. Rare.'],
+    ['Priya N.', 'Explained what was wrong before touching anything.'],
+    ['Aarti D.', 'Fair price, no rounding up at the end.'],
+    ['Imran Q.', 'Returned it cleaner than I lent it.'],
+    ['Latika G.', 'Second time using them. Same standard.'],
+    ['Karan V.', 'Quick reply, flexible on timing.']
+  ];
+
+  state = {
+    screen: 'feed', mode: 'ask', draft: '', term: '', q: '', cat: 'All',
+    radius: this.props.defaultRadiusKm ?? 5, sort: 'Distance', onlyAvailable: false,
+    selId: null, from: 'feed', sheet: null, bookDay: 0, bookQty: 2, bookMsg: '',
+    reqs: [
+      { id: 'r1', dir: 'in', who: 'Aarti Deshpande', what: 'Aluminium ladder, 12 ft', when: 'Tomorrow, 2 days', amount: 300, status: 'Awaiting you' },
+      { id: 'r2', dir: 'in', who: 'Vikram Iyer', what: 'HP LaserJet printer', when: 'Sat, 1 day', amount: 200, status: 'Awaiting you' },
+      { id: 'r3', dir: 'out', who: 'Fatima Sheikh', what: 'Electrician visit', when: 'Today, 6 pm', amount: 450, status: 'Accepted' }
+    ],
+    mine: [
+      { id: 'm1', name: 'Aluminium ladder, 12 ft', kind: 'Tool for rent', price: 150, unit: 'day', views: 48, live: true },
+      { id: 'm2', name: 'Video editing — reels & wedding films', kind: 'Skill for hire', price: 600, unit: 'hr', views: 112, live: true },
+      { id: 'm3', name: 'Colour grading, one evening', kind: 'Something I teach', price: 0, unit: 'free', views: 21, live: false }
+    ],
+    cstep: 1, ckind: 'A tool or item to rent', ctitle: '', cprice: '', cunit: 'day', cdesc: '',
+    prof: { skills: ['Video editing', 'Colour grading'], teaches: ['Premiere basics'], needs: ['A 12 ft ladder'], hobbies: ['Cycling', 'Chess'], open: true },
+    chip: '', chipFor: 'skills',
+    msgs: [
+      { me: false, t: 'Hi — saw you need a ladder. Mine is free after seven today.' },
+      { me: true, t: 'Perfect. Is 12 ft enough for a two-storey stairwell?' },
+      { me: false, t: 'Should be. Opens to just over twelve.' }
+    ],
+    mdraft: '', toast: ''
+  };
+
+  cur() { return this.props.currency ?? '₹'; }
+  money(n) { return this.cur() + Number(n || 0).toLocaleString('en-IN'); }
+  priceOf(o) { return o.unit === 'free' ? 'Free' : this.money(o.price) + '/' + o.unit; }
+  initials(s) { return s.split(' ').filter(Boolean).slice(0, 2).map(w => w[0]).join('').toUpperCase(); }
+  go(screen, extra) { this.setState(Object.assign({ screen: screen, sheet: null }, extra || {})); }
+  flash(t) { this.setState({ toast: t }); clearTimeout(this._tt); this._tt = setTimeout(() => this.setState({ toast: '' }), 2600); }
+
+  parse(text) {
+    const s = (text || '').toLowerCase();
+    const m = s.match(/(\d+(?:\.\d+)?)\s*k/);
+    const radius = m ? Math.min(15, Math.max(1, Math.round(parseFloat(m[1])))) : this.state.radius;
+    const stop = 'i need someone who knows lives within and the for to my can anyone with near me of km kms looking help want that has have a an is are do does please someone\'s find get'.split(' ');
+    const words = s.replace(/[^a-z0-9\s]/g, ' ').split(/\s+/).filter(w => w.length > 2 && stop.indexOf(w) < 0 && !/^\d+$/.test(w));
+    return { radius: radius, words: words, today: /today|now|tonight|tonite/.test(s) };
+  }
+
+  matches() {
+    const st = this.state;
+    const p = st.q ? this.parse(st.q) : { radius: st.radius, words: st.term ? st.term.toLowerCase().split(/\s+/).filter(Boolean) : [], today: st.onlyAvailable };
+    let out = this.L.filter(o => o.km <= p.radius);
+    if (st.cat !== 'All') out = out.filter(o => o.cat === st.cat || (st.cat === 'Teach' && o.teaches.length));
+    if (p.words.length) {
+      out = out.map(o => {
+        const hay = (o.name + ' ' + o.role + ' ' + o.cat + ' ' + o.tags.join(' ') + ' ' + o.teaches.join(' ')).toLowerCase();
+        return { o: o, score: p.words.filter(w => hay.indexOf(w) >= 0).length };
+      }).filter(x => x.score > 0).sort((a, b) => b.score - a.score).map(x => x.o);
+    }
+    if (p.today || st.onlyAvailable) out = out.filter(o => o.avail[0]);
+    if (st.sort === 'Distance') out = out.slice().sort((a, b) => a.km - b.km);
+    if (st.sort === 'Price') out = out.slice().sort((a, b) => a.price - b.price);
+    if (st.sort === 'Rating') out = out.slice().sort((a, b) => b.rating - a.rating);
+    return out;
+  }
+
+  row(o) {
+    const kicker = o.kind === 'need' ? 'Open need · ' + o.area : o.kind === 'thing' ? o.cat + ' · ' + o.area : o.cat + ' · ' + o.area;
+    return {
+      id: o.id, name: o.name, kicker: kicker, sub: o.role, initials: this.initials(o.kind === 'thing' ? o.name : o.name),
+      price: o.unit === 'budget' ? 'Up to ' + this.money(o.price) : this.priceOf(o),
+      dist: o.km.toFixed(1) + ' km', availText: o.avail[0] ? 'Free today' : 'Next free Wed',
+      trust: (this.props.showTrust === false ? '' : (o.verified ? 'ID verified · ' : '')) + o.rating + ' · ' + o.jobs + ' done',
+      tags: o.tags.slice(0, 3).map(t => ({ t: t })), open: () => this.setState({ screen: 'detail', selId: o.id, from: this.state.screen })
+    };
+  }
+
+  sel() { return this.L.filter(o => o.id === this.state.selId)[0] || null; }
+
+  renderVals() {
+    const st = this.state;
+    const A = 'var(--color-accent)', BG = 'var(--color-bg)', TX = 'var(--color-text)';
+    const on = { bg: A, fg: BG }, off = { bg: 'transparent', fg: TX };
+    const res = this.matches();
+    const o = this.sel();
+    const catNames = ['All', 'Tools', 'Trades', 'Skills', 'Teach', 'Needs', 'Spaces'];
+    const week = ['Today', 'Tomorrow', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+    let d = { isThing: false, specs: [], sections: [], week: [], reviews: [], verified: false };
+    if (o) {
+      const sections = [];
+      if (o.kind === 'person') sections.push({ title: 'Skills', items: o.tags.map(t => ({ t: t })) });
+      if (o.teaches.length) sections.push({ title: 'Can teach', items: o.teaches.map(t => ({ t: t })) });
+      if (o.needs.length) sections.push({ title: 'Looking for', items: o.needs.map(t => ({ t: t })) });
+      if (o.hobbies.length) sections.push({ title: 'Hobbies', items: o.hobbies.map(t => ({ t: t })) });
+      if (o.kind === 'thing') sections.push({ title: 'Good for', items: o.tags.map(t => ({ t: t })) });
+      const specs = [{ k: 'Distance', v: o.km.toFixed(1) + ' km' }, { k: o.unit === 'budget' ? 'Budget' : 'Rate', v: o.unit === 'budget' ? this.money(o.price) : this.money(o.price) + '/' + o.unit }];
+      specs.push(o.kind === 'thing' && o.deposit ? { k: 'Deposit', v: this.money(o.deposit) } : { k: 'Rating', v: o.rating.toFixed(1) });
+      d = {
+        isThing: o.kind === 'thing', name: o.name, sub: o.role, blurb: o.blurb, rating: o.rating.toFixed(1), jobs: o.jobs,
+        verified: this.props.showTrust === false ? false : o.verified,
+        kicker: o.kind === 'need' ? 'Open need in ' + o.area : (o.kind === 'thing' ? 'For rent in ' + o.area : o.cat + ' in ' + o.area),
+        specs: specs, sections: sections,
+        week: o.avail.map((a, i) => ({ d: this.DAYS[i], bg: a ? A : 'transparent' })),
+        reviews: [0, 1].map(i => { const r = this.REVIEWS[(o.name.length + i * 3) % this.REVIEWS.length]; return { initials: this.initials(r[0]), who: r[0], text: r[1] }; })
+      };
+    }
+
+    const pins = this.L.filter(x => x.km <= st.radius).map((x, i) => {
+      const ang = (i * 137.508 + 15) * Math.PI / 180, r = 11 + (x.km / st.radius) * 24;
+      return {
+        name: x.name, dist: x.km.toFixed(1) + ' km', mark: x.kind === 'person' ? '■' : '□',
+        x: (50 + r * Math.cos(ang)).toFixed(1) + '%', y: (50 + r * Math.sin(ang)).toFixed(1) + '%',
+        bg: x.id === st.selId ? A : BG, fg: x.id === st.selId ? BG : 'var(--color-accent-800)',
+        open: () => this.setState({ screen: 'detail', selId: x.id, from: 'map' })
+      };
+    });
+
+    const bookQty = st.bookQty, unitLabel = o ? (o.unit === 'hr' ? 'hours' : o.unit === 'visit' ? 'visits' : o.unit === 'trip' ? 'trips' : 'days') : 'days';
+    const sub = o ? o.price * bookQty : 0, dep = o && o.deposit ? o.deposit : 0;
+
+    const group = { feed: 'discover', search: 'discover', results: 'discover', detail: 'discover', map: 'discover', reqs: 'reqs', chat: 'reqs', dash: 'dash', create: 'dash', profile: 'profile' }[st.screen];
+    const tabFg = n => group === n ? A : 'color-mix(in srgb, var(--color-text) 52%, transparent)';
+
+    const chipList = k => (st.prof[k] || []).map(v => ({ t: v, drop: () => this.setState(s => { const p = Object.assign({}, s.prof); p[k] = p[k].filter(x => x !== v); return { prof: p }; }) }));
+
+    return {
+      memberCount: '1,284', cityLabel: (this.props.city ?? 'Kothrud, Pune'),
+      radiusLabel: st.radius + ' km', radius: st.radius, draft: st.draft, term: st.term,
+      isFeed: st.screen === 'feed', isSearch: st.screen === 'search', isResults: st.screen === 'results',
+      isDetail: st.screen === 'detail', isMap: st.screen === 'map', isReqs: st.screen === 'reqs',
+      isChat: st.screen === 'chat', isDash: st.screen === 'dash', isCreate: st.screen === 'create', isProfile: st.screen === 'profile',
+      modeAsk: st.mode === 'ask', modeFilter: st.mode === 'filter',
+      askBg: st.mode === 'ask' ? on.bg : off.bg, askFg: st.mode === 'ask' ? on.fg : off.fg,
+      filterBg: st.mode === 'filter' ? on.bg : off.bg, filterFg: st.mode === 'filter' ? on.fg : off.fg,
+      flows: [['01', 'Nearby feed and header search', 'feed'], ['02', 'Ask or filter, then results', 'search'], ['03', 'Map of what is around you', 'map'], ['04', 'Request, book, confirm', 'detail'], ['05', 'List an item or a skill', 'create'], ['06', 'Dashboard, chat and profile', 'dash']]
+        .map(f => ({ num: f[0], label: f[1], go: () => this.setState({ screen: f[2], selId: f[2] === 'detail' ? 't1' : st.selId, from: 'feed', sheet: f[2] === 'detail' ? 'book' : null }) })),
+      cats: catNames.map(c => ({ label: c, bd: st.cat === c ? A : 'var(--color-divider)', bg: st.cat === c ? A : 'transparent', fg: st.cat === c ? BG : TX, go: () => this.setState({ cat: c, q: '', screen: 'results' }) })),
+      examples: [
+        'I need someone who knows video editing and lives within 5 km.',
+        'Anyone free today to fix a leaking tap?',
+        'Ladder for painting, 2 days'
+      ].map(t => ({ short: t.length > 40 ? t.slice(0, 38) + '…' : t, go: () => this.setState({ draft: t, q: t, cat: 'All', screen: 'results' }) })),
+      feed: this.L.slice().sort((a, b) => a.km - b.km).slice(0, 8).map(x => this.row(x)),
+      results: res.map(x => this.row(x)), resultCount: res.length, filterCount: res.length, noResults: res.length === 0,
+      queryEcho: st.q ? '“' + st.q + '”' : st.cat === 'All' ? 'Everything nearby' + (st.term ? ' matching “' + st.term + '”' : '') : st.cat + (st.term ? ' matching “' + st.term + '”' : '') + ' nearby',
+      chips: (st.q ? this.parse(st.q).words.slice(0, 3) : (st.term ? [st.term] : [])).map(w => ({ t: w }))
+        .concat([{ t: '≤ ' + st.radius + ' km' }]).concat(st.cat !== 'All' ? [{ t: st.cat }] : []).concat((st.onlyAvailable || (st.q && this.parse(st.q).today)) ? [{ t: 'Free today' }] : []),
+      sorts: ['Distance', 'Price', 'Rating'].map(s => ({ label: s, bg: st.sort === s ? on.bg : off.bg, fg: st.sort === s ? on.fg : off.fg, go: () => this.setState({ sort: s }) })),
+      onlyAvailable: st.onlyAvailable, pins: pins, mapCount: pins.length,
+      d: d, showCta: st.screen === 'detail' && !!o, ctaLabel: o ? (o.kind === 'need' ? 'Offer to help' : o.kind === 'thing' ? 'Request to rent' : 'Request a visit') : '',
+      sheetBook: st.sheet === 'book', sheetDone: st.sheet === 'done',
+      bookName: o ? o.name : '', bookDays: week.map((w, i) => ({ label: w, bg: st.bookDay === i ? on.bg : off.bg, fg: st.bookDay === i ? on.fg : off.fg, dis: o ? !o.avail[i] : false, go: () => { if (!o || o.avail[i]) this.setState({ bookDay: i }); } })),
+      bookQty: bookQty, unitLabel: unitLabel, bookMsg: st.bookMsg,
+      lineRate: o ? this.money(o.price) + ' × ' + bookQty + ' ' + unitLabel : '', lineSub: this.money(sub),
+      hasDep: dep > 0, lineDep: this.money(dep), lineTotal: this.money(sub + dep),
+      doneWho: o ? (o.kind === 'thing' ? o.role : o.name) : '', doneWhen: week[st.bookDay] + ', ' + bookQty + ' ' + unitLabel,
+      incoming: st.reqs.filter(r => r.dir === 'in').map(r => ({ who: r.who, what: r.what, when: r.when, amount: this.money(r.amount), status: r.status,
+        pending: r.status === 'Awaiting you', statusBg: r.status === 'Accepted' ? 'var(--color-accent-100)' : 'var(--color-neutral-100)',
+        accept: () => this.setState(s => ({ reqs: s.reqs.map(x => x.id === r.id ? Object.assign({}, x, { status: 'Accepted' }) : x) }), () => this.flash('Accepted — ' + r.who + ' has been told.')),
+        decline: () => this.setState(s => ({ reqs: s.reqs.map(x => x.id === r.id ? Object.assign({}, x, { status: 'Declined' }) : x) })),
+        chat: () => this.go('chat') })),
+      outgoing: st.reqs.filter(r => r.dir === 'out').map(r => ({ who: r.who, what: r.what, when: r.when, amount: this.money(r.amount), status: r.status, chat: () => this.go('chat') })),
+      mine: st.mine.map(m => ({ name: m.name, kind: m.kind, price: m.unit === 'free' ? 'Free' : this.money(m.price) + '/' + m.unit, views: m.views,
+        statusLabel: m.live ? 'Live' : 'Paused', statusBg: m.live ? 'var(--color-accent-100)' : 'var(--color-neutral-100)',
+        toggle: () => this.setState(s => ({ mine: s.mine.map(x => x.id === m.id ? Object.assign({}, x, { live: !x.live }) : x) })) })),
+      earned: this.money(3450), saved: this.money(1180), showEarnings: this.props.showEarnings !== false,
+      cstep: st.cstep, step1: st.cstep === 1, step2: st.cstep === 2, step3: st.cstep === 3,
+      ckinds: ['A tool or item to rent', 'Something to sell', 'A trade service', 'A skill for hire', 'Something I can teach', 'A space or vehicle']
+        .map(k => ({ label: k, dot: st.ckind === k ? A : 'transparent', ring: st.ckind === k ? 'inset 0 0 0 3px var(--color-bg)' : 'none', go: () => this.setState({ ckind: k }) })),
+      notLast: st.cstep < 3, cantNext: st.cstep === 2 && !st.ctitle,
+      knobLeft: st.prof.open ? '17px' : '2px',
+      ckind: st.ckind, ctitle: st.ctitle, cprice: st.cprice, cdesc: st.cdesc, cunit: st.cunit,
+      cunits: ['day', 'hr', 'visit', 'trip'].map(u => ({ label: u, bg: st.cunit === u ? on.bg : off.bg, fg: st.cunit === u ? on.fg : off.fg, go: () => this.setState({ cunit: u }) })),
+      cTitleOut: st.ctitle || 'Untitled listing', cPriceOut: st.cprice ? this.money(st.cprice) + '/' + st.cunit : 'Not set',
+      cDescOut: st.cdesc || 'No description yet.', canNext: st.cstep === 1 ? true : !!st.ctitle,
+      next: () => this.setState(s => ({ cstep: Math.min(3, s.cstep + 1) })), prev: () => this.setState(s => ({ cstep: Math.max(1, s.cstep - 1) })),
+      publish: () => this.setState(s => ({
+        mine: [{ id: 'n' + Date.now(), name: s.ctitle || 'Untitled listing', kind: s.ckind, price: Number(s.cprice) || 0, unit: s.cprice ? s.cunit : 'free', views: 0, live: true }].concat(s.mine),
+        screen: 'dash', cstep: 1, ctitle: '', cprice: '', cdesc: ''
+      }), () => this.flash('Listed. Neighbours within 5 km can see it now.')),
+      profSkills: chipList('skills'), profTeach: chipList('teaches'), profNeeds: chipList('needs'), profHobbies: chipList('hobbies'),
+      chip: st.chip, profOpen: st.prof.open, openLabel: st.prof.open ? 'Open to requests' : 'Paused — hidden from search',
+      chipTargets: [['skills', 'Skill'], ['teaches', 'Teach'], ['needs', 'Need'], ['hobbies', 'Hobby']]
+        .map(t => ({ label: t[1], bg: st.chipFor === t[0] ? on.bg : off.bg, fg: st.chipFor === t[0] ? on.fg : off.fg, go: () => this.setState({ chipFor: t[0] }) })),
+      addChip: () => { const v = st.chip.trim(); if (!v) return; this.setState(s => { const p = Object.assign({}, s.prof); p[s.chipFor] = p[s.chipFor].concat([v]); return { prof: p, chip: '' }; }); },
+      onChip: e => this.setState({ chip: e.target.value }),
+      onChipKey: e => { if (e.key === 'Enter') { e.preventDefault(); const v = this.state.chip.trim(); if (v) this.setState(s => { const p = Object.assign({}, s.prof); p[s.chipFor] = p[s.chipFor].concat([v]); return { prof: p, chip: '' }; }); } },
+      toggleOpen: () => this.setState(s => ({ prof: Object.assign({}, s.prof, { open: !s.prof.open }) })),
+      msgs: st.msgs.map((m, i) => ({ t: m.t, me: m.me, align: m.me ? 'flex-end' : 'flex-start', bg: m.me ? A : 'transparent', fg: m.me ? BG : TX, bd: m.me ? A : 'var(--color-divider)' })),
+      mdraft: st.mdraft, chatWho: 'Meera Joshi', chatSub: 'Aluminium ladder, 12 ft · 0.4 km',
+      onMsg: e => this.setState({ mdraft: e.target.value }),
+      sendMsg: () => { const v = this.state.mdraft.trim(); if (!v) return;
+        this.setState(s => ({ msgs: s.msgs.concat([{ me: true, t: v }]), mdraft: '' }));
+        clearTimeout(this._rt); this._rt = setTimeout(() => this.setState(s => ({ msgs: s.msgs.concat([{ me: false, t: 'Works for me. I will keep it by the gate.' }]) })), 1100); },
+      onMsgKey: e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); const v = this.state.mdraft.trim(); if (!v) return; this.setState(s => ({ msgs: s.msgs.concat([{ me: true, t: v }]), mdraft: '' })); clearTimeout(this._rt); this._rt = setTimeout(() => this.setState(s => ({ msgs: s.msgs.concat([{ me: false, t: 'Works for me. I will keep it by the gate.' }]) })), 1100); } },
+      toast: st.toast, hasToast: !!st.toast,
+      fgDiscover: tabFg('discover'), fgReqs: tabFg('reqs'), fgDash: tabFg('dash'), fgProfile: tabFg('profile'),
+      tabDiscover: () => this.go('feed'), tabReqs: () => this.go('reqs'), tabDash: () => this.go('dash'), tabProfile: () => this.go('profile'),
+      onDraft: e => this.setState({ draft: e.target.value }),
+      onDraftKey: e => { if (e.key === 'Enter') { e.preventDefault(); this.setState({ q: this.state.mode === 'ask' ? this.state.draft : '', screen: 'results' }); } },
+      onTerm: e => this.setState({ term: e.target.value }),
+      onRadius: e => this.setState({ radius: Number(e.target.value) }),
+      toggleAvailable: () => this.setState(s => ({ onlyAvailable: !s.onlyAvailable })),
+      onCTitle: e => this.setState({ ctitle: e.target.value }), onCPrice: e => this.setState({ cprice: e.target.value }), onCDesc: e => this.setState({ cdesc: e.target.value }),
+      onBookMsg: e => this.setState({ bookMsg: e.target.value }),
+      qtyUp: () => this.setState(s => ({ bookQty: Math.min(14, s.bookQty + 1) })), qtyDown: () => this.setState(s => ({ bookQty: Math.max(1, s.bookQty - 1) })),
+      useAsk: () => this.setState({ mode: 'ask', screen: 'search' }), useFilter: () => this.setState({ mode: 'filter', screen: 'search' }),
+      goFeed: () => this.go('feed'), goSearch: () => this.go('search'), goMap: () => this.go('map'), goCreate: () => this.go('create'),
+      goBack: () => this.go(st.from || 'feed'), goHome: () => this.go('feed'),
+      runSearch: () => this.setState({ q: st.draft, cat: 'All', screen: 'results' }),
+      runFilter: () => this.setState({ q: '', screen: 'results' }),
+      widen: () => this.setState({ radius: 15 }),
+      openBook: () => this.setState({ sheet: 'book' }), closeSheet: () => this.setState({ sheet: null }),
+      openChat: () => this.go('chat'),
+      sendRequest: () => this.setState(s => ({
+        sheet: 'done',
+        reqs: s.reqs.concat([{ id: 'q' + Date.now(), dir: 'out', who: o ? (o.kind === 'thing' ? o.role : o.name) : '', what: o ? o.name : '', when: week[s.bookDay] + ', ' + s.bookQty + ' ' + unitLabel, amount: sub, status: 'Sent' }])
+      })),
+      afterDone: () => this.go('reqs')
+    };
+  }
+}
+
+</script>
+</body>
+</html>

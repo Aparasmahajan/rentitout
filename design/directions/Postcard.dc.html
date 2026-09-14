@@ -1,0 +1,97 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400;6..96,600;6..96,800&family=Karla:wght@400;500;700&display=swap">
+  <style>
+    body { margin: 0; background: #FBFAF7; font-family: 'Karla', system-ui, sans-serif; }
+    a { color: #131313; text-decoration: none; }
+    a:hover { color: #7A4B2A; }
+  </style>
+</helmet>
+
+<div style="width: 1120px; height: 820px; background: #FBFAF7; color: #131313; display: flex; flex-direction: column; overflow: hidden;">
+
+  <div style="display: flex; align-items: center; justify-content: space-between; padding: 20px 34px;">
+    <span style="font-family: 'Bodoni Moda', Didot, serif; font-size: 27px; font-weight: 800; letter-spacing: -0.01em;">Radius</span>
+    <div style="display: flex; align-items: center; gap: 26px; font-size: 13px; letter-spacing: 0.03em;">
+      <a href="#" style="font-weight: 700;">NEARBY</a>
+      <a href="#" style="color: #6E6A63;">SEARCH</a>
+      <a href="#" style="color: #6E6A63;">REQUESTS</a>
+      <span style="padding: 8px 16px; border: 1px solid #131313; border-radius: 999px; font-weight: 700; font-size: 12px;">LIST SOMETHING</span>
+    </div>
+  </div>
+
+  <div style="display: flex; align-items: flex-end; justify-content: space-between; padding: 4px 34px 20px;">
+    <h1 style="margin: 0; font-family: 'Bodoni Moda', Didot, serif; font-size: 68px; font-weight: 400; line-height: 0.94; letter-spacing: -0.03em;">Within <em style="font-style: italic; color: {{accent}};">five</em> kilometres</h1>
+    <span style="font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: #6E6A63; padding-bottom: 10px;">Kreuzberg &middot; 12 today</span>
+  </div>
+
+  <div style="display: grid; grid-template-columns: 1.34fr 1fr 1fr; gap: 14px; padding: 0 34px 26px; flex-grow: 1;">
+
+    <div style="position: relative; border-radius: 4px; overflow: hidden; background: linear-gradient(148deg, #C4B79E 0%, #9E8F76 46%, #6E6252 100%);">
+      <div style="position: absolute; inset: 0; background-image: repeating-linear-gradient(0deg, rgba(255,255,255,0.05) 0 1px, transparent 1px 3px);"></div>
+      <div style="position: absolute; left: 0; right: 0; bottom: 0; padding: 22px; background: linear-gradient(transparent, rgba(0,0,0,0.62)); display: flex; flex-direction: column; gap: 8px;">
+        <span style="font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.82);">To rent &middot; 100 m away</span>
+        <h2 style="margin: 0; font-family: 'Bodoni Moda', Didot, serif; font-size: 33px; font-weight: 400; line-height: 1.05; color: #FFFFFF;">Aluminium ladder, 3 m</h2>
+        <div style="display: flex; align-items: baseline; gap: 9px;">
+          <span style="font-family: 'Bodoni Moda', Didot, serif; font-size: 27px; color: #FFFFFF;">€5</span>
+          <span style="font-size: 12px; color: rgba(255,255,255,0.75);">a day &middot; Amara Okafor</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 14px;">
+      <sc-for list="{{tall}}" as="item" hint-placeholder-count="2">
+        <div style="position: relative; flex-grow: 1; border-radius: 4px; overflow: hidden; background: {{item.wash}};">
+          <div style="position: absolute; inset: 0; background-image: repeating-linear-gradient(0deg, rgba(255,255,255,0.05) 0 1px, transparent 1px 3px);"></div>
+          <div style="position: absolute; left: 0; right: 0; bottom: 0; padding: 15px; background: linear-gradient(transparent, rgba(0,0,0,0.6)); display: flex; flex-direction: column; gap: 5px;">
+            <span style="font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(255,255,255,0.8);">{{item.kind}} &middot; {{item.distance}}</span>
+            <h3 style="margin: 0; font-family: 'Bodoni Moda', Didot, serif; font-size: 20px; font-weight: 400; line-height: 1.1; color: #FFFFFF;">{{item.title}}</h3>
+            <span style="font-size: 12px; color: rgba(255,255,255,0.82);">{{item.price}}</span>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 14px;">
+      <sc-for list="{{short}}" as="item" hint-placeholder-count="3">
+        <div style="position: relative; flex-grow: 1; border-radius: 4px; overflow: hidden; background: {{item.wash}};">
+          <div style="position: absolute; inset: 0; background-image: repeating-linear-gradient(0deg, rgba(255,255,255,0.05) 0 1px, transparent 1px 3px);"></div>
+          <div style="position: absolute; left: 0; right: 0; bottom: 0; padding: 13px; background: linear-gradient(transparent, rgba(0,0,0,0.6)); display: flex; flex-direction: column; gap: 4px;">
+            <span style="font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(255,255,255,0.8);">{{item.kind}} &middot; {{item.distance}}</span>
+            <h3 style="margin: 0; font-family: 'Bodoni Moda', Didot, serif; font-size: 17px; font-weight: 400; line-height: 1.1; color: #FFFFFF;">{{item.title}}</h3>
+            <span style="font-size: 11px; color: rgba(255,255,255,0.82);">{{item.price}}</span>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</div>
+
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":1120,"height":820},"accent":{"editor":"color","default":"#7A4B2A","options":["#7A4B2A","#2F4C3A","#6B2E3E","#131313"]}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      accent: this.props.accent ?? '#7A4B2A',
+      tall: [
+        { kind: 'Teaching', distance: '200 m', title: 'Video editing, the basics', price: '€30 a session', wash: 'linear-gradient(160deg, #8E9BA8 0%, #5E6C7C 58%, #3D4854 100%)' },
+        { kind: 'For hire', distance: '300 m', title: 'Electrician, small jobs',   price: '€35 an hour',   wash: 'linear-gradient(160deg, #C0A98C 0%, #8C7455 60%, #5C4A33 100%)' }
+      ],
+      short: [
+        { kind: 'To rent',  distance: '600 m',  title: 'Projector + screen',   price: '€15 a day', wash: 'linear-gradient(155deg, #A3A79C 0%, #6F7469 62%, #4A4E45 100%)' },
+        { kind: 'For sale', distance: '500 m',  title: 'Laser printer',        price: '€40',       wash: 'linear-gradient(155deg, #B3A5A0 0%, #7E706B 62%, #544A46 100%)' },
+        { kind: 'To rent',  distance: '2.5 km', title: 'Camping gear for two', price: '€12 a day', wash: 'linear-gradient(155deg, #99A891 0%, #66735F 62%, #434C3E 100%)' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

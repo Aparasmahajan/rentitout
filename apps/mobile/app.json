@@ -1,0 +1,44 @@
+{
+  "expo": {
+    "name": "Radius",
+    "slug": "radius",
+    "version": "0.1.0",
+    "scheme": "radius",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "splash": {
+      "backgroundColor": "#f2f2f3",
+      "resizeMode": "contain"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "io.radius.app",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "Radius shows what is available near you, and stores your home point rounded to about 100 m.",
+        "NSPhotoLibraryUsageDescription": "Pick a photo for a listing.",
+        "NSAppTransportSecurity": { "NSAllowsLocalNetworking": true }
+      }
+    },
+    "android": {
+      "package": "io.radius.app",
+      "adaptiveIcon": { "backgroundColor": "#5980a6" },
+      "permissions": ["ACCESS_COARSE_LOCATION", "ACCESS_FINE_LOCATION"],
+      "usesCleartextTraffic": true
+    },
+    "plugins": [
+      "expo-router",
+      "expo-secure-store",
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Radius shows what is available near you."
+        }
+      ]
+    ],
+    "extra": {
+      "apiUrl": "http://10.0.2.2:8080"
+    },
+    "experiments": { "typedRoutes": false }
+  }
+}

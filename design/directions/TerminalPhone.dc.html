@@ -1,0 +1,127 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+  <style>
+    body { margin: 0; background: #0C0A07; font-family: 'IBM Plex Mono', ui-monospace, monospace; }
+    a { color: #FFB000; text-decoration: none; }
+    a:hover { color: #FFD37A; }
+  </style>
+</helmet>
+
+<div style="width: 390px; height: 844px; background: #0C0A07; color: #E8DCC4; font-size: 12px; line-height: 1.6; display: flex; flex-direction: column; overflow: hidden; position: relative;">
+
+  <div style="position: absolute; inset: 0; background-image: repeating-linear-gradient(0deg, rgba(255,176,0,0.045) 0 1px, transparent 1px 3px); pointer-events: none;"></div>
+
+  <div style="display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid #2A2318;">
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="{{accent}}" stroke-width="1.9">
+        <circle cx="12" cy="12" r="8.5"></circle>
+        <circle cx="12" cy="12" r="1.8" fill="{{accent}}" stroke="none"></circle>
+      </svg>
+      <span style="color: {{accent}}; font-weight: 600; letter-spacing: 0.16em;">RADIUS</span>
+    </div>
+    <span style="color: #6B6151;">5km</span>
+  </div>
+
+  <div style="padding: 16px 18px 10px; display: flex; flex-direction: column; gap: 3px;">
+    <div style="display: flex; align-items: center; gap: 7px; flex-wrap: wrap;">
+      <span style="color: {{accent}};">~/kreuzberg</span>
+      <span style="color: #6B6151;">$</span>
+      <span>list --5km</span>
+      <span style="width: 7px; height: 14px; background: {{accent}}; display: inline-block;"></span>
+    </div>
+    <span style="color: #6B6151;">&rarr; 12 results in 41ms</span>
+  </div>
+
+  <div style="padding: 4px 18px 10px; display: flex; gap: 6px; overflow: hidden;">
+    <span style="padding: 3px 9px; border: 1px solid {{accent}}; color: {{accent}}; white-space: nowrap;">[*] all</span>
+    <span style="padding: 3px 9px; border: 1px solid #2A2318; color: #8A7F6B; white-space: nowrap;">[ ] rent</span>
+    <span style="padding: 3px 9px; border: 1px solid #2A2318; color: #8A7F6B; white-space: nowrap;">[ ] hire</span>
+    <span style="padding: 3px 9px; border: 1px solid #2A2318; color: #8A7F6B; white-space: nowrap;">[ ] teach</span>
+  </div>
+
+  <div style="display: flex; flex-direction: column; flex-grow: 1;">
+    <sc-for list="{{rows}}" as="row" hint-placeholder-count="6">
+      <div style="padding: 11px 18px; border-bottom: 1px solid #171309; display: flex; flex-direction: column; gap: 3px;">
+        <div style="display: flex; align-items: baseline; gap: 8px;">
+          <span style="color: #6B6151;">{{row.n}}</span>
+          <span style="color: {{accent}};">{{row.kind}}</span>
+          <span style="color: #E8DCC4; flex-grow: 1;">{{row.title}}</span>
+        </div>
+        <div style="display: flex; align-items: baseline; justify-content: space-between; padding-left: 28px;">
+          <span style="color: #8A7F6B;">{{row.owner}} &middot; {{row.distance}}</span>
+          <span style="color: #E8DCC4; font-weight: 600;">{{row.price}}</span>
+        </div>
+      </div>
+    </sc-for>
+  </div>
+
+  <div style="padding: 12px 18px; border-top: 1px solid #2A2318; color: #6B6151; display: flex; justify-content: space-between;">
+    <span><span style="color: {{accent}};">tap</span> open &nbsp; <span style="color: {{accent}};">/</span> search</span>
+    <span>12/12</span>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); border-top: 1px solid #2A2318;">
+    <div style="height: 56px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{accent}}" stroke-width="1.9">
+        <circle cx="12" cy="12" r="8.5"></circle>
+        <circle cx="12" cy="12" r="1.8" fill="{{accent}}" stroke="none"></circle>
+      </svg>
+      <span style="font-size: 9px; color: {{accent}};">ls</span>
+    </div>
+    <div style="height: 56px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6B6151" stroke-width="1.9" stroke-linecap="round">
+        <circle cx="11" cy="11" r="7"></circle>
+        <path d="M20 20l-3.6-3.6"></path>
+      </svg>
+      <span style="font-size: 9px; color: #6B6151;">grep</span>
+    </div>
+    <div style="height: 56px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6B6151" stroke-width="2.1" stroke-linecap="round">
+        <path d="M12 5v14M5 12h14"></path>
+      </svg>
+      <span style="font-size: 9px; color: #6B6151;">new</span>
+    </div>
+    <div style="height: 56px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6B6151" stroke-width="1.9" stroke-linejoin="round">
+        <path d="M4 6h16v11H9l-5 4z"></path>
+      </svg>
+      <span style="font-size: 9px; color: #6B6151;">reqs</span>
+    </div>
+    <div style="height: 56px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6B6151" stroke-width="1.9" stroke-linecap="round">
+        <circle cx="12" cy="8.5" r="3.6"></circle>
+        <path d="M5 20c1.4-3.6 4-5.4 7-5.4s5.6 1.8 7 5.4"></path>
+      </svg>
+      <span style="font-size: 9px; color: #6B6151;">whoami</span>
+    </div>
+  </div>
+</div>
+
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":390,"height":844},"accent":{"editor":"color","default":"#FFB000","options":["#FFB000","#5FE07A","#6FC3FF","#FF7A5A"]}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      accent: this.props.accent ?? '#FFB000',
+      rows: [
+        { n: '01', kind: 'rent',  title: 'Aluminium ladder, 3 m',     owner: 'Amara Okafor',   distance: '100m',  price: '€5.00' },
+        { n: '02', kind: 'teach', title: 'Video editing, basics',     owner: 'Priya Raman',    distance: '200m',  price: '€30.00' },
+        { n: '03', kind: 'hire',  title: 'Electrician, small jobs',   owner: 'Amara Okafor',   distance: '300m',  price: '€35.00' },
+        { n: '04', kind: 'sell',  title: 'Laser printer, working',    owner: 'Erik Lindqvist', distance: '500m',  price: '€40.00' },
+        { n: '05', kind: 'rent',  title: 'Projector + 2 m screen',    owner: 'Erik Lindqvist', distance: '600m',  price: '€15.00' },
+        { n: '06', kind: 'want',  title: 'Sewing machine?',           owner: 'Sofia Almeida',  distance: '2.2km', price: '—' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

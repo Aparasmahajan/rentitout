@@ -1,0 +1,130 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400;500;600;700&display=swap">
+  <style>
+    body { margin: 0; background: #FFFFFF; font-family: 'Familjen Grotesk', system-ui, sans-serif; }
+    a { color: #101216; text-decoration: none; }
+    a:hover { color: #E8442B; }
+  </style>
+</helmet>
+
+<div style="width: 390px; height: 844px; background: #FFFFFF; color: #101216; display: flex; flex-direction: column; overflow: hidden;">
+
+  <div style="display: flex; align-items: center; justify-content: space-between; padding: 0 18px; height: 58px; background: #101216; color: #FFFFFF;">
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <div style="width: 27px; height: 27px; border-radius: 50%; background: {{accent}}; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">R</div>
+      <span style="font-size: 17px; font-weight: 700; letter-spacing: -0.01em;">Radius</span>
+    </div>
+    <span style="padding: 4px 10px; border-radius: 4px; background: rgba(255,255,255,0.14); font-size: 12px; font-weight: 500;">Kreuzberg &middot; 5 km</span>
+  </div>
+
+  <div style="padding: 18px 18px 12px; display: flex; flex-direction: column; gap: 5px;">
+    <span style="font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: #6B7078;">All stops within 5 km</span>
+    <h1 style="margin: 0; font-size: 32px; font-weight: 700; letter-spacing: -0.03em; line-height: 1;">Nearby</h1>
+  </div>
+
+  <div style="display: flex; gap: 7px; padding: 0 18px 14px; overflow: hidden;">
+    <sc-for list="{{lines}}" as="line" hint-placeholder-count="4">
+      <div style="display: flex; align-items: center; gap: 6px; padding: 7px 11px; border-radius: 4px; background: #F4F4F6; white-space: nowrap;">
+        <div style="width: 11px; height: 11px; border-radius: 50%; background: {{line.color}};"></div>
+        <span style="font-size: 12px; font-weight: 600;">{{line.label}}</span>
+      </div>
+    </sc-for>
+  </div>
+
+  <div style="display: flex; padding: 0 18px; flex-grow: 1;">
+    <div style="width: 34px; flex-shrink: 0; display: flex; justify-content: center;">
+      <div style="width: 5px; flex-grow: 1; background: #D8DADF; border-radius: 999px;"></div>
+    </div>
+
+    <div style="flex-grow: 1; display: flex; flex-direction: column; margin-left: -22px;">
+      <sc-for list="{{stops}}" as="stop" hint-placeholder-count="5">
+        <div style="display: flex; align-items: center; gap: 11px; flex-grow: 1; padding: 8px 0;">
+          <div style="width: 22px; flex-shrink: 0; display: flex; justify-content: center;">
+            <div style="width: 20px; height: 20px; border-radius: 50%; background: #FFFFFF; border: 4px solid {{stop.color}};"></div>
+          </div>
+          <div style="flex-grow: 1; padding: 12px 14px; border-radius: 6px; background: #F4F4F6; border-left: 4px solid {{stop.color}}; display: flex; flex-direction: column; gap: 5px;">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <span style="padding: 2px 7px; border-radius: 3px; background: {{stop.color}}; color: #FFFFFF; font-size: 9px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;">{{stop.kind}}</span>
+              <span style="font-size: 15px; font-weight: 700; letter-spacing: -0.02em;">{{stop.distance}}</span>
+            </div>
+            <span style="font-size: 16px; font-weight: 600; letter-spacing: -0.015em;">{{stop.title}}</span>
+            <div style="display: flex; align-items: baseline; justify-content: space-between;">
+              <span style="font-size: 12px; color: #6B7078;">{{stop.owner}}</span>
+              <span style="font-size: 18px; font-weight: 700; letter-spacing: -0.02em;">{{stop.price}}</span>
+            </div>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); background: #101216; margin-top: 12px;">
+    <div style="height: 60px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; border-top: 3px solid {{accent}};">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="1.9">
+        <circle cx="12" cy="12" r="8.5"></circle>
+        <circle cx="12" cy="12" r="2.2" fill="#FFFFFF" stroke="none"></circle>
+      </svg>
+      <span style="font-size: 9px; font-weight: 600; color: #FFFFFF;">Nearby</span>
+    </div>
+    <div style="height: 60px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="1.9" stroke-linecap="round">
+        <circle cx="11" cy="11" r="7"></circle>
+        <path d="M20 20l-3.6-3.6"></path>
+      </svg>
+      <span style="font-size: 9px; font-weight: 500; color: rgba(255,255,255,0.55);">Search</span>
+    </div>
+    <div style="height: 60px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="2.1" stroke-linecap="round">
+        <path d="M12 5v14M5 12h14"></path>
+      </svg>
+      <span style="font-size: 9px; font-weight: 500; color: rgba(255,255,255,0.55);">List</span>
+    </div>
+    <div style="height: 60px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="1.9" stroke-linejoin="round">
+        <path d="M4 6h16v11H9l-5 4z"></path>
+      </svg>
+      <span style="font-size: 9px; font-weight: 500; color: rgba(255,255,255,0.55);">Requests</span>
+    </div>
+    <div style="height: 60px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="1.9" stroke-linecap="round">
+        <circle cx="12" cy="8.5" r="3.6"></circle>
+        <path d="M5 20c1.4-3.6 4-5.4 7-5.4s5.6 1.8 7 5.4"></path>
+      </svg>
+      <span style="font-size: 9px; font-weight: 500; color: rgba(255,255,255,0.55);">You</span>
+    </div>
+  </div>
+</div>
+
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":390,"height":844},"accent":{"editor":"color","default":"#E8442B","options":["#E8442B","#1B6FD4","#0F9463","#7A3FC4"]}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      accent: this.props.accent ?? '#E8442B',
+      lines: [
+        { label: 'Rent',  color: '#1B6FD4' },
+        { label: 'Hire',  color: '#0F9463' },
+        { label: 'Teach', color: '#7A3FC4' },
+        { label: 'Sell',  color: '#E8A020' }
+      ],
+      stops: [
+        { distance: '100 m', kind: 'Rent',  title: 'Aluminium ladder, 3 m',     owner: 'Amara Okafor',   price: '€5',  color: '#1B6FD4' },
+        { distance: '200 m', kind: 'Teach', title: 'Video editing, basics',     owner: 'Priya Raman',    price: '€30', color: '#7A3FC4' },
+        { distance: '300 m', kind: 'Hire',  title: 'Electrician, small jobs',   owner: 'Amara Okafor',   price: '€35', color: '#0F9463' },
+        { distance: '500 m', kind: 'Sell',  title: 'Laser printer, working',    owner: 'Erik Lindqvist', price: '€40', color: '#E8A020' },
+        { distance: '600 m', kind: 'Rent',  title: 'Projector + 2 m screen',    owner: 'Erik Lindqvist', price: '€15', color: '#1B6FD4' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,223 @@
+{
+  "artboards": [
+    {
+      "file": "Main.dc.html",
+      "x": 0,
+      "y": 0,
+      "w": 1120,
+      "h": 820,
+      "title": "Market Stall - Web"
+    },
+    {
+      "file": "StallPhone.dc.html",
+      "x": 1180,
+      "y": 0,
+      "w": 390,
+      "h": 844,
+      "title": "Market Stall - Android"
+    },
+    {
+      "file": "Signal.dc.html",
+      "x": 26,
+      "y": 1021,
+      "w": 1120,
+      "h": 820,
+      "title": "Signal - Web"
+    },
+    {
+      "file": "SignalPhone.dc.html",
+      "x": 1180,
+      "y": 1000,
+      "w": 390,
+      "h": 844,
+      "title": "Signal - Android"
+    },
+    {
+      "file": "Nightfall.dc.html",
+      "x": 0,
+      "y": 2000,
+      "w": 1120,
+      "h": 820,
+      "title": "Nightfall - Web"
+    },
+    {
+      "file": "NightfallPhone.dc.html",
+      "x": 1180,
+      "y": 2000,
+      "w": 390,
+      "h": 844,
+      "title": "Nightfall - Android"
+    },
+    {
+      "file": "Pocket.dc.html",
+      "x": 0,
+      "y": 3000,
+      "w": 1120,
+      "h": 820,
+      "title": "Pocket - Web"
+    },
+    {
+      "file": "PocketPhone.dc.html",
+      "x": 1180,
+      "y": 3000,
+      "w": 390,
+      "h": 844,
+      "title": "Pocket - Android"
+    },
+    {
+      "file": "Ledger.dc.html",
+      "x": 0,
+      "y": 4000,
+      "w": 1120,
+      "h": 820,
+      "title": "Ledger - Web"
+    },
+    {
+      "file": "LedgerPhone.dc.html",
+      "x": 1180,
+      "y": 4000,
+      "w": 390,
+      "h": 844,
+      "title": "Ledger - Android"
+    },
+    {
+      "file": "Postcard.dc.html",
+      "x": 0,
+      "y": 5000,
+      "w": 1120,
+      "h": 820,
+      "title": "Postcard - Web"
+    },
+    {
+      "file": "PostcardPhone.dc.html",
+      "x": 1180,
+      "y": 5000,
+      "w": 390,
+      "h": 844,
+      "title": "Postcard - Android"
+    },
+    {
+      "file": "Terminal.dc.html",
+      "x": 0,
+      "y": 6000,
+      "w": 1120,
+      "h": 820,
+      "title": "Terminal - Web"
+    },
+    {
+      "file": "TerminalPhone.dc.html",
+      "x": 1180,
+      "y": 6000,
+      "w": 390,
+      "h": 844,
+      "title": "Terminal - Android"
+    },
+    {
+      "file": "Bloom.dc.html",
+      "x": 0,
+      "y": 7000,
+      "w": 1120,
+      "h": 820,
+      "title": "Bloom - Web"
+    },
+    {
+      "file": "BloomPhone.dc.html",
+      "x": 1180,
+      "y": 7000,
+      "w": 390,
+      "h": 844,
+      "title": "Bloom - Android"
+    },
+    {
+      "file": "Transit.dc.html",
+      "x": 0,
+      "y": 8000,
+      "w": 1120,
+      "h": 820,
+      "title": "Transit - Web"
+    },
+    {
+      "file": "TransitPhone.dc.html",
+      "x": 1180,
+      "y": 8000,
+      "w": 390,
+      "h": 844,
+      "title": "Transit - Android"
+    }
+  ],
+  "annotations": [
+    {
+      "id": "how-to-read",
+      "x": 0,
+      "y": -170,
+      "w": 620,
+      "text": "Four directions, same feed, same real listings - so you are comparing treatment, not copy.\nEach row is one direction: web on the left, Android on the right.\nPick a row. Each artboard has an accent-colour chip above it if you want to try a different hue before deciding."
+    },
+    {
+      "id": "note-stall",
+      "x": 1640,
+      "y": 40,
+      "w": 300,
+      "text": "MARKET STALL\nWarm paper, ink, one persimmon accent. Instrument Serif for titles and prices, near-square corners, hairline rules, no shadows.\n\nWhy: reads like a local classifieds page. Human and trustworthy - it looks like neighbours, not a platform.\n\nTradeoff: the least app-like of the four. Serif at small sizes needs care, and it can feel slow next to a dense utility UI."
+    },
+    {
+      "id": "note-signal",
+      "x": 1640,
+      "y": 1040,
+      "w": 300,
+      "text": "SIGNAL\nPure white and black, one electric blue, 2px borders, hard offset shadows, zero radius. Archivo Black headlines, JetBrains Mono for every number.\n\nWhy: unmistakable and fast. Prices and distances read instantly because the mono numerals line up.\n\nTradeoff: loud and a bit cold. Brutalism dates faster than the other three, and the heavy borders eat space on a phone."
+    },
+    {
+      "id": "note-nightfall",
+      "x": 1640,
+      "y": 2040,
+      "w": 300,
+      "text": "NIGHTFALL\nDeep blue-black, mint and periwinkle accents, 16px radii, the radius ring as the hero surface with price pins on it.\n\nWhy: makes the actual product idea - a distance ring around you - the thing you see first. Looks the most premium.\n\nTradeoff: dark UI is harder for outdoor daytime use, photos of second-hand junk look worse on dark, and it needs real map tiles to pay off."
+    },
+    {
+      "id": "note-pocket",
+      "x": 1640,
+      "y": 3040,
+      "w": 300,
+      "text": "POCKET\nSoft lilac ground, white cards, 22px radii, a pastel colour per category, a floating pill nav. Outfit throughout.\n\nWhy: lowest barrier of the four - the category colours do the sorting for you, and it invites casual listing.\n\nTradeoff: the friendliest and the least serious. Once real money and deposits are on screen in Phase 5, soft and round can undercut trust."
+    },
+    {
+      "id": "note-ledger",
+      "x": 1640,
+      "y": 4040,
+      "w": 300,
+      "text": "LEDGER\nSwiss and data-first: a real table, IBM Plex Sans and Mono, hairline rules, a facet rail instead of chips. No photos at all.\n\nWhy: the fastest thing to scan. Tabular numerals mean prices and distances line up down the column, so comparing 12 listings takes one pass.\n\nTradeoff: cold and expert-feeling. A ladder is a physical object and this shows you none of it."
+    },
+    {
+      "id": "note-postcard",
+      "x": 1640,
+      "y": 5040,
+      "w": 300,
+      "text": "POSTCARD\nPhoto-first magazine: full-bleed image tiles, an asymmetric mosaic, Bodoni Moda at display size with text laid over the image.\n\nWhy: makes the stuff look worth having, and rewards idle browsing rather than targeted searching.\n\nTradeoff: it lives or dies on photo quality - and these are phone snaps of a drill in a cellar. Lowest information density of all nine."
+    },
+    {
+      "id": "note-terminal",
+      "x": 1640,
+      "y": 6040,
+      "w": 300,
+      "text": "TERMINAL\nAmber on black, IBM Plex Mono throughout, a command prompt as the search bar, results as numbered rows, keyboard hints along the bottom.\n\nWhy: nobody forgets it. Genuinely the fastest to read once learned, and tiny to render.\n\nTradeoff: the honest one - this is a costume. Your audience is neighbours borrowing ladders, and a fake shell will read as unwelcoming to most of them."
+    },
+    {
+      "id": "note-bloom",
+      "x": 1640,
+      "y": 7040,
+      "w": 300,
+      "text": "BLOOM\nWarm stone ground with soft colour washes, Newsreader italic for headlines, organic petal-shaped image masks, sage and clay accents.\n\nWhy: calm and grown-up warmth. Gets the approachability of Pocket without the toy feeling, which matters once deposits are on screen.\n\nTradeoff: the soft shapes and low contrast need care to stay accessible, and it is the least distinctive at a glance."
+    },
+    {
+      "id": "note-transit",
+      "x": 1640,
+      "y": 8040,
+      "w": 300,
+      "text": "TRANSIT\nWayfinding: a coloured line per category, listings as stops down a route, distance set large as the primary label, signage-grade contrast.\n\nWhy: the strongest idea of the nine - it makes distance the structure rather than a footnote, which is exactly what Radius is about.\n\nTradeoff: a strong metaphor fights unusual content. A route implies order and direction that a feed does not really have."
+    }
+  ],
+  "launch": {
+    "view": "canvas"
+  }
+}

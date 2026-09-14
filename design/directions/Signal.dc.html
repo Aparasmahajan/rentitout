@@ -1,0 +1,104 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;800;900&family=JetBrains+Mono:wght@500;700&display=swap">
+  <style>
+    body { margin: 0; background: #FFFFFF; font-family: 'Archivo', system-ui, sans-serif; }
+    a { color: #0A0A0A; text-decoration: none; }
+    a:hover { color: #1F2BFF; }
+  </style>
+</helmet>
+
+<div style="width: 1120px; height: 820px; background: #FFFFFF; color: #0A0A0A; display: flex; flex-direction: column; overflow: hidden;">
+
+  <div style="display: flex; align-items: center; justify-content: space-between; padding: 16px 32px; border-bottom: 2px solid #0A0A0A;">
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <div style="width: 26px; height: 26px; background: {{accent}}; display: flex; align-items: center; justify-content: center;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.4">
+          <circle cx="12" cy="12" r="8"></circle>
+          <circle cx="12" cy="12" r="2" fill="#FFFFFF" stroke="none"></circle>
+        </svg>
+      </div>
+      <span style="font-family: 'Archivo', sans-serif; font-weight: 900; font-size: 21px; letter-spacing: -0.03em; text-transform: uppercase;">Radius</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 4px;">
+      <a href="#" style="padding: 9px 15px; background: #0A0A0A; color: #FFFFFF; font-size: 13px; font-weight: 600;">NEARBY</a>
+      <a href="#" style="padding: 9px 15px; font-size: 13px; font-weight: 600;">SEARCH</a>
+      <a href="#" style="padding: 9px 15px; font-size: 13px; font-weight: 600;">REQUESTS</a>
+      <a href="#" style="padding: 9px 15px; background: {{accent}}; color: #FFFFFF; font-size: 13px; font-weight: 700; margin-left: 10px;">+ LIST SOMETHING</a>
+    </div>
+  </div>
+
+  <div style="display: flex; align-items: stretch; border-bottom: 2px solid #0A0A0A;">
+    <div style="flex-grow: 1; padding: 26px 32px; display: flex; flex-direction: column; gap: 4px;">
+      <h1 style="margin: 0; font-weight: 900; font-size: 62px; line-height: 0.92; letter-spacing: -0.045em; text-transform: uppercase;">Nearby</h1>
+      <span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 500; color: #5A5A5A;">12 RESULTS / KREUZBERG / SORTED BY DISTANCE</span>
+    </div>
+    <div style="width: 190px; border-left: 2px solid #0A0A0A; padding: 20px; display: flex; flex-direction: column; justify-content: center; gap: 8px;">
+      <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #5A5A5A;">RADIUS</span>
+      <div style="display: flex; align-items: baseline; gap: 4px;">
+        <span style="font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 40px; line-height: 1; color: {{accent}};">5</span>
+        <span style="font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 700;">KM</span>
+      </div>
+      <div style="height: 6px; background: #E6E6E6; display: flex;">
+        <div style="width: 40%; background: {{accent}};"></div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display: flex; gap: 0; border-bottom: 2px solid #0A0A0A;">
+    <span style="padding: 11px 18px; background: {{accent}}; color: #FFFFFF; font-size: 12px; font-weight: 700; letter-spacing: 0.04em;">ALL</span>
+    <span style="padding: 11px 18px; border-right: 1px solid #DDDDDD; font-size: 12px; font-weight: 600; letter-spacing: 0.04em; color: #3A3A3A;">RENT</span>
+    <span style="padding: 11px 18px; border-right: 1px solid #DDDDDD; font-size: 12px; font-weight: 600; letter-spacing: 0.04em; color: #3A3A3A;">HIRE</span>
+    <span style="padding: 11px 18px; border-right: 1px solid #DDDDDD; font-size: 12px; font-weight: 600; letter-spacing: 0.04em; color: #3A3A3A;">TEACH</span>
+    <span style="padding: 11px 18px; border-right: 1px solid #DDDDDD; font-size: 12px; font-weight: 600; letter-spacing: 0.04em; color: #3A3A3A;">SELL</span>
+    <span style="padding: 11px 18px; font-size: 12px; font-weight: 600; letter-spacing: 0.04em; color: #3A3A3A;">WANTED</span>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; padding: 22px 32px; flex-grow: 1;">
+    <sc-for list="{{cards}}" as="card" hint-placeholder-count="6">
+      <div style="border: 2px solid #0A0A0A; box-shadow: 5px 5px 0 #0A0A0A; display: flex; flex-direction: column; background: #FFFFFF;">
+        <div style="height: 96px; background: {{card.tint}}; border-bottom: 2px solid #0A0A0A; display: flex; align-items: flex-end; justify-content: space-between; padding: 10px 12px;">
+          <span style="font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 30px; color: #0A0A0A;">{{card.mark}}</span>
+          <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; background: #0A0A0A; color: #FFFFFF; padding: 3px 7px;">{{card.distance}}</span>
+        </div>
+        <div style="padding: 12px; display: flex; flex-direction: column; gap: 7px; flex-grow: 1;">
+          <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700; letter-spacing: 0.08em; color: #5A5A5A;">{{card.kind}}</span>
+          <h3 style="margin: 0; font-weight: 800; font-size: 17px; line-height: 1.15; letter-spacing: -0.02em;">{{card.title}}</h3>
+          <div style="margin-top: auto; display: flex; align-items: center; justify-content: space-between; padding-top: 10px; border-top: 1px solid #E6E6E6;">
+            <span style="font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 19px;">{{card.price}}</span>
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #5A5A5A;">{{card.unit}}</span>
+          </div>
+          <span style="font-size: 11px; font-weight: 500; color: #5A5A5A;">{{card.owner}}</span>
+        </div>
+      </div>
+    </sc-for>
+  </div>
+</div>
+
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":1120,"height":820},"accent":{"editor":"color","default":"#1F2BFF","options":["#1F2BFF","#FF3B1F","#00A63E","#0A0A0A"]}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      accent: this.props.accent ?? '#1F2BFF',
+      cards: [
+        { mark: 'AL', kind: 'RENT',  title: 'Aluminium ladder, 3 m',     price: '€5.00',  unit: '/DAY',     distance: '100 M', owner: 'Amara Okafor', tint: '#F2F2F2' },
+        { mark: 'VE', kind: 'TEACH', title: 'Video editing, the basics', price: '€30.00', unit: '/SESSION', distance: '200 M', owner: 'Priya Raman',  tint: '#EDEDED' },
+        { mark: 'EL', kind: 'HIRE',  title: 'Electrician, small jobs',   price: '€35.00', unit: '/HOUR',    distance: '300 M', owner: 'Amara Okafor', tint: '#F2F2F2' },
+        { mark: 'PR', kind: 'RENT',  title: 'Projector + 2 m screen',    price: '€15.00', unit: '/DAY',     distance: '600 M', owner: 'Erik Lindqvist', tint: '#EDEDED' },
+        { mark: 'CD', kind: 'RENT',  title: 'Cordless drill + bits',     price: '€4.00',  unit: '/DAY',     distance: '2.3 KM', owner: 'Jonas Meyer', tint: '#F2F2F2' },
+        { mark: 'CG', kind: 'RENT',  title: 'Camping gear for two',      price: '€12.00', unit: '/DAY',     distance: '2.5 KM', owner: 'Sofia Almeida', tint: '#EDEDED' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>
