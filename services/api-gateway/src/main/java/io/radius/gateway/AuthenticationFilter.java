@@ -33,6 +33,15 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
             "/api/search", "/api/tags", "/api/users/", "/api/professionals/");
 
     /**
+     * The chat socket. A browser cannot put an Authorization header on a
+     * WebSocket upgrade, so the edge lets the upgrade through and booking-service
+     * checks the token in the STOMP CONNECT frame, who may listen on every
+     * SUBSCRIBE, and refuses client SEND outright. Matched as a path segment,
+     * not a prefix, so a future "/wsx" route does not inherit the exemption.
+     */
+    private static final String SOCKET = "/ws";
+
+    /**
      * Open on GET only, so a guest can read a listing while POST and PATCH on
      * the same path still need a token. The services check this again — this is
      * the fast path at the edge, not the only gate.
@@ -75,8 +84,9 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
         return chain.filter(exchange.mutate().request(mutated.build()).build());
     }
 
-    private boolean isPublic(String path, HttpMethod method) {
+    static boolean isPublic(String path, HttpMethod method) {
         if (PUBLIC.stream().anyMatch(path::startsWith)) return true;
+        if (path.equals(SOCKET) || path.startsWith(SOCKET + "/")) return true;
         return HttpMethod.GET.equals(method) && PUBLIC_GET.stream().anyMatch(path::startsWith);
     }
 

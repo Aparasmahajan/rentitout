@@ -3,6 +3,7 @@ import { Link, useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
 import { ActivityIndicator, Image, Modal, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 import { ApiError, api } from '@/lib/api';
+import { useAuth } from '@/lib/auth';
 import { KIND_LABEL, distance, initials, money, rate } from '@/lib/format';
 import { space, radius } from '@/lib/theme';
 import { useTheme } from '@/lib/useTheme';
@@ -11,6 +12,7 @@ import type { ListingKind } from '@/lib/types';
 export default function ListingScreen() {
   const { s, colors } = useTheme();
   const { id } = useLocalSearchParams<{ id: string }>();
+  const { signedIn, requireSignIn } = useAuth();
   const [booking, setBooking] = useState(false);
 
   const listing = useQuery({ queryKey: ['listing', id], queryFn: () => api.listings.detail(id) });
@@ -77,8 +79,10 @@ export default function ListingScreen() {
       </Link>
 
       {bookable ? (
-        <Pressable style={s.btn} onPress={() => setBooking(true)}>
-          <Text style={s.btnText}>Request this</Text>
+        // The wall goes up here and nowhere earlier: asking a neighbour needs an
+        // account, reading the listing does not. Sign-in returns to this page.
+        <Pressable style={s.btn} onPress={() => (signedIn ? setBooking(true) : requireSignIn(`/l/${l.id}`))}>
+          <Text style={s.btnText}>{signedIn ? 'Request this' : 'Sign in to request'}</Text>
         </Pressable>
       ) : (
         <Text style={s.muted}>

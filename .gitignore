@@ -25,3 +25,7 @@ next-env.d.ts
 .vscode/
 .DS_Store
 Thumbs.db
+
+# Claude Code: personal overrides stay local (shared config in CLAUDE.md, .claude/settings.json)
+CLAUDE.local.md
+.claude/settings.local.json

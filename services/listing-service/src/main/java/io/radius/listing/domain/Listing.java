@@ -1,5 +1,6 @@
 package io.radius.listing.domain;
 
+import io.radius.common.web.ApiException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -128,8 +129,36 @@ public class Listing {
     public void setDepositMinor(long depositMinor) { this.depositMinor = depositMinor; }
     public void setBuyPriceMinor(Long buyPriceMinor) { this.buyPriceMinor = buyPriceMinor; }
     public void setPoint(double lat, double lon) { this.lat = lat; this.lon = lon; }
-    public void setStatus(Status status) { this.status = status.name(); }
     public void setHomeVisit(boolean homeVisit) { this.homeVisit = homeVisit; }
+
+    // ---- status ------------------------------------------------------------
+    //
+    // No public setter on purpose. Pause and resume are an owner toggling a live
+    // listing; neither may touch an UNLISTED one, because that is how a
+    // moderator's removal got quietly undone by the owner pressing "resume".
+    // Asking for the state a listing is already in is a no-op, not an error.
+
+    public void pause() {
+        refuseIfUnlisted();
+        this.status = Status.PAUSED.name();
+    }
+
+    public void resume() {
+        refuseIfUnlisted();
+        this.status = Status.LIVE.name();
+    }
+
+    /** Owner withdrawal or moderator removal. Final for the owner either way. */
+    public void unlist() {
+        this.status = Status.UNLISTED.name();
+    }
+
+    private void refuseIfUnlisted() {
+        if (Status.UNLISTED.name().equals(status)) {
+            throw ApiException.conflict("listing_unlisted",
+                    "That listing has been taken down, so it cannot be paused or put back up");
+        }
+    }
 
     /** Written only by RatingService, from a recomputed aggregate — never incremented in place. */
     public void setRating(BigDecimal average, int count) {

@@ -4,6 +4,7 @@ import { Link } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Pressable, ScrollView, Switch, Text, TextInput, View } from 'react-native';
 import { api } from '@/lib/api';
+import { SignInPrompt } from '@/components/SignInPrompt';
 import { useAuth } from '@/lib/auth';
 import { initials } from '@/lib/format';
 import { useTheme } from '@/lib/useTheme';
@@ -17,7 +18,7 @@ const RELATIONS = [
 
 export default function MeScreen() {
   const { s, colors } = useTheme();
-  const { me, refresh, signOut } = useAuth();
+  const { me, loading, refresh, signOut } = useAuth();
 
   const [displayName, setDisplayName] = useState('');
   const [areaLabel, setAreaLabel] = useState('');
@@ -63,7 +64,16 @@ export default function MeScreen() {
     }
   }
 
-  if (!me) return null;
+  // A blank tab was the only way out for a guest before; this is now the door in.
+  if (!me) {
+    return loading ? null : (
+      <SignInPrompt
+        title="You, on Radius"
+        body="Sign in to set your area, list what you have, and ask neighbours for things. Browsing needs no account."
+        returnTo="/me"
+      />
+    );
+  }
 
   const mine = new Set(me.tags.filter((t) => t.relation === relation).map((t) => t.slug));
 

@@ -17,7 +17,7 @@ Implements [Radius Build Plan.dc.html](design/Radius%20Build%20Plan.dc.html).
 | Phases partial | 04 (verification + moderation, ~⅔), 05 (ledger works, gateway is a sandbox) |
 | Services | 7 Spring Boot modules + `common`, all healthy behind the gateway |
 | Clients | Next.js web (complete), Expo mobile (no map screen, no comments or ratings) |
-| Tests | 8 classes / 47 tests, green on a clean build. **No integration tests.** |
+| Tests | 13 classes / 69 tests, green on a clean build (16 October 2026). **No integration tests.** |
 | Currency | INR (₹), `en-IN` grouping |
 | Last verified | 27 August 2026 — clean build, 47 tests green, `V4` applied, all services UP, and Block A exercised end to end over the public API (34 checks) |
 
@@ -371,15 +371,9 @@ serialise refreshes so five parallel 401s do not rotate five times and log the m
 - **`profile.rating_avg` and `profile.completed_count` render on member cards from columns
   nothing writes.** Stale by construction since Phase 01, and still stale — Block A writes the
   *listing* rating columns, not these two. The Kafka Streams job in the backlog is their owner.
-- **`npm run build` fails on `/sign-in`.** Pre-existing and unrelated to Block A: the page calls
-  `useSearchParams()` without a Suspense boundary, which only bites when Next prerenders it.
-  `npm run dev` — the way this POC is run — is unaffected, so it went unnoticed. A two-line fix
-  whenever the web app needs a production build.
-- **`BookingSheet` asks for `className="scrim"`, and the stylesheet only defines `.scrim-bg`.**
-  The booking modal has no backdrop. One word.
 - **The gateway payment is a sandbox.** The reference is synthesised — but the webhook path,
   the idempotency and the deposit lifecycle around it are real.
-- **Nothing proves the event paths end to end.** 35 unit tests cover the state machine, the fee
+- **Nothing proves the event paths end to end.** 69 unit tests cover the state machine, the fee
   arithmetic, the query parser, the geo rounding and the auth endpoints. The Testcontainers
   layer that would assert "accept a request → the calendar blocked those days" does not exist.
 - **`poc/` is five empty directories.** Leftover scaffolding, zero files, untracked by git

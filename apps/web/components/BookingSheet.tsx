@@ -41,7 +41,7 @@ export function BookingSheet({ listing, onClose }: { listing: Listing; onClose: 
 
   return (
     <>
-      <div className="scrim" onClick={onClose} role="presentation" />
+      <div className="scrim-bg" onClick={onClose} role="presentation" />
       <div className="sheet stack" role="dialog" aria-label={`Request ${listing.title}`}>
         <div className="between">
           <h2 style={{ margin: 0 }}>{listing.title}</h2>
@@ -96,7 +96,7 @@ export function BookingSheet({ listing, onClose }: { listing: Listing; onClose: 
         </div>
 
         {quote.data && (
-          <div className="card stack" style={{ padding: 'var(--space-4)' }}>
+          <div className="card stack" style={{ padding: 'var(--s4)' }}>
             <div className="between">
               <span>
                 {money(quote.data.rateMinor, quote.data.currency)} × {quote.data.units}
@@ -111,7 +111,7 @@ export function BookingSheet({ listing, onClose }: { listing: Listing; onClose: 
               <span className="muted">{quote.data.feeLabel}</span>
               <span>{money(quote.data.feeMinor, quote.data.currency)}</span>
             </div>
-            <div className="between" style={{ borderTop: '1px solid var(--color-divider)', paddingTop: 8 }}>
+            <div className="between" style={{ borderTop: '1px solid var(--rule)', paddingTop: 8 }}>
               <strong>Total</strong>
               <strong className="price">{money(quote.data.totalMinor, quote.data.currency)}</strong>
             </div>

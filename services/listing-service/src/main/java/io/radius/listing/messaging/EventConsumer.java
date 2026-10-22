@@ -18,7 +18,8 @@ import java.time.LocalDate;
 /**
  * Two subscriptions:
  *   radius.user.v1     keeps the member_location projection current
- *   radius.request.v1  blocks the calendar when a request is accepted
+ *   radius.request.v1  blocks the calendar when a request is accepted, and
+ *                      releases it when an accepted request is cancelled
  *
  * Both are idempotent — Kafka redelivers, and a double-booked calendar is a
  * support ticket.
@@ -43,7 +44,25 @@ public class EventConsumer {
                             @Header(name = Topics.HEADER_EVENT_TYPE, required = false) String type,
                             @Header(name = Topics.HEADER_EVENT_ID, required = false) String eventId) throws Exception {
         if (eventId != null && !guard.firstTime("listing.user", eventId)) return;
+        try {
+            applyUserEvent(type, payload);
+        } catch (Exception e) {
+            // The key was claimed before the work ran. Give it back, or Kafka's
+            // retry is skipped as a duplicate and the change is lost — an ID
+            // check that never reaches the home-visit gate, for instance.
+            if (eventId != null) {
+                try {
+                    guard.forget("listing.user", eventId);
+                } catch (RuntimeException redisDown) {
+                    // Keep the real cause on top; the key expires with its TTL anyway.
+                    e.addSuppressed(redisDown);
+                }
+            }
+            throw e;
+        }
+    }
 
+    private void applyUserEvent(String type, String payload) throws Exception {
         switch (type == null ? "" : type) {
             // Only the date matters here: PostingLimiter gives a days-old
             // account a tighter bucket than an established member.
@@ -90,6 +109,13 @@ public class EventConsumer {
                 var e = mapper.readValue(payload, RadiusEvents.RequestCompleted.class);
                 listings.recordCompletedBooking(e.requestId(), e.listingId(), e.requesterId(), e.at());
                 log.info("completed booking {} recorded for listing {}", e.requestId(), e.listingId());
+            }
+            // Gives back the days an accepted booking blocked. Keyed on the
+            // request id; a cancel before acceptance finds nothing to release.
+            case "RequestCancelled" -> {
+                var e = mapper.readValue(payload, RadiusEvents.RequestCancelled.class);
+                listings.releaseDates(e.requestId());
+                log.info("released any dates held by cancelled request {} on listing {}", e.requestId(), e.listingId());
             }
             default -> log.debug("ignoring request event of type {}", type);
         }

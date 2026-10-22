@@ -2,20 +2,35 @@ import { useQuery } from '@tanstack/react-query';
 import { Link } from 'expo-router';
 import { useState } from 'react';
 import { ActivityIndicator, FlatList, Pressable, Text, View } from 'react-native';
+import { SignInPrompt } from '@/components/SignInPrompt';
 import { api } from '@/lib/api';
+import { useAuth } from '@/lib/auth';
 import { day, money, when } from '@/lib/format';
 import { space } from '@/lib/theme';
 import { useTheme } from '@/lib/useTheme';
 
 export default function RequestsScreen() {
   const { s, colors } = useTheme();
+  const { me, loading } = useAuth();
   const [direction, setDirection] = useState<'in' | 'out'>('in');
 
   const requests = useQuery({
     queryKey: ['requests', direction],
     queryFn: () => api.requests.list(direction),
+    // A guest has no requests, and asking would only earn a 401.
+    enabled: Boolean(me),
     refetchInterval: 30_000,
   });
+
+  if (!me) {
+    return loading ? null : (
+      <SignInPrompt
+        title="Your requests"
+        body="Sign in to see what you have asked for, and what neighbours have asked of you."
+        returnTo="/requests"
+      />
+    );
+  }
 
   return (
     <View style={s.screen}>

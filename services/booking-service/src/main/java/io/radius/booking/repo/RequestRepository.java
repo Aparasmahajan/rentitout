@@ -20,6 +20,13 @@ public interface RequestRepository extends JpaRepository<BookingRequest, UUID> {
     @Query("select r from BookingRequest r where r.status = 'SENT' and r.expiresAt < :now")
     List<BookingRequest> findExpired(@Param("now") Instant now, Limit limit);
 
+    /** Who may listen to a chat thread: only the two people on the request. */
+    @Query("""
+            select case when count(r) > 0 then true else false end from BookingRequest r
+            where r.id = :requestId and (r.requesterId = :userId or r.ownerId = :userId)
+            """)
+    boolean isParty(@Param("requestId") UUID requestId, @Param("userId") UUID userId);
+
     /** Guards against two people booking the same days while the owner sleeps. */
     @Query("""
             select count(r) from BookingRequest r

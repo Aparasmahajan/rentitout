@@ -41,7 +41,7 @@ export default function RequestThreadPage() {
   const b = r.breakdown;
 
   return (
-    <section className="stack" style={{ paddingTop: 'var(--space-6)' }}>
+    <section className="stack" style={{ paddingTop: 'var(--s5)' }}>
       <div className="between">
         <Link href={`/l/${r.listingId}`}>
           <h1 style={{ margin: 0 }}>{r.listingTitle}</h1>
@@ -57,7 +57,7 @@ export default function RequestThreadPage() {
         {r.units > 1 ? 's' : ''} · {r.iAmOwner ? 'you are lending' : 'you are borrowing'}
       </p>
 
-      <div className="card stack" style={{ padding: 'var(--space-4)' }}>
+      <div className="card stack" style={{ padding: 'var(--s4)' }}>
         <div className="between">
           <span>
             {money(b.rateMinor, b.currency)} × {b.units}
@@ -72,7 +72,7 @@ export default function RequestThreadPage() {
           <span className="muted">{b.feeLabel}</span>
           <span>{money(b.feeMinor, b.currency)}</span>
         </div>
-        <div className="between" style={{ borderTop: '1px solid var(--color-divider)', paddingTop: 8 }}>
+        <div className="between" style={{ borderTop: '1px solid var(--rule)', paddingTop: 8 }}>
           <strong>Total</strong>
           <strong className="price">{money(b.totalMinor, b.currency)}</strong>
         </div>
@@ -146,7 +146,7 @@ export default function RequestThreadPage() {
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
           placeholder="Message your neighbour"
-          style={{ padding: 11, border: '1px solid var(--color-divider)', borderRadius: 'var(--radius-md)' }}
+          style={{ padding: 11, border: '1px solid var(--rule)', borderRadius: 'var(--r-md)' }}
         />
         <button className="btn" type="submit" disabled={!draft.trim()}>
           Send

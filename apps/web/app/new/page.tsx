@@ -62,7 +62,7 @@ export default function NewListingPage() {
   const canContinue = title.trim().length > 2 && (isNeed || (isSale ? buyPrice !== '' : price !== ''));
 
   return (
-    <section className="stack" style={{ paddingTop: 'var(--space-6)' }}>
+    <section className="stack" style={{ paddingTop: 'var(--s5)' }}>
       <div className="between">
         <h1 style={{ margin: 0 }}>List something</h1>
         <span className="tiny">Step {step} of 3</span>
@@ -196,7 +196,7 @@ export default function NewListingPage() {
 
       {step === 3 && (
         <div className="stack">
-          <div className="card stack" style={{ padding: 'var(--space-4)' }}>
+          <div className="card stack" style={{ padding: 'var(--s4)' }}>
             <span className="tiny">{KIND_LABEL[kind]}</span>
             <h2 style={{ margin: 0 }}>{title}</h2>
             {description && <p className="muted">{description}</p>}

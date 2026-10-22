@@ -20,7 +20,7 @@ export default function RequestsPage() {
   if (loading) return <div className="skeleton" style={{ marginTop: 24 }} />;
 
   return (
-    <section className="stack" style={{ paddingTop: 'var(--space-6)' }}>
+    <section className="stack" style={{ paddingTop: 'var(--s5)' }}>
       <h1 style={{ margin: 0 }}>Requests</h1>
 
       <div className="wrap">
@@ -44,7 +44,7 @@ export default function RequestsPage() {
 
       <div className="stack">
         {requests.data?.map((request) => (
-          <Link key={request.id} href={`/requests/${request.id}`} className="card stack" style={{ padding: 'var(--space-4)' }}>
+          <Link key={request.id} href={`/requests/${request.id}`} className="card stack" style={{ padding: 'var(--s4)' }}>
             <div className="between">
               <strong>{request.listingTitle}</strong>
               <span className="badge" data-tone={STATUS_TONE[request.status]}>

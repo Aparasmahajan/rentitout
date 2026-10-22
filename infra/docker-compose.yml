@@ -98,14 +98,20 @@ services:
       kafka: {condition: service_healthy}
     networks: [radius]
 
+  # MinIO stopped publishing community images (minio/* on Docker Hub and quay.io now
+  # refuse pulls), so a fresh machine could not start the stack. pgsty/* is Pigsty's
+  # rebuild of the same AGPL server and client: same binaries, entrypoint and `mc`.
+  # Pinned, because a community rebuild is exactly where `latest` can surprise you.
   minio:
-    image: minio/minio:latest
+    image: pgsty/minio:RELEASE.2026-08-04T00-00-00Z
     profiles: [infra, all]
     command: server /data --console-address ":9001"
     environment:
       MINIO_ROOT_USER: radius
       MINIO_ROOT_PASSWORD: radius-secret
-    ports: ["9000:9000", "9001:9001"]
+    # Host ports are overridable because Zscaler's tunnel (ZSATunnel) holds :9000 on
+    # managed laptops. MINIO_PORT=9010 MINIO_CONSOLE_PORT=9011 matches the Docker-free stack.
+    ports: ["${MINIO_PORT:-9000}:9000", "${MINIO_CONSOLE_PORT:-9001}:9001"]
     volumes: [miniodata:/data]
     healthcheck:
       test: ["CMD", "mc", "ready", "local"]
@@ -115,7 +121,7 @@ services:
     networks: [radius]
 
   minio-setup:
-    image: minio/mc:latest
+    image: pgsty/mc:RELEASE.2026-09-16T00-00-00Z
     profiles: [infra, all]
     depends_on:
       minio: {condition: service_healthy}
@@ -159,6 +165,9 @@ services:
       <<: *service-env
       OTEL_SERVICE_NAME: user-service
       DB_NAME: radius_user
+      # The account promoted to ADMIN at start-up. Same default as
+      # scripts/services.ps1, so /admin works on both local stacks.
+      RADIUS_ADMIN_PHONE: ${RADIUS_ADMIN_PHONE:-+491700000001}
 
   listing-service:
     <<: *service-base
@@ -172,7 +181,7 @@ services:
       OTEL_SERVICE_NAME: listing-service
       DB_NAME: radius_listing
       S3_ENDPOINT: http://minio:9000
-      S3_PUBLIC_ENDPOINT: http://localhost:9000
+      S3_PUBLIC_ENDPOINT: http://localhost:${MINIO_PORT:-9000}
       S3_BUCKET: radius-photos
       S3_ACCESS_KEY: radius
       S3_SECRET_KEY: radius-secret

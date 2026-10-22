@@ -1,4 +1,7 @@
-import AsyncStorageFallback from 'expo-secure-store';
+// Namespace import: expo-secure-store has no default export, and a default
+// import resolves to undefined at runtime even though tsc accepts it under
+// esModuleInterop. This provider wraps the whole app, so that crashed on launch.
+import * as SecureStore from 'expo-secure-store';
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { DARK, LIGHT, makeStyles, type Palette, type Styles } from './theme';
 
@@ -26,7 +29,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [mode, setMode] = useState<Mode>('light');
 
   useEffect(() => {
-    AsyncStorageFallback.getItemAsync(STORE_KEY)
+    SecureStore.getItemAsync(STORE_KEY)
       .then((stored) => {
         if (stored === 'dark' || stored === 'light') setMode(stored);
       })
@@ -36,7 +39,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const toggle = useCallback(() => {
     setMode((current) => {
       const next: Mode = current === 'light' ? 'dark' : 'light';
-      void AsyncStorageFallback.setItemAsync(STORE_KEY, next).catch(() => undefined);
+      void SecureStore.setItemAsync(STORE_KEY, next).catch(() => undefined);
       return next;
     });
   }, []);

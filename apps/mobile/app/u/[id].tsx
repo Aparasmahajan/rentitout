@@ -51,7 +51,7 @@ export default function ProfileScreen() {
       <View style={s.wrap}>
         {p.idChecked ? (
           <View style={s.badge}>
-            <Text style={s.badgeText}>Verified</Text>
+            <Text style={s.badgeText}>ID checked</Text>
           </View>
         ) : null}
         {p.ratingAvg !== null ? (

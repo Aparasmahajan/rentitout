@@ -28,7 +28,7 @@ export default function ProfilePage() {
     .filter((group) => group.tags.length > 0);
 
   return (
-    <section className="stack" style={{ paddingTop: 'var(--space-6)' }}>
+    <section className="stack" style={{ paddingTop: 'var(--s5)' }}>
       <div className="row">
         <div className="thumb-placeholder" style={{ width: 64, aspectRatio: '1', borderRadius: 999 }}>
           {initials(p.displayName)}

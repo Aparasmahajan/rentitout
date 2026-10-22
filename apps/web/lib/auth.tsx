@@ -48,6 +48,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     void refresh();
   }, [refresh]);
 
+  // Whoever clears the tokens (a refresh the server refused, most often), the
+  // member is signed out here too, so the UI stops offering signed-in actions.
+  useEffect(() => tokenStore.onCleared(() => setMe(null)), []);
+
   const signOut = useCallback(async () => {
     try {
       await api.auth.logout();

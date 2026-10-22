@@ -1,14 +1,21 @@
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
 import { KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 import { ApiError, api, tokenStore } from '@/lib/api';
 import { useAuth } from '@/lib/auth';
 import { useTheme } from '@/lib/useTheme';
 
+const IN_APP_PATH = /^\/(?![/\\])[^\\\s]*$/;
+
 export default function SignInScreen() {
   const { s, colors } = useTheme();
   const router = useRouter();
   const { setMe } = useAuth();
+  // Where the member was when we stopped them. Only ever an in-app path, the
+  // same rule as web: one leading slash, then no backslash or whitespace, so
+  // neither "//host" nor "/\host" can be read as somewhere else.
+  const { next: rawNext } = useLocalSearchParams<{ next?: string }>();
+  const next = rawNext && IN_APP_PATH.test(rawNext) ? rawNext : '/';
 
   const [phone, setPhone] = useState('+491700000001');
   const [displayName, setDisplayName] = useState('');
@@ -40,7 +47,8 @@ export default function SignInScreen() {
       const tokens = await api.auth.verify(phone.trim(), code.trim(), displayName.trim() || undefined);
       await tokenStore.set(tokens);
       setMe(tokens.me);
-      router.replace('/');
+      // Typed routes are off, so the stored path is cast; it was checked above.
+      router.replace(next as never);
     } catch (e) {
       setError(e instanceof ApiError ? e.message : 'That did not work');
     } finally {

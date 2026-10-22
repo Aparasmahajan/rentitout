@@ -30,22 +30,45 @@ export default function SearchPage() {
   const [kinds, setKinds] = useState<string[]>([]);
   const [radiusKm, setRadiusKm] = useState(5);
   const [sort, setSort] = useState('relevance');
+  // Hides a removed chip straight away, before the refined results land.
+  // Cleared on every success, because by then the server's own parse no
+  // longer contains the tag.
   const [dropped, setDropped] = useState<string[]>([]);
   const [result, setResult] = useState<SearchResponse | null>(null);
 
   const run = useMutation({
-    mutationFn: () =>
-      api.search.run({
-        lat: point.lat,
-        lon: point.lon,
-        q: mode === 'ask' ? q : undefined,
-        keyword: mode === 'filter' ? keyword || undefined : undefined,
-        kinds: kinds.length ? kinds : undefined,
-        tags: dropped.length && result ? result.parsed.tags.filter((t) => !dropped.includes(t)) : undefined,
-        radiusKm,
-        sort,
-      }),
-    onSuccess: setResult,
+    // `keep` is passed in, not read from state: a click both sets state and
+    // runs this, and state set in the same handler is not visible here yet.
+    mutationFn: (keep?: string[]) =>
+      api.search.run(
+        keep && result
+          ? {
+              // Refining: ask again with what we understood, minus the removed
+              // tag, as structured filters. Re-sending q would let the parser
+              // read the same sentence and put the tag straight back.
+              lat: point.lat,
+              lon: point.lon,
+              keyword: result.parsed.terms.join(' ').slice(0, 80) || undefined,
+              kinds: result.parsed.kinds.length ? result.parsed.kinds.slice(0, 5) : undefined,
+              tags: keep,
+              radiusKm: result.parsed.radiusKm ?? radiusKm,
+              availableOn: result.parsed.day ?? undefined,
+              sort,
+            }
+          : {
+              lat: point.lat,
+              lon: point.lon,
+              q: mode === 'ask' ? q : undefined,
+              keyword: mode === 'filter' ? keyword || undefined : undefined,
+              kinds: kinds.length ? kinds : undefined,
+              radiusKm,
+              sort,
+            },
+      ),
+    onSuccess: (response) => {
+      setResult(response);
+      setDropped([]);
+    },
   });
 
   if (loading) return <div className="skeleton" style={{ marginTop: 24 }} />;
@@ -53,7 +76,7 @@ export default function SearchPage() {
   const parsed = result?.parsed;
 
   return (
-    <section className="stack" style={{ paddingTop: 'var(--space-6)' }}>
+    <section className="stack" style={{ paddingTop: 'var(--s5)' }}>
       <h1 style={{ margin: 0 }}>Search</h1>
 
       <div className="wrap" role="tablist">
@@ -137,9 +160,11 @@ export default function SearchPage() {
                   className="chip"
                   data-active
                   onClick={() => {
-                    setDropped((prev) => [...prev, tag]);
-                    run.mutate();
+                    const next = [...dropped, tag];
+                    setDropped(next);
+                    run.mutate(parsed.tags.filter((t) => !next.includes(t)));
                   }}
+                  disabled={run.isPending}
                   title="Remove this"
                 >
                   {tag} ×
@@ -164,7 +189,7 @@ export default function SearchPage() {
           <h2>Neighbours</h2>
           <div className="grid">
             {result.members.map((member) => (
-              <Link key={member.id} href={`/u/${member.id}`} className="card" style={{ padding: 'var(--space-4)' }}>
+              <Link key={member.id} href={`/u/${member.id}`} className="card" style={{ padding: 'var(--s4)' }}>
                 <div className="row">
                   <div className="thumb-placeholder" style={{ width: 48, aspectRatio: '1', borderRadius: 999 }}>
                     {initials(member.displayName)}
@@ -176,7 +201,7 @@ export default function SearchPage() {
                     </div>
                   </div>
                 </div>
-                <div className="wrap" style={{ marginTop: 'var(--space-3)' }}>
+                <div className="wrap" style={{ marginTop: 'var(--s3)' }}>
                   {member.tags.slice(0, 4).map((tag) => (
                     <span key={tag} className="chip static">
                       {tag}

@@ -132,7 +132,16 @@ public class ListingService {
     @Transactional
     public Dtos.ListingResponse setStatus(UUID listingId, UUID callerId, Listing.Status status) {
         Listing listing = owned(listingId, callerId);
-        listing.setStatus(status);
+        // Deleting what is already gone is a no-op. Re-publishing would also
+        // overwrite a moderator's reason on the event with "owner_unlisted".
+        if (status == Listing.Status.UNLISTED && Listing.Status.UNLISTED.name().equals(listing.getStatus())) {
+            return detail(listingId, callerId);
+        }
+        switch (status) {
+            case PAUSED -> listing.pause();
+            case LIVE -> listing.resume();
+            case UNLISTED -> listing.unlist();
+        }
         listings.save(listing);
 
         if (status == Listing.Status.UNLISTED) {
@@ -153,7 +162,7 @@ public class ListingService {
     public void unlistByModerator(UUID listingId, String note) {
         Listing listing = listings.findById(listingId)
                 .orElseThrow(() -> ApiException.notFound("Listing"));
-        listing.setStatus(Listing.Status.UNLISTED);
+        listing.unlist();
         listings.save(listing);
         outbox.publish(Topics.LISTING, listing.getId(), new RadiusEvents.ListingUnlisted(
                 listing.getId(), listing.getOwnerId(),
@@ -190,6 +199,17 @@ public class ListingService {
     public void blockDates(UUID listingId, LocalDate from, LocalDate to, UUID requestId) {
         if (requestId != null && blocks.existsByRequestId(requestId)) return;
         blocks.save(new AvailabilityBlock(listingId, from, to, "booked", requestId));
+    }
+
+    /**
+     * Called from the RequestCancelled consumer. An accepted booking that is
+     * cancelled must give its days back, or the calendar shows them taken
+     * forever. A request cancelled before acceptance never blocked anything,
+     * so deleting nothing is the normal case and a redelivery is harmless.
+     */
+    @Transactional
+    public void releaseDates(UUID requestId) {
+        blocks.deleteByRequestId(requestId);
     }
 
     @Transactional(readOnly = true)

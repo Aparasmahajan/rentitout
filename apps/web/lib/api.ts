@@ -42,6 +42,13 @@ export class ApiError extends Error {
   }
 }
 
+/**
+ * Told whenever the tokens are cleared. A failed refresh clears them deep
+ * inside a request, far from React; without this the auth context kept its
+ * `me` and the UI went on looking signed in until a reload.
+ */
+const clearedListeners = new Set<() => void>();
+
 export const tokenStore = {
   access: () => (typeof window === 'undefined' ? null : localStorage.getItem(ACCESS_KEY)),
   refresh: () => (typeof window === 'undefined' ? null : localStorage.getItem(REFRESH_KEY)),
@@ -52,6 +59,12 @@ export const tokenStore = {
   clear() {
     localStorage.removeItem(ACCESS_KEY);
     localStorage.removeItem(REFRESH_KEY);
+    clearedListeners.forEach((listener) => listener());
+  },
+  /** Returns the unsubscribe, so it drops straight into a useEffect cleanup. */
+  onCleared(listener: () => void): () => void {
+    clearedListeners.add(listener);
+    return () => clearedListeners.delete(listener);
   },
 };
 

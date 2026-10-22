@@ -83,6 +83,16 @@ node ../infra/seed/seed.mjs
 `--profile infra` brings up only the backing services, which is what you want when running
 the JVM side from an IDE.
 
+**Building and testing when Java comes from Docker.** If the host has Maven 3.9 but no JDK 21,
+`scripts/mvn-docker.ps1` runs your Maven inside `eclipse-temurin:21-jdk` and shares
+`~/.m2/repository`:
+
+```powershell
+$env:RADIUS_MAVEN_HOME = 'C:\path\to\apache-maven-3.9.9'
+.\scripts\mvn-docker.ps1                     # test
+.\scripts\mvn-docker.ps1 -DskipTests package
+```
+
 | What | Without Docker | With Docker |
 | --- | --- | --- |
 | API gateway | http://localhost:8080 | http://localhost:8080 |
@@ -91,7 +101,7 @@ the JVM side from an IDE.
 | Postgres | localhost:5433 · radius / radius | localhost:5432 |
 | Redis | localhost:6380 | localhost:6379 |
 | Kafka | localhost:9092 | localhost:9094 |
-| MinIO console | http://localhost:9011 · radius / radius-secret | http://localhost:9001 |
+| MinIO console | http://localhost:9011 · radius / radius-secret | http://localhost:9001 (`MINIO_CONSOLE_PORT`) |
 | Kafka UI | — | http://localhost:8090 |
 | Jaeger traces | — | http://localhost:16686 |
 
@@ -120,7 +130,7 @@ All of these were hit while getting this running, and each fix is commented wher
 | Kafka: `The input line is too long`, `'wmic' is not recognized` | Kafka's `.bat` launchers build the classpath jar by jar and shell out to a tool Microsoft removed | Launch the JVM directly with a wildcard classpath |
 | `The connection attempt failed` while Postgres is clearly up | Endpoint security intercepts loopback and aborts the JDBC SSL handshake | `DB_OPTIONS=?sslmode=disable` for the local stack |
 | Redis health `DOWN` while Redis works | The Windows Redis port reports `executable:C:\...` in `INFO`, and Spring parses `INFO` with `java.util.Properties`, which chokes on `\U` | `MANAGEMENT_HEALTH_REDIS_ENABLED=false` locally only |
-| MinIO will not bind | Something else already holds port 9000 (a corporate tunnel, in this case) | MinIO runs on 9010/9011 |
+| MinIO will not bind | Something else already holds port 9000 (a corporate tunnel, in this case). Zscaler's ZSATunnel can hold 9010 too | MinIO runs on 9010/9011. Under Docker, set `MINIO_PORT` / `MINIO_CONSOLE_PORT` (e.g. 9100/9101) |
 | Services take minutes to start | Seven JVMs at once, each scanned on load | The health wait is patient rather than declaring failure |
 
 ---
@@ -282,9 +292,11 @@ log the member out.
 .\scripts\services.ps1 test      # or: cd services; mvn -s settings-central.xml test
 ```
 
-35 tests across seven classes, all green on a clean build. They cover the parts where a bug
-costs someone money or a wasted trip: the request state machine, the fee arithmetic, the query
-parser, the geo rounding, and the auth endpoints. Integration tests over Testcontainers are the
+69 tests across thirteen classes, all green on a clean build (16 October 2026). They cover the
+parts where a bug costs someone money, a wasted trip or a leaked chat: the request state machine,
+the fee arithmetic, the query parser, the geo rounding, the auth endpoints, listing status
+guards, the idempotency guard, who may subscribe to a chat thread, that the chat socket refuses client SEND, and which paths
+the gateway lets through without a token. Integration tests over Testcontainers are the
 obvious next layer.
 
 Two of them earned their keep immediately. The auth slice test caught the API answering an

@@ -10,6 +10,9 @@ const TABS = [
   { href: '/search', label: 'Search' },
   { href: '/map', label: 'Map' },
   { href: '/new', label: 'List' },
+  // A guest has no requests, so the tab only appears once there can be some.
+  // Without it a phone had no route to /requests at all.
+  { href: '/requests', label: 'Requests', signedInOnly: true },
   { href: '/me', label: 'You' },
 ];
 
@@ -53,9 +56,9 @@ export function Nav() {
         </div>
       </header>
 
-      {/* Phone only. Browsing is open, so these are all reachable as a guest. */}
+      {/* Phone only. Browsing is open, so all but Requests are reachable as a guest. */}
       <nav className="tabbar" aria-label="Primary">
-        {TABS.map((tab) => (
+        {TABS.filter((tab) => signedIn || !tab.signedInOnly).map((tab) => (
           <Link key={tab.href} href={tab.href} data-active={isActive(pathname, tab.href)}>
             {tab.label}
           </Link>

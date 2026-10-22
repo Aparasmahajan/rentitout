@@ -2,6 +2,7 @@ package io.radius.listing.repo;
 
 import io.radius.listing.domain.AvailabilityBlock;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -15,6 +16,11 @@ public interface AvailabilityBlockRepository extends JpaRepository<AvailabilityB
             UUID listingId, LocalDate from);
 
     boolean existsByRequestId(UUID requestId);
+
+    /** Only booked blocks carry a request id, so manual blocks are never touched. */
+    @Modifying
+    @Query("delete from AvailabilityBlock b where b.requestId = :requestId")
+    int deleteByRequestId(@Param("requestId") UUID requestId);
 
     @Query("""
             select case when count(b) > 0 then true else false end from AvailabilityBlock b

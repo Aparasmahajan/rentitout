@@ -4,8 +4,10 @@ import { useState } from 'react';
 import { Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 import { ListingCardView } from '@/components/ListingCardView';
 import { api } from '@/lib/api';
+import { useAuth } from '@/lib/auth';
 import { KINDS, KIND_LABEL, distance } from '@/lib/format';
 import { useTheme } from '@/lib/useTheme';
+import { useViewerPoint } from '@/lib/useViewerPoint';
 import type { SearchResponse } from '@/lib/types';
 
 const EXAMPLES = [
@@ -14,20 +16,31 @@ const EXAMPLES = [
   'who can teach guitar nearby',
 ];
 
+const RADII = [1, 2, 5, 10, 25];
+
 export default function SearchScreen() {
   const { s, colors } = useTheme();
+  const { me } = useAuth();
+  const { point } = useViewerPoint();
   const [mode, setMode] = useState<'ask' | 'filter'>('ask');
   const [q, setQ] = useState('');
   const [keyword, setKeyword] = useState('');
   const [kinds, setKinds] = useState<string[]>([]);
+  const [radiusKm, setRadiusKm] = useState(me?.searchRadiusKm ?? 5);
   const [result, setResult] = useState<SearchResponse | null>(null);
 
+  // Same shape as web. The point is always sent: a guest has no saved one and
+  // the API refuses to guess (no_location). A radius typed into the sentence
+  // ("within 5 km") is read by the server and wins over the chip.
   const run = useMutation({
     mutationFn: () =>
       api.search.run({
+        lat: point.lat,
+        lon: point.lon,
         q: mode === 'ask' ? q : undefined,
         keyword: mode === 'filter' ? keyword || undefined : undefined,
         kinds: kinds.length ? kinds : undefined,
+        radiusKm,
       }),
     onSuccess: setResult,
   });
@@ -85,6 +98,15 @@ export default function SearchScreen() {
           </View>
         </View>
       )}
+
+      <Text style={s.tiny}>Within · around {point.label}</Text>
+      <View style={s.wrap}>
+        {RADII.map((km) => (
+          <Pressable key={km} style={[s.chip, radiusKm === km && s.chipOn]} onPress={() => setRadiusKm(km)}>
+            <Text style={[s.chipText, radiusKm === km && s.chipTextOn]}>{km} km</Text>
+          </Pressable>
+        ))}
+      </View>
 
       <Pressable style={[s.btn, run.isPending && s.disabled]} onPress={() => run.mutate()} disabled={run.isPending}>
         <Text style={s.btnText}>{run.isPending ? 'Looking…' : 'Search'}</Text>

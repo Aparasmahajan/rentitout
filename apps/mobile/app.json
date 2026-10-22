@@ -17,13 +17,20 @@
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "Radius shows what is available near you, and stores your home point rounded to about 100 m.",
         "NSPhotoLibraryUsageDescription": "Pick a photo for a listing.",
-        "NSAppTransportSecurity": { "NSAllowsLocalNetworking": true }
+        "NSAppTransportSecurity": {
+          "NSAllowsLocalNetworking": true
+        }
       }
     },
     "android": {
       "package": "io.radius.app",
-      "adaptiveIcon": { "backgroundColor": "#5980a6" },
-      "permissions": ["ACCESS_COARSE_LOCATION", "ACCESS_FINE_LOCATION"],
+      "adaptiveIcon": {
+        "backgroundColor": "#5980a6"
+      },
+      "permissions": [
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION"
+      ],
       "usesCleartextTraffic": true
     },
     "plugins": [
@@ -34,11 +41,14 @@
         {
           "locationWhenInUsePermission": "Radius shows what is available near you."
         }
-      ]
+      ],
+      "expo-asset"
     ],
     "extra": {
       "apiUrl": "http://10.0.2.2:8080"
     },
-    "experiments": { "typedRoutes": false }
+    "experiments": {
+      "typedRoutes": false
+    }
   }
 }

@@ -27,12 +27,18 @@ export default function DashboardScreen() {
       renderItem={({ item }) => (
         <View style={s.stack}>
           <ListingCardView listing={item} showStatus />
-          <Pressable
-            style={[s.btn, s.btnGhost]}
-            onPress={() => toggle.mutate({ id: item.id, live: item.status === 'LIVE' })}
-          >
-            <Text style={s.btnTextGhost}>{item.status === 'LIVE' ? 'Pause' : 'Resume'}</Text>
-          </Pressable>
+          {/* A removed listing stays removed (listing_unlisted), so offer nothing to press. */}
+          {item.status === 'UNLISTED' ? (
+            <Text style={s.muted}>Removed</Text>
+          ) : (
+            <Pressable
+              style={[s.btn, s.btnGhost, toggle.isPending && s.disabled]}
+              disabled={toggle.isPending}
+              onPress={() => toggle.mutate({ id: item.id, live: item.status === 'LIVE' })}
+            >
+              <Text style={s.btnTextGhost}>{item.status === 'LIVE' ? 'Pause' : 'Resume'}</Text>
+            </Pressable>
+          )}
         </View>
       )}
     />

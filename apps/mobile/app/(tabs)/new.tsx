@@ -3,6 +3,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { Image, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
+import { SignInPrompt } from '@/components/SignInPrompt';
 import { ApiError, api, uploadPhoto } from '@/lib/api';
 import { useAuth } from '@/lib/auth';
 import { KINDS, KIND_LABEL, UNITS } from '@/lib/format';
@@ -12,7 +13,7 @@ import type { ListingKind, Unit } from '@/lib/types';
 export default function NewListingScreen() {
   const { s, colors } = useTheme();
   const router = useRouter();
-  const { me } = useAuth();
+  const { me, loading } = useAuth();
 
   const [kind, setKind] = useState<ListingKind>('RENT_ITEM');
   const [title, setTitle] = useState('');
@@ -31,6 +32,12 @@ export default function NewListingScreen() {
 
   const publish = useMutation({
     mutationFn: async () => {
+      // The button is disabled without a home point; this covers signing out
+      // between the tap and the request, so it fails with words, not a TypeError.
+      if (me?.lat == null || me?.lon == null) {
+        throw new Error('Set your home point on the Me tab first.');
+      }
+      const { lat, lon } = me;
       const listing = await api.listings.create({
         kind,
         title: title.trim(),
@@ -39,8 +46,10 @@ export default function NewListingScreen() {
         unit: isNeed || isSale ? null : unit,
         depositMinor: toMinor(deposit) ?? 0,
         buyPriceMinor: isSale ? toMinor(price) : null,
-        lat: me?.lat ?? 52.4996,
-        lon: me?.lon ?? 13.418,
+        // Never a made-up point. The home point is already rounded to
+        // ~100 m, which is what a listing should carry.
+        lat,
+        lon,
         tags,
       });
       if (photo) {
@@ -53,6 +62,7 @@ export default function NewListingScreen() {
       setTitle('');
       setDescription('');
       setPrice('');
+      setDeposit('');
       setPhoto(null);
       setTags([]);
       router.push(`/l/${listing.id}`);
@@ -69,6 +79,21 @@ export default function NewListingScreen() {
       setPhoto({ uri: asset.uri, mimeType: asset.mimeType ?? 'image/jpeg' });
     }
   }
+
+  if (!me) {
+    return loading ? null : (
+      <SignInPrompt
+        title="List something"
+        body="Sign in to offer a thing, a skill or a space to the people around you."
+        returnTo="/new"
+      />
+    );
+  }
+
+  // A listing is placed at the member's home point. Without one there is nowhere
+  // honest to put it, so the form says so instead of guessing.
+  const noLocation = me.lat == null || me.lon == null;
+  const cannotPublish = publish.isPending || title.trim().length < 3 || noLocation;
 
   return (
     <ScrollView style={s.screen} contentContainerStyle={s.content} keyboardShouldPersistTaps="handled">
@@ -157,10 +182,16 @@ export default function NewListingScreen() {
         </View>
       ) : null}
 
+      {noLocation ? (
+        <View style={s.notice}>
+          <Text style={s.body}>Set your home point on the Me tab first, so neighbours can see how far away this is.</Text>
+        </View>
+      ) : null}
+
       <Pressable
-        style={[s.btn, (publish.isPending || title.trim().length < 3) && s.disabled]}
+        style={[s.btn, cannotPublish && s.disabled]}
         onPress={() => publish.mutate()}
-        disabled={publish.isPending || title.trim().length < 3}
+        disabled={cannotPublish}
       >
         <Text style={s.btnText}>{publish.isPending ? 'Publishing…' : 'Publish'}</Text>
       </Pressable>

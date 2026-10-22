@@ -164,8 +164,11 @@ button, input, select, textarea { font: inherit; color: inherit; }
   left: 0;
   right: 0;
   z-index: 30;
+  /* Columns follow the links, not a fixed count: a signed-in member gets a
+     sixth tab (Requests), and six still clear 44 px each on a 320 px phone. */
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(44px, 1fr);
   background: var(--surface);
   border-top: 1px solid var(--rule);
 }
@@ -319,6 +322,60 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .badge[data-tone='warn'] { color: var(--danger); border-color: var(--danger); }
 .badge[data-tone='pending'] { color: var(--warn); border-color: var(--warn); }
 .badge[data-tone='live'] { color: var(--ok); border-color: var(--ok); }
+/* Waiting, not wrong: quieter than warn, and dashed so it never reads as live. */
+.badge[data-tone='paused'] { color: var(--faint); border-style: dashed; }
+
+/* ---- small layout helpers ---------------------------------------------- */
+
+/* A label you are meant to read, unlike .eyebrow, which only decorates.
+   Sized up from the 0.66rem labels the readability backlog calls out. */
+.tiny {
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* Cards that should sit side by side when there is room and stack when not.
+   min(100%, …) keeps a single column from overflowing a narrow phone. */
+.grid {
+  display: grid;
+  gap: var(--s3);
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr));
+}
+
+/* Initials where a member has no photo. Size and roundness come from the
+   caller, because the same circle is 48 px in a list and 64 px on a profile. */
+.thumb-placeholder {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  background: var(--accent-wash);
+  color: var(--accent);
+  font-family: var(--font-display);
+  font-weight: 600;
+}
+
+/* ---- chat -------------------------------------------------------------- */
+
+/* Theirs on the left in a plain card, mine on the right in the accent, so
+   who said what is readable at a glance without reading the names. */
+.bubble {
+  align-self: flex-start;
+  max-width: 80%;
+  padding: var(--s2) var(--s3);
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-lg);
+  overflow-wrap: anywhere;
+}
+.bubble[data-mine='true'] {
+  align-self: flex-end;
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-ink);
+}
+.bubble[data-mine='true'] .tiny { color: var(--accent-ink); }
 
 .card {
   background: var(--card);

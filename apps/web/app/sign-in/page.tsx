@@ -1,21 +1,38 @@
 'use client';
 
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import { ApiError, api, tokenStore } from '@/lib/api';
 import { useAuth } from '@/lib/auth';
+
+const IN_APP_PATH = /^\/(?![/\\])[^\\\s]*$/;
+
+/**
+ * useSearchParams() opts a page out of prerendering, and Next refuses to build
+ * one without a Suspense boundary around it. The boundary lives here so the
+ * form below can keep reading ?next= directly.
+ */
+export default function SignInPage() {
+  return (
+    <Suspense fallback={<section className="stack" style={{ maxWidth: 420, margin: '10vh auto 0' }} />}>
+      <SignInForm />
+    </Suspense>
+  );
+}
 
 /**
  * Two steps, one number. There is no password to forget, and the POC hands the
  * code back in the response because there is no SMS provider behind it.
  */
-export default function SignInPage() {
+function SignInForm() {
   const router = useRouter();
   const params = useSearchParams();
   const { setMe } = useAuth();
-  // Where the member was when we stopped them. Only ever an in-app path.
+  // Where the member was when we stopped them. Only ever an in-app path: one
+  // leading slash, then no backslash or whitespace anywhere. URL parsing reads
+  // "\" as "/", so "/\evil.com" would otherwise leave the site after sign-in.
   const rawNext = params.get('next') ?? '/';
-  const next = rawNext.startsWith('/') && !rawNext.startsWith('//') ? rawNext : '/';
+  const next = IN_APP_PATH.test(rawNext) ? rawNext : '/';
 
   const [phone, setPhone] = useState('+491700000001');
   const [displayName, setDisplayName] = useState('');

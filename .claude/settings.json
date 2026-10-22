@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": [
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git show:*)",
+      "Bash(git branch:*)",
+      "PowerShell(git status:*)",
+      "PowerShell(git diff:*)",
+      "PowerShell(git log:*)",
+      "PowerShell(.\\scripts\\mvn-docker.ps1:*)",
+      "PowerShell(docker info:*)",
+      "PowerShell(docker compose -f infra/docker-compose.yml ps:*)",
+      "PowerShell(docker compose -f infra/docker-compose.yml logs:*)",
+      "Bash(docker info:*)",
+      "Bash(docker compose -f infra/docker-compose.yml ps:*)",
+      "Bash(docker compose -f infra/docker-compose.yml logs:*)",
+      "PowerShell(.\\scripts\\services.ps1 status:*)",
+      "PowerShell(.\\scripts\\services.ps1 test:*)",
+      "PowerShell(.\\scripts\\services.ps1 logs:*)",
+      "PowerShell(.\\scripts\\devstack.ps1 status:*)",
+      "Bash(npm run typecheck:*)",
+      "Bash(npm run lint:*)",
+      "PowerShell(npm run typecheck:*)",
+      "PowerShell(npm run lint:*)"
+    ],
+    "ask": [
+      "PowerShell(.\\scripts\\devstack.ps1 reset:*)",
+      "Bash(git push:*)",
+      "PowerShell(git push:*)"
+    ],
+    "deny": [
+      "Read(./**/.env)",
+      "Read(./**/.env.local)",
+      "Read(./**/.env.*.local)",
+      "Edit(./**/.env)",
+      "Edit(./**/.env.local)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash|PowerShell",
+        "hooks": [
+          { "type": "command", "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/guard-shell.mjs\"", "timeout": 10 }
+        ]
+      },
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          { "type": "command", "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/protect-files.mjs\"", "timeout": 10 }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          { "type": "command", "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/check-invariants.mjs\"", "timeout": 10 }
+        ]
+      }
+    ]
+  }
+}

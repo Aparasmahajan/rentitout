@@ -32,8 +32,14 @@ export default function RequestScreen() {
 
   const act = useMutation({
     mutationFn: (action: Action) => api.requests[action](id),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['request', id] }),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['request', id] });
+      void queryClient.invalidateQueries({ queryKey: ['requests'] });
+    },
   });
+  // One transition at a time: a second tap while the first is in flight would
+  // only come back as illegal_transition.
+  const busy = act.isPending;
 
   if (request.isPending) return <ActivityIndicator color={colors.accent} style={{ marginTop: 40 }} />;
   if (request.isError) {
@@ -96,25 +102,40 @@ export default function RequestScreen() {
         <View style={s.row}>
           {r.iAmOwner && r.status === 'SENT' ? (
             <>
-              <Pressable style={[s.btn, s.grow]} onPress={() => act.mutate('accept')}>
+              <Pressable style={[s.btn, s.grow, busy && s.disabled]} disabled={busy} onPress={() => act.mutate('accept')}>
                 <Text style={s.btnText}>Accept</Text>
               </Pressable>
-              <Pressable style={[s.btn, s.btnGhost, s.grow]} onPress={() => act.mutate('decline')}>
+              <Pressable
+                style={[s.btn, s.btnGhost, s.grow, busy && s.disabled]}
+                disabled={busy}
+                onPress={() => act.mutate('decline')}
+              >
                 <Text style={s.btnTextGhost}>Decline</Text>
               </Pressable>
             </>
           ) : null}
           {r.status === 'ACCEPTED' ? (
-            <Pressable style={[s.btn, s.grow]} onPress={() => act.mutate('start')}>
+            <Pressable style={[s.btn, s.grow, busy && s.disabled]} disabled={busy} onPress={() => act.mutate('start')}>
               <Text style={s.btnText}>Handed over</Text>
             </Pressable>
           ) : null}
           {r.status === 'IN_PROGRESS' || r.status === 'ACCEPTED' ? (
-            <Pressable style={[s.btn, s.btnGhost, s.grow]} onPress={() => act.mutate('complete')}>
+            <Pressable
+              style={[s.btn, s.btnGhost, s.grow, busy && s.disabled]}
+              disabled={busy}
+              onPress={() => act.mutate('complete')}
+            >
               <Text style={s.btnTextGhost}>Complete</Text>
             </Pressable>
           ) : null}
         </View>
+
+        {/* The requester can back out until the thing is handed over, as on web. */}
+        {!r.iAmOwner && (r.status === 'SENT' || r.status === 'ACCEPTED') ? (
+          <Pressable style={[s.btn, s.btnGhost, busy && s.disabled]} disabled={busy} onPress={() => act.mutate('cancel')}>
+            <Text style={s.btnTextDanger}>Cancel request</Text>
+          </Pressable>
+        ) : null}
 
         <View style={s.between}>
           <Text style={s.h3}>Thread</Text>
